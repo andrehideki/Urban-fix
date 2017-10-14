@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Urban-fix</string>
+    <string name="login_email_hint">E-mail</string>
+    <string name="login_password_hint">Senha</string>
+    <string name="login_button">Entrar</string>
+    <string name="login_login">Entrar</string>
+    <string name="login_register">Ainda não tem conta? Clique aqui</string>
+    <string name="register_name_hint">Nome</string>
+    <string name="register_lastname_hint">Sobrenome</string>
+    <string name="register_birthday_hint">Aniversário</string>
+    <string name="register_email_hint">E-mail</string>
+    <string name="register_password_hint">Senha</string>
+    <string name="register_finish_button">Finalizar</string>
+    <string name="register_cancel_button">Cancelar</string>
+    <string name="urbanfix_description">Urban fix mobile</string>
+    <string name="invalid_password_or_email">Senha ou email é inválido</string>
+    <string name="register_failed_create_user">Falha ao criar usuário</string>
+    <string name="back_button"><![CDATA[<< Voltar]]></string>
+    <string name="forgot_password_textview">Esqueceu a senha?</string>
+    <string name="reset_password_button">Resetar senha</string>
+    <string name="forgot_password_register">Esqueceu a senha?</string>
+</resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/default_layout_padding"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.mobile.urbanfix.urban_fix.RegisterActivity">
+
+    <EditText android:id="@+id/nameRegisterEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/register_name_hint"
+        android:inputType="text" />
+
+    <EditText android:id="@+id/lastNameRegisterEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/register_lastname_hint"
+        android:inputType="text" />
+
+    <EditText android:id="@+id/birthdayRegisterEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/register_birthday_hint"
+        android:inputType="date" />
+
+
+    <EditText android:id="@+id/emailRegisterEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/register_email_hint"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/passwordRegisterEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/register_password_hint"
+        android:inputType="textPassword" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/default_layout_margin"
+        android:orientation="horizontal">
+
+        <Button android:id="@+id/cancelRegisterButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:layout_marginRight="@dimen/default_layout_margin"
+            android:text="@string/register_cancel_button"/>
+
+        <Button android:id="@+id/finishRegisterButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/default_layout_margin"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="@string/register_finish_button" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

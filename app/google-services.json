@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "146955407106",
+    "firebase_url": "https://urban-fix-teste.firebaseio.com",
+    "project_id": "urban-fix-teste",
+    "storage_bucket": "urban-fix-teste.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146955407106:android:60ab3062d2217900",
+        "android_client_info": {
+          "package_name": "com.mobile.urbanfix.urban_fix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "146955407106-qli5eahveojjhq5v2rj8j63qiass8709.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobile.urbanfix.urban_fix",
+            "certificate_hash": "c0c3833723f92bcf5e2206621a71667ebf98d61b"
+          }
+        },
+        {
+          "client_id": "146955407106-tqr65do8oauu2fr5ppvr1mbpunpn8i2n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGqgJ0ayJVqRzDeI0HBPPaFMQGpv9qowU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "146955407106-tqr65do8oauu2fr5ppvr1mbpunpn8i2n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
