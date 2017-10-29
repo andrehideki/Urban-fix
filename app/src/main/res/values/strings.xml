@@ -19,4 +19,12 @@
     <string name="forgot_password_textview">Esqueceu a senha?</string>
     <string name="reset_password_button">Resetar senha</string>
     <string name="forgot_password_register">Esqueceu a senha?</string>
+    <string name="nav_account_title">Minha conta</string>
+    <string name="nav_to_alert_title">Realizar alerta</string>
+    <string name="nav_notice_title">Notificações</string>
+    <string name="nav_about_app_title">Sobre</string>
+    <string name="nav_settings_title">Configurações</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
