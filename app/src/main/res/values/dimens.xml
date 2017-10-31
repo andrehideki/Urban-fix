@@ -2,4 +2,6 @@
 <resources>
     <dimen name="default_layout_margin">16dp</dimen>
     <dimen name="default_layout_padding">16dp</dimen>
+    <dimen name="header_height">160dp</dimen>
+    <dimen name="header_padding">20dp</dimen>
 </resources>
