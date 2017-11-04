@@ -21,7 +21,6 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText birthdayRegisterEditText;
     private EditText emailRegisterEditText;
     private EditText passwordRegisterEditText;
-    private Button cancelRegisterButton;
     private Button finishRegisterButton;
 
     private FirebaseAuth firebaseAuth;
@@ -40,13 +39,6 @@ public class RegisterActivity extends AppCompatActivity {
         birthdayRegisterEditText    = (EditText) findViewById(R.id.birthdayRegisterEditText);
         emailRegisterEditText       = (EditText) findViewById(R.id.emailRegisterEditText);
         passwordRegisterEditText    = (EditText) findViewById(R.id.passwordRegisterEditText);
-        cancelRegisterButton        = (Button)  findViewById(R.id.cancelRegisterButton);
-        cancelRegisterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         finishRegisterButton        = (Button)  findViewById(R.id.finishRegisterButton);
         finishRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override

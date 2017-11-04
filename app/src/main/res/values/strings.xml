@@ -31,4 +31,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_map_title">Mapa</string>
+    <string name="register_cpf_hint">Cpf</string>
+    <string name="register_label">Registrar</string>
+    <string name="another_menu_group">Outros</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="nav_statistics_title">Estatísticas</string>
 </resources>
