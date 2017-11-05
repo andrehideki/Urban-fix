@@ -14,10 +14,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.mobile.urbanfix.urban_fix.fragments.MapsActivity;
+import com.mobile.urbanfix.urban_fix.fragments.AlertFragment;
+import com.mobile.urbanfix.urban_fix.fragments.MapsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private FragmentManager fragmentManager;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +30,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //Teste
+        fragmentManager = getSupportFragmentManager();
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                openAlertFragment();
             }
         });
 
@@ -82,16 +88,13 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        FragmentManager fragmentManager;
 
         if (id == R.id.nav_alert) {
-
+            openAlertFragment();
         } else if (id == R.id.nav_notices) {
 
         } else if (id == R.id.nav_map) {
-            MapsActivity mapsActivity = new MapsActivity();
-            fragmentManager  = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.mainLayout, mapsActivity).commit();
+            openMapsFragment();
         } else if (id == R.id.nav_statistics) {
 
         } else if (id == R.id.nav_settings) {
@@ -102,4 +105,18 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void openMapsFragment() {
+        MapsFragment mapsFragment = new MapsFragment();
+        fragmentManager.beginTransaction().replace(R.id.mainLayout, mapsFragment).commit();
+        fab.setVisibility(View.VISIBLE);
+    }
+
+    private void openAlertFragment() {
+        AlertFragment alertFragment = new AlertFragment();
+        fragmentManager.beginTransaction().replace(R.id.mainLayout, alertFragment).commit();
+        fab.setVisibility(View.GONE);
+    }
+
+
 }

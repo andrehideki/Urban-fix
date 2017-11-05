@@ -41,4 +41,6 @@
 
     <string name="action_settings">Settings</string>
     <string name="nav_statistics_title">Estatísticas</string>
+    <string name="forgot_password_tip_textview">Entre com o seu email abaixo para que possamos proseguir.</string>
+    <string name="alert_location">Localização</string>
 </resources>
