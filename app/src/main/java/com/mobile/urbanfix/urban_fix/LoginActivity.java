@@ -5,11 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -17,12 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText emailLoginEditText;
-    private EditText passwordLoginEditText;
-    private Button registerLoginButton;
-    private Button loginLoginButton;
-    private Button forgotPasswordLoginButton;
-
+    private EditText emailLoginEditText, passwordLoginEditText;
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -30,70 +22,54 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        initViews();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth = Connection.getFirebaseAuth();
+    }
+
+    public void initViews() {
         emailLoginEditText = (EditText) findViewById(R.id.emailLoginEditText);
         passwordLoginEditText = (EditText) findViewById(R.id.passwordLoginEditText);
-        registerLoginButton = (Button) findViewById(R.id.registerLoginButton);
-        registerLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openRegisterActivity();
-            }
-        });
-        loginLoginButton = (Button)findViewById(R.id.loginLoginButton);
-        loginLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Concetar ao firebase
-                String email = emailLoginEditText.getText().toString().trim();
-                String password = passwordLoginEditText.getText().toString().trim();
-                if(emailAndPasswordValid(email, password)) {
-
-                    firebaseAuth.signInWithEmailAndPassword(email, password).
-                            addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(task.isSuccessful()) {
-                                        openMainActivity();
-                                    } else {
-                                        Toast.makeText(LoginActivity.this,
-                                                getString(R.string.invalid_password_or_email), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-
-                } else {
-                    Toast.makeText(LoginActivity.this,
-                            getString(R.string.invalid_password_or_email), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        forgotPasswordLoginButton = (Button) findViewById(R.id.forgotPasswordLoginButton);
-        forgotPasswordLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openForgotPasswordActivity();
-            }
-        });
     }
 
-    private void openRegisterActivity() {
-        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivity(intent);
+
+
+    public void actionRegisterButton( View view ) {
+        startActivity( new Intent(LoginActivity.this, RegisterActivity.class ) );
     }
 
-    private void openMainActivity() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
+    public void actionLoginButton( View view ) {
+        String email = emailLoginEditText.getText().toString().trim();
+        String password = passwordLoginEditText.getText().toString().trim();
+        firebaseAuth.signInWithEmailAndPassword( email, password).
+                addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if( task.isSuccessful() ) {
+                            startActivity( new Intent( LoginActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            showMessage( getString( R.string.invalid_password_or_email ) );
+                            cleanEditText();
+                        }
+                    }
+                });
     }
 
-    private void openForgotPasswordActivity() {
+    public void actionForgotPasswordButton( View view ) {
         startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
     }
 
-    private boolean emailAndPasswordValid(String email, String password) {
-        return !email.isEmpty()  && !password.isEmpty() && password.length() > 6;
+    private void showMessage( String msg ) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG ).show();
+    }
+
+    private void cleanEditText() {
+        emailLoginEditText.setText("");
+        passwordLoginEditText.setText("");
     }
 }

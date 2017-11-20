@@ -43,4 +43,21 @@
     <string name="nav_statistics_title">Estatísticas</string>
     <string name="forgot_password_tip_textview">Entre com o seu email abaixo para que possamos proseguir.</string>
     <string name="alert_location">Localização</string>
+    <string name="alert_description_textview">Descrição:</string>
+    <string name="alert_typeofproblem">Tipo de problema</string>
+    <string name="alert_photoImageView_description">Foto do problema</string>
+    <string name="alert_finishButton_text">Finalizar</string>
+    <string name="title_activity_settings_fragment">settingsFragment</string>
+    <string name="alert_finishalert_error">Entre com uma descrição do problema para podermos prosseguir</string>
+    <string name="permission_denied">Permissão negada!</string>
+    <string name="location_you_are_here">Você está aqui</string>
+    <string name="fragment_settings_title">Configurações</string>
+    <string name="fragment_alert_title">Realizar alerta</string>
+    <string name="fragment_map_title">Mapa</string>
+    <string name="fragment_account_title">Conta</string>
+    <string name="register_user_succesful">Registrado com sucesso</string>
+    <string name="forgot_password_email_is_empty">O e-mail está vazio</string>
+    <string name="forgot_password_msg_sended">Sua senha foi enviada para </string>
+    <string name="forgot_password_email_failed">Falha ao enviar senha por e-mail</string>
+    <string name="account_nofalerts">Nº de alertas: </string>
 </resources>

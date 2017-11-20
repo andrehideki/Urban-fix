@@ -15,10 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mobile.urbanfix.urban_fix.R;
+import com.mobile.urbanfix.urban_fix.model.Problem;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -28,9 +31,14 @@ public class AlertFragment extends Fragment {
     private ImageView photoImageView;
     private Button finishButton;
     private TextView locationTextView;
+    private EditText alertDescriptionEditText;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
+
+    private Problem problem;
+
+
 
     @Nullable
     @Override
@@ -39,6 +47,7 @@ public class AlertFragment extends Fragment {
 
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -50,13 +59,22 @@ public class AlertFragment extends Fragment {
             }
         });
         finishButton    = (Button)      getActivity().findViewById(R.id.finishButton);
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishAlert();
+            }
+        });
         locationTextView = (TextView) getActivity().findViewById(R.id.locationTextView);
+        alertDescriptionEditText = (EditText) getActivity().findViewById(R.id.alertDescriptionEditText);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                locationTextView.setText("LAT: " + location.getLatitude() + " LONG: " + location.getLongitude());
+                String loc = "LAT: " + location.getLatitude() + " LONG: " + location.getLongitude();
+                problem.setLocalizacao(loc);
+                locationTextView.setText(loc);
             }
 
             @Override
@@ -74,22 +92,30 @@ public class AlertFragment extends Fragment {
 
             }
         };
+        locationManager.requestLocationUpdates("gps",0,0, locationListener);
+    }
 
+    private void finishAlert() {
+        if(alertDescriptionEditText.getText().toString().isEmpty()) {
+            Toast.makeText(getContext(), getString(R.string.alert_finishalert_error),Toast.LENGTH_LONG).show();
+        } else {
+
+        }
     }
 
     @SuppressLint("MissingPermission")
     private void takePhoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAPTURE);
-        locationManager.requestLocationUpdates("gps",0,0, locationListener);
+        this.problem = new Problem();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap photo = (Bitmap) extras.get("data");
-            photoImageView.setImageBitmap(photo);
+            problem.setPhoto( (Bitmap) extras.get("data") );
+            photoImageView.setImageBitmap(problem.getPhoto());
         }
     }
 }
