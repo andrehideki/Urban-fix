@@ -60,4 +60,7 @@
     <string name="forgot_password_msg_sended">Sua senha foi enviada para </string>
     <string name="forgot_password_email_failed">Falha ao enviar senha por e-mail</string>
     <string name="account_nofalerts">Nº de alertas: </string>
+    <string name="alert_finishalert_ok">Alerta emitido com sucesso!</string>
+    <string name="noticy_title">Alertas</string>
+    <string name="fragment_noticy_title">Problemas</string>
 </resources>

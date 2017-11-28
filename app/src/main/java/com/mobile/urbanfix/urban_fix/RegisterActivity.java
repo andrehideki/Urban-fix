@@ -20,7 +20,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText nameRegisterEditText, lastNameRegisterEditText, birthdayRegisterEditText,
                         emailRegisterEditText, passwordRegisterEditText, cpfRegisterEditText;
-    private Button finishRegisterButton;
 
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
@@ -49,7 +48,6 @@ public class RegisterActivity extends AppCompatActivity {
         emailRegisterEditText       = (EditText) findViewById(R.id.emailRegisterEditText);
         cpfRegisterEditText         = (EditText) findViewById(R.id.cpfRegisterEditText);
         passwordRegisterEditText    = (EditText) findViewById(R.id.passwordRegisterEditText);
-        finishRegisterButton        = (Button)  findViewById(R.id.finishRegisterButton);
     }
 
     public void actionfinishRegisterButton( View view ) {
@@ -69,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if( task.isSuccessful() ) {
                                 firebaseUser = Connection.getFirebaseUser();
-                                databaseReference.child("User").child(firebaseUser.getUid()).setValue( user );
+                                databaseReference.child( "User").child(firebaseUser.getUid()).setValue( user );
                                 showMessage( getString(R.string.register_user_succesful));
                                 startActivity( new Intent( RegisterActivity.this, MainActivity.class ));
                                 finish();

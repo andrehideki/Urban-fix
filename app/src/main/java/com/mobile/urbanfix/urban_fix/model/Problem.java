@@ -9,52 +9,53 @@ import java.util.Date;
 
 public class Problem {
 
-    private long id;
-    private String localizacao;
-    private String descricao;
-    private KindOfProblem kindOfProblem;
-    private Date date;
+    private String id;
+    private String location;
+    private String description;
+    private String kindOfProblem;
+    private String date;
     private String status;
     private Bitmap photo;
+    private String checked;
 
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getLocalizacao() {
-        return localizacao;
+    public String getLocation() {
+        return location;
     }
 
-    public void setLocalizacao(String localizacao) {
-        this.localizacao = localizacao;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public KindOfProblem getKindOfProblem() {
+    public String getKindOfProblem() {
         return kindOfProblem;
     }
 
-    public void setKindOfProblem(KindOfProblem kindOfProblem) {
+    public void setKindOfProblem(String kindOfProblem) {
         this.kindOfProblem = kindOfProblem;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -72,5 +73,26 @@ public class Problem {
 
     public void setPhoto(Bitmap photo) {
         this.photo = photo;
+    }
+
+    public String getChecked() {
+        return checked;
+    }
+
+    public void setChecked(String checked) {
+        this.checked = checked;
+    }
+
+    @Override
+    public String toString() {
+        return "Problem{" +
+                "id=" + id +
+                ", localizacao='" + location + '\'' +
+                ", description='" + description + '\'' +
+                ", kindOfProblem='" + kindOfProblem + '\'' +
+                ", date=" + date +
+                ", status='" + status + '\'' +
+                ", photo=" + photo +
+                '}';
     }
 }

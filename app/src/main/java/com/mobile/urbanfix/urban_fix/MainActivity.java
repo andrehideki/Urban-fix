@@ -20,11 +20,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.mobile.urbanfix.urban_fix.fragments.AccountFragment;
 import com.mobile.urbanfix.urban_fix.fragments.AlertFragment;
 import com.mobile.urbanfix.urban_fix.fragments.MapsFragment;
+import com.mobile.urbanfix.urban_fix.fragments.NoticyFragment;
 import com.mobile.urbanfix.urban_fix.fragments.SettingsFragment;
-import com.mobile.urbanfix.urban_fix.services.GPSService;
+import com.mobile.urbanfix.urban_fix.model.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,39 +41,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private BroadcastReceiver broadcastReceiver;
 
     private FragmentManager fragmentManager;
-    private FloatingActionButton fab;
+    private static FloatingActionButton fab;
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private NavigationView navigationView;
+    public static User user;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        initViews();
         fragmentManager = getSupportFragmentManager();
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openAlertFragment();
-            }
-        });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        if (!verifyRuntimePermissions() ) {
-            Intent i = new Intent(getApplicationContext(), GPSService.class);
-            startService(i);
-        }
-
+        initFirebase();
+        disableFAB();
         openMapsFragment();
     }
 
@@ -79,14 +76,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initViews() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        setupToggle();
+        setSupportActionBar(toolbar);
+        setupListeners();
+    }
+
+    private void setupToggle() {
+        toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
     }
+
+    private void setupListeners() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openAlertFragment();
+            }
+        });
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == REQUEST_PERMISSION) {
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                //asfadsf
+
             } else {
                 verifyRuntimePermissions();
             }
@@ -138,9 +160,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -155,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 openAlertFragment();
                 break;
             case R.id.nav_notices:
+                openNoticyFragment();
                 break;
             case R.id.nav_map:
                 openMapsFragment();
@@ -175,15 +198,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void openMapsFragment() {
+    private void openNoticyFragment() {
+        NoticyFragment noticyFragment = new NoticyFragment();
+        fragmentManager.beginTransaction().replace(R.id.mainLayout, noticyFragment ).commit();
+        setTitle(R.string.fragment_noticy_title);
+    }
+
+    public void openMapsFragment() {
         MapsFragment mapsFragment = new MapsFragment();
         fragmentManager.beginTransaction().replace(R.id.mainLayout, mapsFragment).commit();
-        fab.setVisibility(View.VISIBLE);
         setTitle(R.string.fragment_map_title);
     }
 
     private void openAlertFragment() {
         AlertFragment alertFragment = new AlertFragment();
+        Bundle b = new Bundle();
+        LatLng latLng = MapsFragment.currentLocationlatLng();
+        System.out.println(latLng.toString());
+
+        b.putDouble("Lat", latLng.latitude );
+        b.putDouble("Long", latLng.longitude);
+        alertFragment.setArguments(b);
+        System.out.println("Dntrou aqui");
+
+
         fragmentManager.beginTransaction().replace(R.id.mainLayout, alertFragment).commit();
         fab.setVisibility(View.GONE);
         setTitle(R.string.fragment_alert_title);
@@ -201,6 +239,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setVisibility(View.GONE);
         setTitle(R.string.fragment_account_title);
     }
+
+    public static void enableFAB() {
+        fab.setVisibility(View.VISIBLE);
+    }
+
+    public static void disableFAB() {
+        fab.setVisibility(View.GONE);
+    }
+
+
+    private void initFirebase() {
+        firebaseAuth = Connection.getFirebaseAuth();
+        databaseReference = Connection.getDatabaseReference();
+        firebaseUser = Connection.getFirebaseUser();
+        databaseReference.child("User").child( firebaseUser.getUid() ).
+                addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        user = new User();
+                        user = dataSnapshot.getValue(User.class);
+                        user.setUUID(firebaseUser.getUid());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public static User getUser() {
+        return user;
+    }
+
 
 
 }
