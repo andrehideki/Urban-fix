@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private FirebaseUser firebaseUser;
+    private boolean canBeFinished = false;
 
 
     @Override
@@ -120,24 +123,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if ( canBeFinished ) {
             super.onBackPressed();
+        }else {
+            openMapsFragment();
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(broadcastReceiver == null) {
-            broadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                //Fazer algo
-                }
-            };
-        }
-        registerReceiver(broadcastReceiver, new IntentFilter("location_update"));
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,13 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(broadcastReceiver != null ) {
-            unregisterReceiver(broadcastReceiver);
-        }
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -184,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 openMapsFragment();
                 break;
             case R.id.nav_statistics:
+                Toast.makeText(MainActivity.this, "Funcionalidade ainda não desenvolvida", Toast.LENGTH_LONG).show();
                 break;
             case R.id.nav_settings:
                 openSettingsFragment();
@@ -203,35 +191,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NoticyFragment noticyFragment = new NoticyFragment();
         fragmentManager.beginTransaction().replace(R.id.mainLayout, noticyFragment ).commit();
         setTitle(R.string.fragment_noticy_title);
+        this.canBeFinished = false;
     }
 
     public void openMapsFragment() {
         MapsFragment mapsFragment = new MapsFragment();
         fragmentManager.beginTransaction().replace(R.id.mainLayout, mapsFragment).commit();
         setTitle(R.string.fragment_map_title);
+        this.canBeFinished = true;
     }
 
     private void openAlertFragment() {
         AlertFragment alertFragment = new AlertFragment();
         Bundle b = new Bundle();
         LatLng latLng = MapsFragment.currentLocationlatLng();
-        System.out.println(latLng.toString());
 
         b.putDouble("Lat", latLng.latitude );
         b.putDouble("Long", latLng.longitude);
         alertFragment.setArguments(b);
-        System.out.println("Dntrou aqui");
 
 
         fragmentManager.beginTransaction().replace(R.id.mainLayout, alertFragment).commit();
         fab.setVisibility(View.GONE);
         setTitle(R.string.fragment_alert_title);
+        this.canBeFinished = false;
     }
 
     private void openSettingsFragment() {
         SettingsFragment settingsFragment = new SettingsFragment();
         fragmentManager.beginTransaction().replace(R.id.mainLayout, settingsFragment).commit();
         setTitle(R.string.fragment_settings_title);
+        this.canBeFinished = false;
     }
 
     private void openAccountFragment() {
@@ -239,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentManager.beginTransaction().replace(R.id.mainLayout, accountFragment).commit();
         fab.setVisibility(View.GONE);
         setTitle(R.string.fragment_account_title);
+        this.canBeFinished = false;
     }
 
     public static void enableFAB() {

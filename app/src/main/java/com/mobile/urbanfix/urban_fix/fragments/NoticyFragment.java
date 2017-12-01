@@ -54,9 +54,9 @@ public class NoticyFragment extends Fragment {
 
 
     private void initDatabase() {
-        String userCpf = MainActivity.getUser().getCpf();
+        String userUUid = MainActivity.getUser().getUUID();
         databaseReference = Connection.getProblemsDatabaseReference();
-        databaseReference.child("Alerts").child(userCpf).addChildEventListener(new ChildEventListener() {
+        databaseReference.child("Alerts").child(userUUid).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Problem p = (dataSnapshot.getValue( Problem.class ) );
