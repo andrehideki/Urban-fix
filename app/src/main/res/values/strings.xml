@@ -63,4 +63,8 @@
     <string name="alert_finishalert_ok">Alerta emitido com sucesso!</string>
     <string name="noticy_title">Alertas</string>
     <string name="fragment_noticy_title">Problemas</string>
+    <string name="setting_lougout">Logout</string>
+    <string name="setting_exit_title">Exit</string>
+    <string name="setting_exit_ask">Deseja realmente sair?</string>
+    <string name="setting_exit_option">Sair</string>
 </resources>

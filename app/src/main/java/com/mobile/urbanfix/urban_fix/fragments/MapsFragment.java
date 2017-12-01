@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderApi;
@@ -33,8 +35,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.mobile.urbanfix.urban_fix.Connection;
 import com.mobile.urbanfix.urban_fix.MainActivity;
 import com.mobile.urbanfix.urban_fix.R;
+import com.mobile.urbanfix.urban_fix.model.Problem;
+
+import java.util.ArrayList;
 
 public class MapsFragment extends Fragment
         implements OnMapReadyCallback,
@@ -45,10 +56,13 @@ public class MapsFragment extends Fragment
     private LocationManager locationManager;
     private Marker currentLocationMarker;
     public static LatLng currentLocationlatLng;
-
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
+    private ArrayList<LatLng> problemLocations;
 
     public static final int PERMISSION_REQUEST_LOCATION_CODE = 99;
     private static final String TAG = "MapsFragment";
+    ArrayAdapter<LatLng> arrayAdapter;
 
 
     @Override
@@ -66,6 +80,9 @@ public class MapsFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getLocationPermissions();
+        firebaseUser = Connection.getFirebaseUser();
+        databaseReference = Connection.getDatabaseReference();
+        problemLocations = new ArrayList<>();
     }
 
     @Override
@@ -74,6 +91,43 @@ public class MapsFragment extends Fragment
         try {
             locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            databaseReference.child("Alerts").child(firebaseUser.getUid()).addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Problem p = dataSnapshot.getValue(Problem.class);
+                    String latLong[] = (p.getLocation()).split(";");
+                    double lat = Double.parseDouble( latLong[0] );
+                    double longi = Double.parseDouble( latLong[1]);
+                    LatLng latLng = new LatLng(lat, longi);
+                    problemLocations.add( latLng );
+                    markOnMap(lat, longi);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Problem p = dataSnapshot.getValue(Problem.class);
+                    String latLong[] = (p.getLocation()).split(";");
+                    double lat = Double.parseDouble( latLong[0] );
+                    double longi = Double.parseDouble( latLong[1]);
+                    LatLng latLng = new LatLng(lat, longi);
+                    problemLocations.remove( latLng );
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         } catch ( SecurityException ex) {
             Log.e(TAG, ex.getMessage());
         }
@@ -84,9 +138,6 @@ public class MapsFragment extends Fragment
 
         try {
             locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            String provider = locationManager.getBestProvider(criteria, true);
-
 
             mMap = googleMap;
             mMap.setOnMapClickListener(this);
@@ -113,10 +164,8 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(getActivity(), location.getLatitude() + " | " + location.getLongitude() , Toast.LENGTH_SHORT).show();
         currentLocationlatLng = new LatLng(location.getLatitude(), location.getLongitude());
         MainActivity.enableFAB();
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
     }
 
     @Override
@@ -130,22 +179,19 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onProviderDisabled(String provider) {
-        Intent i = new Intent();
+        startActivity( new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS) );
     }
 
     private void showMessage( String msg ) {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 
-    private void markOnMap( Location loc ) {
+    private void markOnMap( double lat, double longi ) {
         MarkerOptions m = new MarkerOptions();
-        m.position( new LatLng(loc.getLatitude(), loc.getLongitude()));
+        m.position( new LatLng( lat , longi ));
         m.title("Novo problema");
 
-
         mMap.addMarker(m);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng( m.getPosition() ) );
-        mMap.animateCamera(CameraUpdateFactory.zoomBy(30));
     }
 
     public static LatLng currentLocationlatLng() {
@@ -167,5 +213,11 @@ public class MapsFragment extends Fragment
     private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        locationManager.removeUpdates(this);
     }
 }

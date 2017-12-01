@@ -1,11 +1,6 @@
 package com.mobile.urbanfix.urban_fix.model;
 
 
-import android.graphics.Bitmap;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.Date;
 
 public class Problem {
 
@@ -15,7 +10,7 @@ public class Problem {
     private String kindOfProblem;
     private String date;
     private String status;
-    private Bitmap photo;
+    private String encodedImage;
     private String checked;
 
 
@@ -67,12 +62,12 @@ public class Problem {
         this.status = status;
     }
 
-    public Bitmap getPhoto() {
-        return photo;
+    public String getEncodedImage() {
+        return encodedImage;
     }
 
-    public void setPhoto(Bitmap photo) {
-        this.photo = photo;
+    public void setEncodedImage(String encodedImage) {
+        this.encodedImage = encodedImage;
     }
 
     public String getChecked() {
@@ -83,16 +78,4 @@ public class Problem {
         this.checked = checked;
     }
 
-    @Override
-    public String toString() {
-        return "Problem{" +
-                "id=" + id +
-                ", localizacao='" + location + '\'' +
-                ", description='" + description + '\'' +
-                ", kindOfProblem='" + kindOfProblem + '\'' +
-                ", date=" + date +
-                ", status='" + status + '\'' +
-                ", photo=" + photo +
-                '}';
-    }
 }

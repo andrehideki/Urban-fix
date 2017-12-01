@@ -2,12 +2,16 @@ package com.mobile.urbanfix.urban_fix;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mobile.urbanfix.urban_fix.model.Problem;
@@ -31,6 +35,7 @@ public class ProblemArrayAdapter extends ArrayAdapter<Problem> {
         Problem problemPosition = this.problemArrayList.get( position );
         convertView = LayoutInflater.from(this.context).inflate(R.layout.list_item_problem, null);
         TextView datetextView, kindOfProblemTextView, descriptionTextView, statusTextView, locationTextView, checkedTextView;
+        //ImageView photoImageView;
 
         datetextView = (TextView) convertView.findViewById(R.id.datetextView);
         kindOfProblemTextView = (TextView) convertView.findViewById(R.id.kindOfProblemTextView);
@@ -38,6 +43,7 @@ public class ProblemArrayAdapter extends ArrayAdapter<Problem> {
         statusTextView = (TextView) convertView.findViewById(R.id.statusTextView);
         locationTextView = (TextView) convertView.findViewById(R.id.locationTextView);
         checkedTextView = (TextView) convertView.findViewById(R.id.checkedTextView);
+        //photoImageView = (ImageView) convertView.findViewById(R.id.photoImageView);
 
         datetextView.setText( problemPosition.getDate() );
         kindOfProblemTextView.setText( problemPosition.getKindOfProblem() );
@@ -45,8 +51,11 @@ public class ProblemArrayAdapter extends ArrayAdapter<Problem> {
         statusTextView.setText( problemPosition.getStatus() );
         locationTextView.setText( problemPosition.getLocation() );
         checkedTextView.setText( problemPosition.getChecked() );
+        //photoImageView.setImageBitmap();
 
         return convertView;
     }
+
+
 
 }

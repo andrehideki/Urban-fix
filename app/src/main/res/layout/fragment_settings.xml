@@ -4,6 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:padding="@dimen/default_layout_padding"
     tools:context="com.mobile.urbanfix.urban_fix.fragments.SettingsFragment">
 
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/background_light"
+        android:text="@string/setting_lougout"
+        android:textColor="@color/colorPrimaryDark" />
 </LinearLayout>

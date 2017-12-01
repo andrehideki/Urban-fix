@@ -34,6 +34,7 @@ public class NoticyFragment extends Fragment {
     private ProblemArrayAdapter arrayAdapter;
 
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
