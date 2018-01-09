@@ -1,4 +1,4 @@
-package com.mobile.urbanfix.urban_fix;
+package com.mobile.urbanfix.urban_fix.view;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,8 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
+import com.mobile.urbanfix.urban_fix.R;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -27,7 +29,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        firebaseAuth = Connection.getFirebaseAuth();
+        firebaseAuth = ConnectionFactory.getFirebaseAuth();
     }
 
     private void initViews() {

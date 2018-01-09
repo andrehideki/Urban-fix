@@ -1,4 +1,4 @@
-package com.mobile.urbanfix.urban_fix;
+package com.mobile.urbanfix.urban_fix.adapter;
 
 
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 
 import java.util.ArrayList;

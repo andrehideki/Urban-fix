@@ -1,26 +1,20 @@
-package com.mobile.urbanfix.urban_fix.fragments;
+package com.mobile.urbanfix.urban_fix.view.fragments;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.mobile.urbanfix.urban_fix.Connection;
-import com.mobile.urbanfix.urban_fix.MainActivity;
-import com.mobile.urbanfix.urban_fix.ProblemArrayAdapter;
+import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
+import com.mobile.urbanfix.urban_fix.view.MainActivity;
+import com.mobile.urbanfix.urban_fix.adapter.ProblemArrayAdapter;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 
@@ -55,7 +49,7 @@ public class NoticyFragment extends Fragment {
 
     private void initDatabase() {
         String userUUid = MainActivity.getUser().getUUID();
-        databaseReference = Connection.getProblemsDatabaseReference();
+        databaseReference = ConnectionFactory.getProblemsDatabaseReference();
         databaseReference.child("Alerts").child(userUUid).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

@@ -67,4 +67,10 @@
     <string name="setting_exit_title">Exit</string>
     <string name="setting_exit_ask">Deseja realmente sair?</string>
     <string name="setting_exit_option">Sair</string>
+    <string name="register_fields_empty">Preencha todos os campos</string>
+    <string name="nav_logout_title">Sair</string>
+    <string name="main_loggof_alert_title">Sair</string>
+    <string name="main_loggof_alert_message">Deseja sair do aplicativo?</string>
+    <string name="login_empty_fields">Preencha todos os campos</string>
+    <string name="login_failed_login">Login falhou</string>
 </resources>

@@ -1,5 +1,17 @@
 package com.mobile.urbanfix.urban_fix.model;
 
+import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
+import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.view.MainActivity;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -76,5 +88,21 @@ public class User implements Serializable {
 
     public void setnAlertsDone(int nAlertsDone) {
         this.nAlertsDone = nAlertsDone;
+    }
+
+    public static void doLogin(String email, String password, Activity activity,
+                               final MainMVP.ILoginCallbackPresenter presenter) {
+        FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
+        auth.signInWithEmailAndPassword( email, password ).
+                addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if( task.isSuccessful() ) {
+                            presenter.onSuccessLogin();
+                        } else {
+                            presenter.onFailedLogin();
+                        }
+                    }
+                });
     }
 }

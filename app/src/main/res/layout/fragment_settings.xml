@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:padding="@dimen/default_layout_padding"
-    tools:context="com.mobile.urbanfix.urban_fix.fragments.SettingsFragment">
+    tools:context="com.mobile.urbanfix.urban_fix.view.fragments.SettingsFragment">
 
     <Button
         android:id="@+id/logoutButton"

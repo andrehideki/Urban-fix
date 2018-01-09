@@ -1,18 +1,12 @@
-package com.mobile.urbanfix.urban_fix.fragments;
+package com.mobile.urbanfix.urban_fix.view.fragments;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -20,25 +14,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.mobile.urbanfix.urban_fix.Connection;
-import com.mobile.urbanfix.urban_fix.MainActivity;
+import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.model.User;
+import com.mobile.urbanfix.urban_fix.view.MainActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -185,8 +174,8 @@ public class AlertFragment extends Fragment {
 
     private void finishAlert() {
 
-        databaseReference = Connection.getDatabaseReference();
-        firebaseStorage = Connection.getFirebaseStorage();
+        databaseReference = ConnectionFactory.getDatabaseReference();
+        firebaseStorage = ConnectionFactory.getFirebaseStorage();
         StorageReference storageReference = firebaseStorage.getReference().child(user.getCpf()).child(uri.getLastPathSegment());
 
         storageReference.putFile(uri);

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:padding="@dimen/default_layout_padding"
     android:weightSum="1"
-    tools:context="com.mobile.urbanfix.urban_fix.LoginActivity">
+    tools:context="com.mobile.urbanfix.urban_fix.view.LoginActivity">
 
 
     <ImageView
@@ -55,7 +55,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:id="@+id/loginLoginButton"
+        android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -66,26 +66,24 @@
         android:onClick="actionLoginButton"/>
 
     <Button
-        android:id="@+id/forgotPasswordLoginButton"
+        android:id="@+id/forgotPasswordButton"
         style="@android:style/Widget.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@null"
         android:gravity="center"
-        android:onClick="actionForgotPasswordButton"
         android:text="@string/forgot_password_register"
         android:textColor="@android:color/background_light" />
 
     <Button
-        android:id="@+id/registerLoginButton"
+        android:id="@+id/registerButton"
         style="@android:style/Widget.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@null"
         android:gravity="center"
-        android:onClick="actionRegisterButton"
         android:text="@string/login_register"
         android:textColor="@android:color/background_light" />
 

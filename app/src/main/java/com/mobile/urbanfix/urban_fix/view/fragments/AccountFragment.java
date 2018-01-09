@@ -1,4 +1,4 @@
-package com.mobile.urbanfix.urban_fix.fragments;
+package com.mobile.urbanfix.urban_fix.view.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.mobile.urbanfix.urban_fix.MainActivity;
+import com.mobile.urbanfix.urban_fix.view.MainActivity;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.User;
 

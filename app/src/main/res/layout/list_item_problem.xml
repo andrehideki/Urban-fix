@@ -1,71 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:columnCount="3">
 
     <TextView
         android:id="@+id/datetextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="data"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:layout_columnSpan="3"/>
 
     <TextView
         android:id="@+id/kindOfProblemTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/datetextView"
-        android:text="tipo de problema"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_row="1"
+        android:layout_column="0"/>
 
-    <TextView
-        android:id="@+id/descriptionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/kindOfProblemTextView"
-        android:layout_marginTop="18dp"
-        android:text="Descrição"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-    <TextView
-        android:id="@+id/statusTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/descriptionTextView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="12dp"
-        android:text="status" />
 
     <TextView
         android:id="@+id/locationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/kindOfProblemTextView"
-        android:layout_alignBottom="@+id/kindOfProblemTextView"
-        android:layout_marginStart="66dp"
-        android:layout_toEndOf="@+id/kindOfProblemTextView"
-        android:text="@string/alert_location" />
+        android:layout_row="1"
+        android:layout_column="1"
+        android:layout_columnSpan="2"/>
+
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="2"
+        android:layout_column="0"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:srcCompat="@android:color/holo_red_dark"
+        android:layout_row="2"
+        android:layout_column="1"
+        android:layout_columnSpan="2"/>
+
 
     <TextView
         android:id="@+id/checkedTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/kindOfProblemTextView"
-        android:text="vizualizado"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
-    <!--
-    <ImageView
-        android:id="@+id/photoImageView"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/descriptionTextView"
-        app:srcCompat="@drawable/ic_launcher_background" /> -->
-</RelativeLayout>
+        android:text=" ... "
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:layout_columnSpan="3"/>
+
+
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="31dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_row="4"
+        android:layout_column="0"/>
+</GridLayout>

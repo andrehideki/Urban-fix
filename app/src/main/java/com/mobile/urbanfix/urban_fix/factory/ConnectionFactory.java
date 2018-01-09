@@ -1,15 +1,22 @@
-package com.mobile.urbanfix.urban_fix;
+package com.mobile.urbanfix.urban_fix.factory;
 
+import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.mobile.urbanfix.urban_fix.view.LoginActivity;
+import com.mobile.urbanfix.urban_fix.view.MainActivity;
 
-public class Connection {
+public final class ConnectionFactory {
 
     private static FirebaseAuth firebaseAuth;
     private static FirebaseAuth.AuthStateListener authStateListener;
@@ -17,6 +24,8 @@ public class Connection {
     private static FirebaseDatabase firebaseDatabase;
     private static DatabaseReference databaseReference;
     private static FirebaseStorage firebaseStorage;
+
+    private ConnectionFactory() {}
 
     public static FirebaseAuth getFirebaseAuth() {
         if(firebaseAuth == null ) {
@@ -65,4 +74,9 @@ public class Connection {
     public static void logout() {
         firebaseAuth.signOut();
     }
+
+    public static void login() {
+
+    }
+
 }
