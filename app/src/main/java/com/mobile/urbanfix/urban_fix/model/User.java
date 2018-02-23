@@ -2,36 +2,29 @@ package com.mobile.urbanfix.urban_fix.model;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
-import com.mobile.urbanfix.urban_fix.view.MainActivity;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class User implements Serializable, DAO<User> {
 
-    private String UUID;
-    private String name;
-    private String cpf;
-    private String birthDate;
-    private String email;
-    private String password;
+    private String UUID, name, cpf, birthDate, email, password;
     private int nAlertsDone;
+    private static User user;
 
-    public User() {}
+    private User(){}
 
-    public User(String name, String cpf, String birthDate, String email, String password) {
-        this.name = name;
-        this.cpf = cpf;
-        this.birthDate = birthDate;
-        this.email = email;
-        this.password = password;
+    public static User getInstance() {
+        if(user == null) user = new User();
+        return user;
     }
 
     public String getUUID() {
@@ -91,18 +84,67 @@ public class User implements Serializable {
     }
 
     public static void doLogin(String email, String password, Activity activity,
-                               final MainMVP.ILoginCallbackPresenter presenter) {
+                               final MainMVP.ICallbackPresenter presenter) {
         FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
         auth.signInWithEmailAndPassword( email, password ).
                 addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if( task.isSuccessful() ) {
-                            presenter.onSuccessLogin();
+                            presenter.onSuccessTask();
                         } else {
-                            presenter.onFailedLogin();
+                            presenter.onFailedTask();
                         }
                     }
                 });
+    }
+
+    public static void sendPassword(String email, final MainMVP.ICallbackPresenter presenter) {
+        FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
+        auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    presenter.onSuccessTask();
+                } else {
+                    presenter.onFailedTask();
+                }
+            }
+        });
+    }
+
+    @Override
+    public User find(String s, MainMVP.ICallbackPresenter presenter) {
+        return null;
+    }
+
+    @Override
+    public void insert(final User user, final MainMVP.ICallbackPresenter presenter) {
+        FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
+        auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).
+                addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()) {
+                            FirebaseUser fUser = ConnectionFactory.getFirebaseUser();
+                            user.setUUID(fUser.getUid());
+                            DatabaseReference db = ConnectionFactory.getUsersDatabaseReferente();
+                            db.child(user.getUUID()).setValue(user);
+                            presenter.onSuccessTask();
+                        } else {
+                            presenter.onFailedTask();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void update(User user, MainMVP.ICallbackPresenter presenter) {
+
+    }
+
+    @Override
+    public void delete(User user, MainMVP.ICallbackPresenter presenter) {
+
     }
 }

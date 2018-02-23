@@ -42,6 +42,7 @@ import java.util.ArrayList;
 
 public class MapsFragment extends Fragment
         implements OnMapReadyCallback,
+        View.OnClickListener,
         GoogleMap.OnMapClickListener,
         LocationListener{
 
@@ -93,7 +94,6 @@ public class MapsFragment extends Fragment
         try {
             locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             if ( providerEnabled ) setCurrentUserLocation();
-            if (currentLocationlatLng != null ) MainActivity.enableFAB();
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
             databaseReference.child("Alerts").child(firebaseUser.getUid()).addChildEventListener(new ChildEventListener() {
                 @Override
@@ -169,8 +169,6 @@ public class MapsFragment extends Fragment
     @Override
     public void onLocationChanged(Location location) {
         currentLocationlatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MainActivity.enableFAB();
-
     }
 
     @Override
@@ -227,5 +225,10 @@ public class MapsFragment extends Fragment
     public void onStop() {
         super.onStop();
         locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

@@ -4,16 +4,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.presenter.LoginPresenter;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, MainMVP.ILoginView {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, MainMVP.IView {
 
     private EditText emailLoginEditText, passwordLoginEditText;
-    private Button loginButton, forgotPasswordButton, registerButton;
+    private TextView forgotPasswordTextView;
+    private CheckBox rememberLoginCheckBox;
+    private Button loginButton, registerButton;
     private MainMVP.ILoginPresenter loginPresenter;
 
     @Override
@@ -23,42 +27,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         startMVP();
         emailLoginEditText = (EditText) findViewById(R.id.emailLoginEditText);
         passwordLoginEditText = (EditText) findViewById(R.id.passwordLoginEditText);
+        rememberLoginCheckBox = (CheckBox) findViewById(R.id.rememberLoginCheckBox);
         loginButton = (Button) findViewById(R.id.loginButton);
         loginButton.setOnClickListener( this );
-        forgotPasswordButton = (Button) findViewById(R.id.forgotPasswordButton);
-        forgotPasswordButton.setOnClickListener( this );
+        forgotPasswordTextView = (TextView) findViewById(R.id.forgotPasswordTextView);
+        forgotPasswordTextView.setOnClickListener( this );
         registerButton = (Button) findViewById(R.id.registerButton);
         registerButton.setOnClickListener( this );
+        loginPresenter.fillFields(emailLoginEditText, passwordLoginEditText, rememberLoginCheckBox,
+                this);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         switch( id ) {
-            case R.id.loginButton:
-                loginPresenter.doLogin();
+            case R.id.loginButton: {
+                loginPresenter.doLogin( emailLoginEditText.getText().toString(),
+                        passwordLoginEditText.getText().toString(),
+                        rememberLoginCheckBox.isChecked(), this);
                 break;
+            }
             case R.id.registerButton:
-                loginPresenter.startRegisterView();
+                loginPresenter.openRegisterView();
                 break;
-            case R.id.forgotPasswordButton:
-                loginPresenter.startForgotPasswordView();
+            case R.id.forgotPasswordTextView:
+                loginPresenter.openForgotPasswordView();
                 break;
         }
     }
 
-    @Override
-    public void cleanFields() {
-        emailLoginEditText.setText("");
-        passwordLoginEditText.setText("");
-    }
-
-    @Override
-    public String[] getFieldsValues() {
-        String[] nameAndPassword = {    emailLoginEditText.getText().toString(),
-                                        passwordLoginEditText.getText().toString()};
-        return nameAndPassword;
-    }
 
     @Override
     public void showMessage(String msg ) {

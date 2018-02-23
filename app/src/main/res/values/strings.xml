@@ -4,7 +4,7 @@
     <string name="login_password_hint">Senha</string>
     <string name="login_button">Entrar</string>
     <string name="login_login">Entrar</string>
-    <string name="login_register">Ainda não tem conta? Clique aqui</string>
+    <string name="login_register">Criar uma conta</string>
     <string name="register_name_hint">Nome</string>
     <string name="register_lastname_hint">Sobrenome</string>
     <string name="register_birthday_hint">Aniversário</string>
@@ -73,4 +73,8 @@
     <string name="main_loggof_alert_message">Deseja sair do aplicativo?</string>
     <string name="login_empty_fields">Preencha todos os campos</string>
     <string name="login_failed_login">Login falhou</string>
+    <string name="login_remember_email_and_password">Lembrar</string>
+    <string name="alert_define_location">Definir Localização</string>
+    <string name="fragment_account_urgency_seekbar">Urgência</string>
+    <string name="login_progressdialog_message">Realizando login</string>
 </resources>
