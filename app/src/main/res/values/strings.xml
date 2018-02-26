@@ -77,4 +77,6 @@
     <string name="alert_define_location">Definir Localização</string>
     <string name="fragment_account_urgency_seekbar">Urgência</string>
     <string name="login_progressdialog_message">Realizando login</string>
+    <string name="login_email_is_empty">Entre com o seu e-mail</string>
+    <string name="login_password_is_empty">Entre com a sua senha</string>
 </resources>

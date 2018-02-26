@@ -7,10 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -26,11 +29,12 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
                                                         AdapterView.OnItemSelectedListener {
 
     private ImageView photoImageView;
+    private Button finishAlertButton;
     private TextView locationTextView;
     private EditText alertDescriptionEditText;
     private Spinner typeOfProblemSpinner;
     private SeekBar urgencySeekBar;
-    private FloatingActionButton finishFloatingActionButton, cancelFloatingActionButton;
+    private FloatingActionButton cameraButton;
     private MainMVP.IAlertPresenter presenter;
 
     @Override
@@ -51,13 +55,12 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
         alertDescriptionEditText = (EditText) view.findViewById(R.id.alertDescriptionEditText);
         typeOfProblemSpinner = (Spinner) view.findViewById(R.id.typeOfProblemSpinner);
-        finishFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.finishfloatingActionButton);
-        cancelFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.cancelfloatingActionButton);
         urgencySeekBar = (SeekBar) view.findViewById(R.id.urgencySeekBar);
+        cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
+        finishAlertButton = (Button) view.findViewById(R.id.finishAlertButton);
 
-        photoImageView.setOnClickListener(this);
-        finishFloatingActionButton.setOnClickListener(this);
-        cancelFloatingActionButton.setOnClickListener(this);
+        finishAlertButton.setOnClickListener(this);
+        cameraButton.setOnClickListener(this);
 
         presenter.initAlert();
         presenter.setupSpinner(getActivity(), typeOfProblemSpinner);
@@ -68,17 +71,22 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         super.onCreate(savedInstanceState);
     }
 
-
     @Override
     public void onClick(View v) {
-        if(v.equals(photoImageView)) {
-            presenter.dispachTakePhotoIntent(this, this);
-        } else if(v.equals(finishFloatingActionButton)) {
-            presenter.finishAlert(alertDescriptionEditText.getText().toString(), urgencySeekBar.getProgress());
-        } else if(v.equals(cancelFloatingActionButton)) {
-            presenter.cancelAlert(this);
+        int id = v.getId();
+        switch (id) {
+            case R.id.cameraButton: {
+                presenter.dispachTakePhotoIntent(this, this);
+                break;
+            }
+            case R.id.finishAlertButton: {
+                presenter.finishAlert(alertDescriptionEditText.getText().toString(),
+                        urgencySeekBar.getProgress());
+                break;
+            }
         }
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

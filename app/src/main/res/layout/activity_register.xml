@@ -114,7 +114,7 @@
         </LinearLayout>
     </ScrollView>
     <Button
-        android:id="@+id/finishRegisterButton"
+        android:id="@+id/finishAlertButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/background_light"

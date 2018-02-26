@@ -1,6 +1,5 @@
 package com.mobile.urbanfix.urban_fix.presenter;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,13 +17,13 @@ import com.mobile.urbanfix.urban_fix.view.RegisterActivity;
 
 public class LoginPresenter implements MainMVP.ILoginPresenter, MainMVP.ICallbackPresenter {
 
-    private MainMVP.IView view;
+    private MainMVP.ILoginView view;
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "passwd";
     public static final String REMEMBER_KEY = "remember";
     public ProgressDialog dialog;
 
-    public LoginPresenter(MainMVP.IView view ) {
+    public LoginPresenter(MainMVP.ILoginView view ) {
         this.view = view;
     }
 
@@ -39,9 +38,9 @@ public class LoginPresenter implements MainMVP.ILoginPresenter, MainMVP.ICallbac
             dialog.show();
             if(rememberUser)
                 saveUser(email, password, rememberUser, activity);
+        } else {
+
         }
-        else
-            view.showMessage(((LoginActivity) view).getString(R.string.login_empty_fields));
     }
 
     @Override
@@ -84,7 +83,14 @@ public class LoginPresenter implements MainMVP.ILoginPresenter, MainMVP.ICallbac
     }
 
     private boolean verifyValues( String email, String password ) {
-        return !email.trim().isEmpty() && !password.trim().isEmpty();
+        if(email.trim().isEmpty()) {
+            view.emailIsEmpty();
+            return false;
+        } else if(password.trim().isEmpty()) {
+            view.passwordIsEmpty();
+            return false;
+        }
+        return true;
     }
 
     private void saveUser(String email, String password, boolean remember, AppCompatActivity activity) {

@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -47,6 +48,7 @@ public class MapsFragment extends Fragment
         LocationListener{
 
     private GoogleMap mMap;
+    private FloatingActionButton alertButton;
     private LocationManager locationManager;
     private Marker currentLocationMarker;
     public static LatLng currentLocationlatLng;
@@ -79,6 +81,9 @@ public class MapsFragment extends Fragment
         firebaseUser = ConnectionFactory.getFirebaseUser();
         databaseReference = ConnectionFactory.getDatabaseReference();
         problemLocations = new ArrayList<>();
+        alertButton = (FloatingActionButton) view.findViewById(R.id.alertButton);
+
+        alertButton.setOnClickListener(this);
     }
 
     private void setCurrentUserLocation() {
@@ -229,6 +234,13 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onClick(View v) {
-
+        int id = v.getId();
+        switch(id) {
+            case R.id.alertButton: {
+                getFragmentManager().beginTransaction().replace(R.id.mainLayout, new AlertFragment())
+                .commit();
+                break;
+            }
+        }
     }
 }

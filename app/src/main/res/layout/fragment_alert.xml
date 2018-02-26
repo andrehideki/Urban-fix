@@ -31,82 +31,49 @@
         android:id="@+id/locationTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/alert_location"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintBottom_toTopOf="@+id/alertDescriptionEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typeOfProblemSpinner" />
 
-     <Spinner
-         android:id="@+id/typeOfProblemSpinner"
-         android:layout_width="0dp"
-         android:layout_height="wrap_content"
-         android:layout_marginEnd="8dp"
-         android:layout_marginStart="8dp"
-         android:layout_marginTop="8dp"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/photoImageView"></Spinner>
-
-    <EditText
-        android:id="@+id/alertDescriptionEditText"
+    <Spinner
+        android:id="@+id/typeOfProblemSpinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_column="0"
-        android:layout_columnSpan="3"
-        android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_row="6"
-        android:ems="30"
-        android:hint="@string/alert_description_textview"
-        android:inputType="textMultiLine"
-        android:lines="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/urgencySeekBar"></Spinner>
 
-     <android.support.design.widget.FloatingActionButton
-         android:id="@+id/cancelfloatingActionButton"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_column="0"
-         android:layout_marginBottom="8dp"
-         android:layout_marginStart="8dp"
-         android:layout_row="8"
-         android:clickable="true"
-         app:backgroundTint="@color/colorPrimaryDark"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintStart_toStartOf="parent"
-         app:srcCompat="@drawable/ic_cancel" android:focusable="true" />
-
-     <android.support.design.widget.FloatingActionButton
-         android:id="@+id/finishfloatingActionButton"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_column="2"
-         android:layout_marginBottom="8dp"
-         android:layout_marginEnd="8dp"
-         android:layout_row="8"
-         android:clickable="true"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:srcCompat="@drawable/ic_finish" android:focusable="true" />
-
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/descriptionTextInputLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        app:counterEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typeOfProblemSpinner"
-        app:srcCompat="@drawable/ic_edit_location" />
+        app:layout_constraintTop_toBottomOf="@+id/locationTextView">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/alertDescriptionEditText"
+            style="large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:hint="@string/alert_description_textview"
+            android:inputType="textMultiLine"
+            android:isScrollContainer="true"
+            android:scrollbars="vertical"
+            android:textIsSelectable="true" />
+    </android.support.design.widget.TextInputLayout>
 
     <SeekBar
         android:id="@+id/urgencySeekBar"
@@ -117,7 +84,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/alertDescriptionEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/cameraButton" />
 
     <TextView
         android:id="@+id/textView"
@@ -127,19 +94,33 @@
         android:layout_marginTop="8dp"
         android:text="@string/fragment_account_urgency_seekbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alertDescriptionEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/cameraButton" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/cameraButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:clickable="true"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="@+id/photoImageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photoImageView"
         app:srcCompat="@drawable/ic_menu_camera" />
+
+    <Button
+        android:id="@+id/finishAlertButton"
+        style="@style/RegisterAccountButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/alert_finishButton_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionTextInputLayout" />
 
 
 </android.support.constraint.ConstraintLayout>

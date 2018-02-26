@@ -3,8 +3,10 @@ package com.mobile.urbanfix.urban_fix.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         presenter.openMapView(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private boolean verifyRuntimePermissions() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -92,24 +96,11 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else {
+            presenter.doLogoff(this);
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -117,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_profile:
+                getSupportActionBar().setHomeButtonEnabled(true);
                 presenter.openAccountView(this);
                 break;
             case R.id.nav_alert:

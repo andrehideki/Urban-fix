@@ -60,6 +60,11 @@ public interface MainMVP {
         void showMessage(String msg);
     }
 
+    interface ILoginView extends IView {
+        void emailIsEmpty();
+        void passwordIsEmpty();
+    }
+
     interface IForgotPasswordView extends IView{
         void cleanFields();
         String getEmail();

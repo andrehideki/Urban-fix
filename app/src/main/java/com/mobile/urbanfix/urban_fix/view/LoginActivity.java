@@ -1,5 +1,7 @@
 package com.mobile.urbanfix.urban_fix.view;
 
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,9 +14,10 @@ import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.presenter.LoginPresenter;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, MainMVP.IView {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, MainMVP.ILoginView {
 
-    private EditText emailLoginEditText, passwordLoginEditText;
+    private TextInputEditText emailLoginEditText, passwordLoginEditText;
+    private TextInputLayout emailTextInputLayout, passwordTextInputLayout;
     private TextView forgotPasswordTextView;
     private CheckBox rememberLoginCheckBox;
     private Button loginButton, registerButton;
@@ -25,8 +28,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         startMVP();
-        emailLoginEditText = (EditText) findViewById(R.id.emailLoginEditText);
-        passwordLoginEditText = (EditText) findViewById(R.id.passwordLoginEditText);
+        emailLoginEditText = (TextInputEditText) findViewById(R.id.emailLoginEditText);
+        emailLoginEditText.setOnClickListener(this);
+        passwordLoginEditText = (TextInputEditText) findViewById(R.id.passwordLoginEditText);
+        passwordLoginEditText.setOnClickListener(this);
         rememberLoginCheckBox = (CheckBox) findViewById(R.id.rememberLoginCheckBox);
         loginButton = (Button) findViewById(R.id.loginButton);
         loginButton.setOnClickListener( this );
@@ -36,6 +41,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         registerButton.setOnClickListener( this );
         loginPresenter.fillFields(emailLoginEditText, passwordLoginEditText, rememberLoginCheckBox,
                 this);
+        emailTextInputLayout = findViewById(R.id.emailTextInputLayout);
+        passwordTextInputLayout = findViewById(R.id.passwordTextInputLayout);
     }
 
     @Override
@@ -54,16 +61,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.forgotPasswordTextView:
                 loginPresenter.openForgotPasswordView();
                 break;
+            case R.id.emailLoginEditText: {
+                emailTextInputLayout.setErrorEnabled(false);
+                break;
+            }
+            case R.id.passwordLoginEditText: {
+                passwordTextInputLayout.setErrorEnabled(false);
+                break;
+            }
         }
-    }
-
-
-    @Override
-    public void showMessage(String msg ) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG ).show();
     }
 
     private void startMVP() {
         this.loginPresenter = new LoginPresenter( this );
+    }
+
+    @Override
+    public void emailIsEmpty() {
+        emailTextInputLayout.setErrorEnabled(true);
+        emailTextInputLayout.setError(getString(R.string.login_email_is_empty));
+    }
+
+    @Override
+    public void passwordIsEmpty() {
+        passwordTextInputLayout.setErrorEnabled(true);
+        passwordTextInputLayout.setError(getString(R.string.login_password_is_empty));
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 }
