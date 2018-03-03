@@ -5,6 +5,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.mobile.urbanfix.urban_fix.model.User;
 
 public final class ConnectionFactory {
 
@@ -46,11 +48,11 @@ public final class ConnectionFactory {
     }
 
     public static DatabaseReference getUsersDatabaseReferente() {
-        return getDatabaseReference().child("User");
+        return getDatabaseReference().child("User").child(getFirebaseUser().getUid());
     }
 
     public static DatabaseReference getProblemsDatabaseReference() {
-        return getDatabaseReference().child("Alerts");
+        return getDatabaseReference().child("Alerts").child(getFirebaseUser().getUid());
     }
 
 
@@ -64,9 +66,11 @@ public final class ConnectionFactory {
         return firebaseStorage;
     }
 
+    public static StorageReference getFirebaseStorageReference() {
+        return getFirebaseStorage().getReference();
+    }
+
     public static void logout() {
         firebaseAuth.signOut();
     }
-
-
 }

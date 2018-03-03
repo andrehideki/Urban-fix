@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".view.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,8 +33,15 @@
 
 
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
+            android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <receiver android:name=".services.GpsReceiver">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="GPSHASBEENCONFIGURED"/>
+            </intent-filter>
+        </receiver>
         <provider
             android:authorities="com.mobile.urbanfix"
             android:name="android.support.v4.content.FileProvider"
@@ -44,6 +52,7 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
+
         <service android:name=".services.GPSService" />
 
     </application>

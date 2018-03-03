@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,44 +33,49 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
     private ImageView photoImageView;
     private Button finishAlertButton;
     private TextView locationTextView;
-    private EditText alertDescriptionEditText;
+    private TextInputEditText alertDescriptionEditText;
+    private TextInputLayout alertDescriptionLayout;
     private Spinner typeOfProblemSpinner;
     private SeekBar urgencySeekBar;
     private FloatingActionButton cameraButton;
     private MainMVP.IAlertPresenter presenter;
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_alert, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         startMVP();
         photoImageView  = (ImageView) view.findViewById(R.id.photoImageView);
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
-        alertDescriptionEditText = (EditText) view.findViewById(R.id.alertDescriptionEditText);
+        alertDescriptionEditText = (TextInputEditText) view.findViewById(R.id.alertDescriptionEditText);
+        alertDescriptionLayout = (TextInputLayout) view.findViewById(R.id.descriptionTextInputLayout);
         typeOfProblemSpinner = (Spinner) view.findViewById(R.id.typeOfProblemSpinner);
         urgencySeekBar = (SeekBar) view.findViewById(R.id.urgencySeekBar);
         cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         finishAlertButton = (Button) view.findViewById(R.id.finishAlertButton);
 
+        alertDescriptionEditText.setOnClickListener(this);
         finishAlertButton.setOnClickListener(this);
         cameraButton.setOnClickListener(this);
 
-        presenter.initAlert();
         presenter.setupSpinner(getActivity(), typeOfProblemSpinner);
+        typeOfProblemSpinner.setOnItemSelectedListener(this);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.initAlert(getContext());
+        presenter.startGPS(getContext());
     }
 
     @Override
@@ -80,23 +87,20 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
                 break;
             }
             case R.id.finishAlertButton: {
-                presenter.finishAlert(alertDescriptionEditText.getText().toString(),
-                        urgencySeekBar.getProgress());
+                presenter.setDescription(alertDescriptionEditText.getText().toString(), alertDescriptionLayout,
+                        getContext());
+                presenter.setUrgency(urgencySeekBar.getProgress());
+                presenter.finishAlert();
+                break;
+            }
+            case R.id.alertDescriptionEditText: {
+                presenter.setDescription(alertDescriptionEditText.getText().toString(),
+                       alertDescriptionLayout, getContext());
                 break;
             }
         }
     }
 
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -114,8 +118,24 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         photoImageView.setImageBitmap(bitmap);
     }
 
-    private void startMVP() {
-        this.presenter = new AlertPresenter();
+    @Override
+    public void onLocationDefined(String location) {
+        locationTextView.setText(location);
     }
 
+
+    private void startMVP() {
+        this.presenter = new AlertPresenter(this);
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        this.presenter.setKindOfProblem(position, parent.getSelectedItem().toString());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

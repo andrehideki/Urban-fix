@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.io.Serializable;
 
 public interface MainMVP {
 
@@ -38,13 +41,17 @@ public interface MainMVP {
     }
 
     interface IAlertPresenter {
-        void initAlert();
+        void initAlert(Context context);
         void setupSpinner(Activity activity, Spinner spinner);
+        void setUrgency(int urgency);
+        void setKindOfProblem(int position, String kindOfProblem);
+        void setDescription(String description, TextInputLayout descriptionTextInputLayout, Context context);
+        void startGPS(Context context);
         void dispachTakePhotoIntent(Fragment fragment, MainMVP.IAlertView view);
         void onRequestPermissionResult(Fragment fragment, int requestCode, String[] permissions, int[] grantResults);
         void onActivityResult(int requestCode, int resultCode, Intent data);
         void cancelAlert(Fragment fragment);
-        void finishAlert(String descriptio, int urgency);
+        void finishAlert();
     }
 
     interface IMainPresenter {
@@ -80,6 +87,12 @@ public interface MainMVP {
 
     interface IAlertView {
         void setupPhotoImageView(Bitmap bitmap);
+        void onLocationDefined(String location);
+    }
+
+    interface IOnGpsPickupUserLocation extends Serializable {
+        void onFailedGetUserLocation(Context context);
+        void onSuccessGetUserLocation(String location);
     }
 
 }
