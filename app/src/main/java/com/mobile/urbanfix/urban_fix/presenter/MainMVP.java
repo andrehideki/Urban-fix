@@ -51,7 +51,7 @@ public interface MainMVP {
         void onRequestPermissionResult(Fragment fragment, int requestCode, String[] permissions, int[] grantResults);
         void onActivityResult(int requestCode, int resultCode, Intent data);
         void cancelAlert(Fragment fragment);
-        void finishAlert();
+        void finishAlert(Activity activity);
     }
 
     interface IMainPresenter {
@@ -65,6 +65,7 @@ public interface MainMVP {
 
     interface IView {
         void showMessage(String msg);
+        Context getContext();
     }
 
     interface ILoginView extends IView {
@@ -85,7 +86,7 @@ public interface MainMVP {
 
     }
 
-    interface IAlertView {
+    interface IAlertView extends IView {
         void setupPhotoImageView(Bitmap bitmap);
         void onLocationDefined(String location);
     }

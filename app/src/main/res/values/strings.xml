@@ -82,6 +82,8 @@
     <string name="alert_failed_get_gps_location">Falha ao ler GPS</string>
     <string name="alert_description_textview_is_empty">Preencha este campo</string>
     <string name="alert_checked_initialized">Gerado em</string>
+    <string name="alert_inserting_alert">Cadastrando problema</string>
+    <string name="alert_failed_to_insert_problem">Ocorreu um erro!</string>
 
     <string-array name="problems_array">
         <item>Selectione um problema</item>

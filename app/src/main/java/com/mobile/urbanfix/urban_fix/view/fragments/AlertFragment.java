@@ -1,5 +1,6 @@
 package com.mobile.urbanfix.urban_fix.view.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
 
         presenter.setupSpinner(getActivity(), typeOfProblemSpinner);
         typeOfProblemSpinner.setOnItemSelectedListener(this);
+        presenter.initAlert(getContext());
     }
 
     @Override
@@ -74,7 +76,6 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
     @Override
     public void onResume() {
         super.onResume();
-        presenter.initAlert(getContext());
         presenter.startGPS(getContext());
     }
 
@@ -90,7 +91,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
                 presenter.setDescription(alertDescriptionEditText.getText().toString(), alertDescriptionLayout,
                         getContext());
                 presenter.setUrgency(urgencySeekBar.getProgress());
-                presenter.finishAlert();
+                presenter.finishAlert(getActivity());
                 break;
             }
             case R.id.alertDescriptionEditText: {
@@ -101,6 +102,10 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         }
     }
 
+    @Override
+    public Context getContext() {
+        return getContext();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -123,11 +128,14 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         locationTextView.setText(location);
     }
 
+    @Override
+    public void showMessage(String message) {
+
+    }
 
     private void startMVP() {
         this.presenter = new AlertPresenter(this);
     }
-
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

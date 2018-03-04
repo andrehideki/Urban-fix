@@ -15,7 +15,6 @@ public final class ConnectionFactory {
     private static FirebaseUser firebaseUser;
     private static FirebaseDatabase firebaseDatabase;
     private static DatabaseReference databaseReference;
-    private static FirebaseStorage firebaseStorage;
 
     static {
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -60,14 +59,8 @@ public final class ConnectionFactory {
         return firebaseUser;
     }
 
-    public static FirebaseStorage getFirebaseStorage() {
-        if( firebaseStorage == null )
-            firebaseStorage = FirebaseStorage.getInstance();
-        return firebaseStorage;
-    }
-
     public static StorageReference getFirebaseStorageReference() {
-        return getFirebaseStorage().getReference();
+        return FirebaseStorage.getInstance().getReference();
     }
 
     public static void logout() {

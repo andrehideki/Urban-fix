@@ -1,18 +1,19 @@
 package com.mobile.urbanfix.urban_fix.model;
 
 
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
-import java.sql.Connection;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class Problem implements DAO<Problem> {
 
@@ -130,9 +131,21 @@ public class Problem implements DAO<Problem> {
 
     }
 
-    public void insertProblemPhoto(Uri photoUri, String userCpf) {
+    public void insertProblemPhoto(Bitmap photoBitmap, String userCpf,
+                                   final MainMVP.ICallbackPresenter callback) throws IOException {
         StorageReference storage = ConnectionFactory.getFirebaseStorageReference();
-        storage.child(userCpf).child(photoUri.getLastPathSegment());
-        storage.putFile(photoUri);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] dados = baos.toByteArray();
+        storage.child(userCpf).child(getId())
+                .putBytes(dados)
+                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if(!task.isSuccessful()) {
+                    callback.onFailedTask();
+                }
+            }
+        });
     }
 }

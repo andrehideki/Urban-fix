@@ -1,5 +1,6 @@
 package com.mobile.urbanfix.urban_fix.view;
 
+import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -91,5 +92,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void showMessage(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public Context getContext() {
+        return null;
     }
 }

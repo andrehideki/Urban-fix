@@ -1,5 +1,6 @@
 package com.mobile.urbanfix.urban_fix.view;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +35,11 @@ public class ForgotPasswordActivity extends AppCompatActivity
     @Override
     public void showMessage(String msg ) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG ).show();
+    }
+
+    @Override
+    public Context getContext() {
+        return null;
     }
 
     @Override

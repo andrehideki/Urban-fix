@@ -9,7 +9,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
@@ -28,12 +31,16 @@ public class User implements Serializable, DAO<User> {
         return user;
     }
 
+    public static void setInstance(User user) {
+        User.user = user;
+    }
+
     public String getUUID() {
         return UUID;
     }
 
     public void setUUID(String UUID) {
-        this.UUID = UUID;
+        user.UUID = UUID;
     }
 
     public String getName() {
@@ -41,7 +48,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setName(String name) {
-        this.name = name;
+        user.name = name;
     }
 
     public String getCpf() {
@@ -49,7 +56,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        user.cpf = cpf;
     }
 
     public String getBirthDate() {
@@ -57,7 +64,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
+        user.birthDate = birthDate;
     }
 
     public String getEmail() {
@@ -65,7 +72,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        user.email = email;
     }
 
     public String getPassword() {
@@ -73,7 +80,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        user.password = password;
     }
 
     public int getnAlertsDone() {
@@ -81,7 +88,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setnAlertsDone(int nAlertsDone) {
-        this.nAlertsDone = nAlertsDone;
+        user.nAlertsDone = nAlertsDone;
     }
 
     public static void doLogin(String email, String password, Activity activity,
@@ -115,8 +122,19 @@ public class User implements Serializable, DAO<User> {
     }
 
     @Override
-    public User find(String s, MainMVP.ICallbackPresenter presenter) {
-        return null;
+    public User find(String userUId, MainMVP.ICallbackPresenter presenter) {
+        DatabaseReference databaseReference = ConnectionFactory.getDatabaseReference();
+        databaseReference.child(userUId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User.user = dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        return User.user;
     }
 
     @Override
@@ -158,5 +176,18 @@ public class User implements Serializable, DAO<User> {
     @Override
     public void delete(User user, MainMVP.ICallbackPresenter presenter) {
 
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "UUID='" + user.UUID + '\'' +
+                ", name='" + user.name + '\'' +
+                ", cpf='" + user.cpf + '\'' +
+                ", birthDate='" + user.birthDate + '\'' +
+                ", email='" + user.email + '\'' +
+                ", password='" + user.password + '\'' +
+                ", nAlertsDone=" + user.nAlertsDone +
+                '}';
     }
 }

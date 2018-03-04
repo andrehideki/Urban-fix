@@ -2,6 +2,7 @@ package com.mobile.urbanfix.urban_fix.presenter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -29,6 +31,7 @@ import com.mobile.urbanfix.urban_fix.services.GPSService;
 import com.mobile.urbanfix.urban_fix.services.GpsReceiver;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,7 +41,6 @@ import static android.app.Activity.RESULT_OK;
 public class AlertPresenter implements  MainMVP.IAlertPresenter,
                                         MainMVP.IOnGpsPickupUserLocation,
                                         MainMVP.ICallbackPresenter {
-
     private transient User user;
     private transient Problem problem;
     private transient static final int CAMERA_PERMISSION_REQUEST = 1889;
@@ -47,6 +49,8 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     private transient static final int HEIGTH = 640;
     private transient String currentPhotoPath;
     private transient MainMVP.IAlertView view;
+    private transient ProgressDialog dialog;
+    private transient Bitmap bitmap;
 
 
     public AlertPresenter(MainMVP.IAlertView view) {
@@ -134,7 +138,7 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == CAMERA_REQUEST) {
             if(resultCode == RESULT_OK) {
-                Bitmap bitmap = SystemUtils.getResizedBitmap(WIDTH, HEIGTH, this.currentPhotoPath);
+                bitmap = SystemUtils.getResizedBitmap(WIDTH, HEIGTH, this.currentPhotoPath);
                 Log.i("Script","Salvando Bitmap: " + this.currentPhotoPath );
                 SystemUtils.saveBitmap(this.currentPhotoPath, bitmap);
 
@@ -151,14 +155,23 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     }
 
     @Override
-    public void finishAlert() {
+    public void finishAlert(Activity activity) {/*TODO MELHORAR-> Pegar arquivo pelo file provider*/
+        Log.i("Script", "TESTE" + this.currentPhotoPath + " " + this.user.getCpf());
         if(isAlertOk()) {
+
             //Insere problema no banco de dados
+            dialog = new ProgressDialog(activity);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setMessage(activity.getString(R.string.alert_inserting_alert));
+            dialog.show();
             this.problem.insert(this.problem, this);
 
             //Insere foto do problema no banco de dados
-            this.problem.insertProblemPhoto(Uri.fromFile(new File(this.currentPhotoPath)),
-                    this.user.getCpf());
+            try {
+                this.problem.insertProblemPhoto(this.bitmap, this.user.getCpf(), this);
+            } catch (IOException e) {
+                Log.e("Script", "Deu erro!" + e.getMessage());
+            }
 
             //Atualiza usuário
             this.user.setnAlertsDone(user.getnAlertsDone() + 1);
@@ -208,6 +221,8 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
 
     @Override
     public void onFailedTask() {
-
+        dialog.dismiss();
+        view.showMessage(view.getContext().getString(R.string.alert_failed_to_insert_problem));
+        Log.e("Script", "Falha ao inserir foto");
     }
 }

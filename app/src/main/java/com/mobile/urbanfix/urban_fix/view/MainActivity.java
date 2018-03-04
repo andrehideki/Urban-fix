@@ -1,6 +1,7 @@
 package com.mobile.urbanfix.urban_fix.view;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -58,8 +59,9 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        initFirebase();
+        //initFirebase();
         presenter.openMapView(this);
+        user = User.getInstance();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -142,8 +144,9 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         user = User.getInstance();
-                        user = dataSnapshot.getValue(User.class);
+                        User dataUser = dataSnapshot.getValue(User.class);
                         user.setUUID(firebaseUser.getUid());
+                        Log.i("Script", user.toString());
                     }
 
                     @Override
@@ -165,5 +168,10 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
 
     @Override
     public void showMessage(String msg) {
+    }
+
+    @Override
+    public Context getContext() {
+        return null;
     }
 }
