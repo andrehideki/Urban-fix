@@ -3,10 +3,17 @@ package com.mobile.urbanfix.urban_fix.model;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.widget.Adapter;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
@@ -14,6 +21,7 @@ import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Problem implements DAO<Problem> {
 
@@ -101,6 +109,21 @@ public class Problem implements DAO<Problem> {
     }
 
     @Override
+    public String toString() {
+        return "Problem{" +
+                "id='" + id + '\'' +
+                ", location='" + location + '\'' +
+                ", description='" + description + '\'' +
+                ", kindOfProblem='" + kindOfProblem + '\'' +
+                ", date='" + date + '\'' +
+                ", status='" + status + '\'' +
+                ", encodedImage='" + encodedImage + '\'' +
+                ", checked='" + checked + '\'' +
+                ", urgency=" + urgency +
+                '}';
+    }
+
+    @Override
     public Problem find(String s, MainMVP.ICallbackPresenter presenter) {
         return null;
     }
@@ -147,5 +170,39 @@ public class Problem implements DAO<Problem> {
                 }
             }
         });
+    }
+
+    public static ArrayList<Problem> getUserAlerts() {/*TODO IMPLEMENTAR*/
+        final ArrayList<Problem> myAlerts = new ArrayList<>();
+        DatabaseReference databaseReference = ConnectionFactory.getProblemsDatabaseReference();
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Problem p = dataSnapshot.getValue(Problem.class);
+                Log.i("Script","Problema:" + p.toString());
+                myAlerts.add(p);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                myAlerts.remove(dataSnapshot.getValue(Problem.class));
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return myAlerts;
     }
 }

@@ -9,6 +9,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,9 +22,9 @@ public interface MainMVP {
         void doLogin(String email, String password, boolean remember, AppCompatActivity activity);
         void fillFields(EditText emailEditText, EditText passwordEditText, CheckBox
                 rememberUserCheckBox, AppCompatActivity activity);
-        void openForgotPasswordView();
-        void openRegisterView();
-        void openMainView();
+        void openForgotPasswordView(AppCompatActivity activity);
+        void openRegisterView(AppCompatActivity activity);
+        void openMainView(AppCompatActivity activity);
     }
 
     interface IForgotPasswordPresenter {
@@ -52,6 +53,11 @@ public interface MainMVP {
         void onActivityResult(int requestCode, int resultCode, Intent data);
         void cancelAlert(Fragment fragment);
         void finishAlert(Activity activity);
+    }
+
+    interface IMyAlertsPresenter {
+        void getUserAlerts();
+        void setupMyAlertsList(RecyclerView myAlerts, Context context);
     }
 
     interface IMainPresenter {
@@ -89,6 +95,10 @@ public interface MainMVP {
     interface IAlertView extends IView {
         void setupPhotoImageView(Bitmap bitmap);
         void onLocationDefined(String location);
+    }
+
+    interface IMyAlertsView {
+
     }
 
     interface IOnGpsPickupUserLocation extends Serializable {

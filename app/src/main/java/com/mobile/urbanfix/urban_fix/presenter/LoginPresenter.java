@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.User;
@@ -38,8 +39,6 @@ public class LoginPresenter implements MainMVP.ILoginPresenter, MainMVP.ICallbac
             dialog.show();
             if(rememberUser)
                 saveUser(email, password, rememberUser, activity);
-        } else {
-
         }
     }
 
@@ -53,27 +52,29 @@ public class LoginPresenter implements MainMVP.ILoginPresenter, MainMVP.ICallbac
     }
 
     @Override
-    public void openForgotPasswordView() {
-        Intent i = new Intent( ((LoginActivity) view), ForgotPasswordActivity.class );
-        ((LoginActivity) view).startActivity(i);
+    public void openForgotPasswordView(AppCompatActivity activity) {
+        Intent i = new Intent(activity, ForgotPasswordActivity.class );
+        activity.startActivity(i);
     }
 
     @Override
-    public void openRegisterView() {
-        Intent i = new Intent( ((LoginActivity) view ), RegisterActivity.class );
-        ( (LoginActivity) view ).startActivity(i);
+    public void openRegisterView(AppCompatActivity activity) {
+        Intent i = new Intent( activity, RegisterActivity.class );
+        activity.startActivity(i);
     }
 
     @Override
-    public void openMainView() {
-        Intent i = new Intent(( (LoginActivity) view), MainActivity.class);
-        ( (LoginActivity) view).startActivity(i);
+    public void openMainView(AppCompatActivity activity) {
+        Intent i = new Intent(activity, MainActivity.class);
+        activity.startActivity(i);
     }
 
     @Override
     public void onSuccessTask() {
+        Context context = view.getContext();
         dialog.dismiss();
-        openMainView();
+        view.showMessage(context.getString(R.string.login_success));
+        context.startActivity(new Intent(context, MainActivity.class));
     }
 
     @Override

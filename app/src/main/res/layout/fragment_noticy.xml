@@ -17,11 +17,11 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@android:color/background_light" />
 
-    <ListView android:id="@+id/problemsListView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/problemsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:choiceMode="singleChoice">
-
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

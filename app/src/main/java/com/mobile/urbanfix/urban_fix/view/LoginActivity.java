@@ -57,10 +57,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             }
             case R.id.registerButton:
-                loginPresenter.openRegisterView();
+                loginPresenter.openRegisterView(this);
                 break;
             case R.id.forgotPasswordTextView:
-                loginPresenter.openForgotPasswordView();
+                loginPresenter.openForgotPasswordView(this);
                 break;
             case R.id.emailLoginEditText: {
                 emailTextInputLayout.setErrorEnabled(false);
@@ -96,6 +96,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public Context getContext() {
-        return null;
+        return this;
     }
 }
