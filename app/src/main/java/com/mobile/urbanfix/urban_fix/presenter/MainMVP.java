@@ -41,6 +41,10 @@ public interface MainMVP {
         void onFailedTask();
     }
 
+    interface ICallbackListOfAlerts {
+        void onListOfAlertsChanged();
+    }
+
     interface IAlertPresenter {
         void initAlert(Context context);
         void setupSpinner(Activity activity, Spinner spinner);
@@ -57,10 +61,12 @@ public interface MainMVP {
 
     interface IMyAlertsPresenter {
         void getUserAlerts();
+        void configureUserInformations();
         void setupMyAlertsList(RecyclerView myAlerts, Context context);
     }
 
     interface IMainPresenter {
+        void initializeUser();
         void openMapView(AppCompatActivity activity);
         void openAccountView(AppCompatActivity activity);
         void openAlertView(AppCompatActivity activity);
@@ -98,7 +104,8 @@ public interface MainMVP {
     }
 
     interface IMyAlertsView {
-
+        void setUserName(String userName);
+        void setNumberOfAlerts(int numberOfAlerts);
     }
 
     interface IOnGpsPickupUserLocation extends Serializable {

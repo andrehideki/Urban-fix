@@ -2,6 +2,7 @@ package com.mobile.urbanfix.urban_fix.model;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -9,6 +10,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +29,9 @@ public class User implements Serializable, DAO<User> {
     private User(){}
 
     public static User getInstance() {
-        if(user == null) user = new User();
+        if(user == null) {
+            user = new User();
+        }
         return user;
     }
 
@@ -123,18 +127,34 @@ public class User implements Serializable, DAO<User> {
 
     @Override
     public User find(String userUId, MainMVP.ICallbackPresenter presenter) {
-        DatabaseReference databaseReference = ConnectionFactory.getDatabaseReference();
-        databaseReference.child(userUId).addValueEventListener(new ValueEventListener() {
+        DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
+        databaseReference.child(userUId).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User.user = dataSnapshot.getValue(User.class);
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                user = dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
         });
-        return User.user;
+        return user;
     }
 
     @Override

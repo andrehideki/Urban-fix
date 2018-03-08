@@ -5,17 +5,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
+import com.mobile.urbanfix.urban_fix.model.User;
 import com.mobile.urbanfix.urban_fix.view.fragments.AccountFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.MapsFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.NoticyFragment;
 
-public class MainPresenter implements MainMVP.IMainPresenter {
+public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackPresenter {
 
     private MainMVP.IMainView view;
     public final String TAG_STACK = "STACK";
@@ -23,6 +25,14 @@ public class MainPresenter implements MainMVP.IMainPresenter {
 
     public MainPresenter(MainMVP.IMainView view) {
         this.view = view;
+    }
+
+    @Override
+    public void initializeUser() {
+        User user = User.getInstance();
+        String uid = ConnectionFactory.getFirebaseUser().getUid();
+        user = user.find(uid, this);
+        Log.i("Script", "Uid" + uid + ";" + user.toString());
     }
 
     @Override
@@ -100,5 +110,15 @@ public class MainPresenter implements MainMVP.IMainPresenter {
                 });
         builder.setIcon(R.drawable.ic_warning);
         builder.show();
+    }
+
+    @Override
+    public void onSuccessTask() {
+
+    }
+
+    @Override
+    public void onFailedTask() {
+
     }
 }

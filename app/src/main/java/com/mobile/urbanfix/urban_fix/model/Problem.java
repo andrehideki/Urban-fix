@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mobile.urbanfix.urban_fix.adapter.MyAlertsAdapter;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
@@ -172,8 +173,8 @@ public class Problem implements DAO<Problem> {
         });
     }
 
-    public static ArrayList<Problem> getUserAlerts() {/*TODO IMPLEMENTAR*/
-        final ArrayList<Problem> myAlerts = new ArrayList<>();
+    public static void getUserAlerts(final ArrayList<Problem> myAlerts , final MyAlertsAdapter adapter,
+                                     final MainMVP.ICallbackListOfAlerts callback) {
         DatabaseReference databaseReference = ConnectionFactory.getProblemsDatabaseReference();
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -181,6 +182,8 @@ public class Problem implements DAO<Problem> {
                 Problem p = dataSnapshot.getValue(Problem.class);
                 Log.i("Script","Problema:" + p.toString());
                 myAlerts.add(p);
+                adapter.notifyDataSetChanged();
+                callback.onListOfAlertsChanged();
             }
 
             @Override
@@ -190,7 +193,10 @@ public class Problem implements DAO<Problem> {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                myAlerts.remove(dataSnapshot.getValue(Problem.class));
+                int position = myAlerts.indexOf(dataSnapshot.getValue(Problem.class));
+                myAlerts.remove(position);
+                adapter.notifyItemRemoved(position);
+                callback.onListOfAlertsChanged();
             }
 
             @Override
@@ -203,6 +209,5 @@ public class Problem implements DAO<Problem> {
 
             }
         });
-        return myAlerts;
     }
 }

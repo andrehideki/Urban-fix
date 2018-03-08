@@ -30,7 +30,7 @@ public class AccountFragment extends Fragment {
     }
 
     private void initUser() {
-        user = MainActivity.getUser();
+        //user = MainActivity.getUser();
         setUsersInformations();
     }
 

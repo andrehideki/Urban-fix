@@ -1,7 +1,6 @@
 package com.mobile.urbanfix.urban_fix.adapter;
 
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,11 +15,9 @@ import java.util.ArrayList;
 
 public class MyAlertsAdapter extends RecyclerView.Adapter<MyAlertsAdapter.MyAlertsViewHolder> {
 
-    private Context context;
     private ArrayList<Problem> myAlertsList;
 
-    public MyAlertsAdapter(Context context, ArrayList<Problem> myAlertsList) {
-        this.context = context;
+    public MyAlertsAdapter(ArrayList<Problem> myAlertsList) {
         this.myAlertsList = myAlertsList;
     }
 
@@ -36,10 +33,9 @@ public class MyAlertsAdapter extends RecyclerView.Adapter<MyAlertsAdapter.MyAler
 
     @Override
     public MyAlertsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.list_item_problem, parent,
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_problem, parent,
                 false);
-        MyAlertsViewHolder holder = new MyAlertsViewHolder(view);
-        return holder;
+        return new MyAlertsViewHolder(view);
     }
 
     @Override

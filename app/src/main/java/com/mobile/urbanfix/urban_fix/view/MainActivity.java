@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         setContentView(R.layout.activity_main);
         startMVP();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        this.setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -59,9 +60,13 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //initFirebase();
         presenter.openMapView(this);
-        user = User.getInstance();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.initializeUser();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -103,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         }
     }
 
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
@@ -135,43 +139,20 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         return true;
     }
 
-    private void initFirebase() {
-        firebaseAuth = ConnectionFactory.getFirebaseAuth();
-        databaseReference = ConnectionFactory.getDatabaseReference();
-        firebaseUser = ConnectionFactory.getFirebaseUser();
-        databaseReference.child("User").child( firebaseUser.getUid() ).
-                addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        user = User.getInstance();
-                        User dataUser = dataSnapshot.getValue(User.class);
-                        user.setUUID(firebaseUser.getUid());
-                        Log.i("Script", user.toString());
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-
-    }
-
-    public static User getUser() {
-        return user;
-    }
 
     private void startMVP() {
         presenter = new MainPresenter(this);
     }
 
-
     @Override
     public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public Context getContext() {
-        return null;
+        return this;
     }
 }

@@ -104,7 +104,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
 
     @Override
     public Context getContext() {
-        return getContext();
+        return getActivity();
     }
 
     @Override
