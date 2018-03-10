@@ -56,7 +56,12 @@ public class RegisterActivity   extends AppCompatActivity
 
     @Override
     public Context getContext() {
-        return null;
+        return this;
+    }
+
+    @Override
+    public void finishView() {
+        finish();
     }
 
 

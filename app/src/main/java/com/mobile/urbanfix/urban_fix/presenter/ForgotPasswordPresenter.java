@@ -1,5 +1,6 @@
 package com.mobile.urbanfix.urban_fix.presenter;
 
+import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.User;
 import com.mobile.urbanfix.urban_fix.view.ForgotPasswordActivity;
@@ -26,15 +27,19 @@ public class ForgotPasswordPresenter implements MainMVP.IForgotPasswordPresenter
     }
 
     @Override
-    public void onSuccessTask() {
-        view.showMessage(((ForgotPasswordActivity) view).
-                getString(R.string.forgot_password_msg_sended));
+    public void onSuccessTask(Constants task, Object object) {
+        if(task == Constants.SEND_PASSWORD) {
+            view.showMessage(((ForgotPasswordActivity) view).
+                    getString(R.string.forgot_password_msg_sended));
+        }
     }
 
     @Override
-    public void onFailedTask() {
-        view.cleanFields();
-        view.showMessage(((ForgotPasswordActivity) view).
-                getString(R.string.forgot_password_email_failed));
+    public void onFailedTask(Constants task) {
+        if(task == Constants.SEND_PASSWORD) {
+            view.cleanFields();
+            view.showMessage(((ForgotPasswordActivity) view).
+                    getString(R.string.forgot_password_email_failed));
+        }
     }
 }

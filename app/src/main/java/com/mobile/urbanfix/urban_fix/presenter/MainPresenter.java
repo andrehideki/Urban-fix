@@ -8,11 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.User;
-import com.mobile.urbanfix.urban_fix.view.fragments.AccountFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.MapsFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.NoticyFragment;
@@ -30,9 +30,9 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
     @Override
     public void initializeUser() {
         User user = User.getInstance();
-        String uid = ConnectionFactory.getFirebaseUser().getUid();
-        user = user.find(uid, this);
-        Log.i("Script", "Uid" + uid + ";" + user.toString());
+        //String uid = ConnectionFactory.getFirebaseUser().getUid();
+        //user = user.find(uid, this);
+        //Log.i("Script", "User MaIN:" + user.toString());
     }
 
     @Override
@@ -46,16 +46,6 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
         activity.setTitle(R.string.fragment_map_title);
     }
 
-    @Override
-    public void openAccountView(AppCompatActivity activity) {
-        AccountFragment fragment = new AccountFragment();
-        if(fragmentManager == null) fragmentManager = activity.getSupportFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.mainLayout, fragment);
-        ft.addToBackStack(TAG_STACK);
-        ft.commit();
-        activity.setTitle(R.string.fragment_account_title);
-    }
 
     @Override
     public void openAlertView(AppCompatActivity activity) {
@@ -113,12 +103,12 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
     }
 
     @Override
-    public void onSuccessTask() {
+    public void onSuccessTask(Constants task, Object o) {
 
     }
 
     @Override
-    public void onFailedTask() {
-
+    public void onFailedTask(Constants task) {
+        Log.e("Script", "Erro");
     }
 }

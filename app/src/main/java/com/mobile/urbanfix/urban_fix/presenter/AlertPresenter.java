@@ -13,25 +13,20 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
-import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.model.User;
 import com.mobile.urbanfix.urban_fix.services.GPSService;
 import com.mobile.urbanfix.urban_fix.services.GpsReceiver;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,7 +61,9 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
         this.problem.setId(user.getCpf());
         this.problem.setChecked(context.getString(R.string.alert_checked_initialized) +
                 new SimpleDateFormat("dd-MM-yyyy hh:mm aaa").format(date));
+        this.problem.setKindOfProblem("");
         this.currentPhotoPath = "";
+        Log.i("Script", "User em tela realizar alerta:" + user.toString());
     }
 
     @Override
@@ -156,27 +153,33 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
 
     @Override
     public void finishAlert(Activity activity) {/*TODO MELHORAR-> Pegar arquivo pelo file provider*/
-        Log.i("Script", "TESTE" + this.currentPhotoPath + " " + this.user.getCpf());
         if(isAlertOk()) {
 
-            //Insere problema no banco de dados
             dialog = new ProgressDialog(activity);
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             dialog.setMessage(activity.getString(R.string.alert_inserting_alert));
             dialog.show();
+
+            //Insere problema no banco de dados
+            Log.i("Script", "Tentando inserir Problema no banco de dados.");
             this.problem.insert(this.problem, this);
 
             //Insere foto do problema no banco de dados
             try {
+                Log.i("Script", "Tentando inserir foto no storage");
                 this.problem.insertProblemPhoto(this.bitmap, this.user.getCpf(), this);
             } catch (IOException e) {
                 Log.e("Script", "Deu erro!" + e.getMessage());
             }
 
             //Atualiza usuário
+            Log.i("Script", "Tentando atualizar usuário");
             this.user.setnAlertsDone(user.getnAlertsDone() + 1);
             this.user.update(this.user, this);
             Log.i("Script", "Usuário atualiado");
+
+            view.showMessage(view.getContext().getString(R.string.alert_issued));
+            view.finishView();
         }
     }
 
@@ -215,14 +218,34 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     }
 
     @Override
-    public void onSuccessTask() {
-
+    public void onSuccessTask(Constants entity, Object o) {
+        if(entity == Constants.NEW_ALERT) {
+            Log.i("Script", "Alerta inserido com sucesso!");
+        } else if(entity == Constants.UPDATED_USER) {
+            Log.i("Script", "Usuário atualizado com sucesso!");
+            view.showMessage(view.getContext().getString(R.string.alert_issued));
+            dialog.dismiss();
+            view.finishView();
+        } else if(entity == Constants.NEW_PHOTO) {
+            Log.i("Script", "Foto inserida com sucesso!");
+        }
     }
 
     @Override
-    public void onFailedTask() {
-        dialog.dismiss();
-        view.showMessage(view.getContext().getString(R.string.alert_failed_to_insert_problem));
-        Log.e("Script", "Falha ao inserir foto");
+    public void onFailedTask(Constants entity) {
+        Context context = view.getContext();
+        if (entity == Constants.NEW_ALERT) {
+            Log.e("Script", "Falha ao inserir alerta!");
+            dialog.dismiss();
+            view.showMessage(context.getString(R.string.alert_failed_to_insert_alert));
+        } else if (entity == Constants.UPDATED_USER) {
+            Log.e("Script", "Falha ao atualizar usuário!");
+            dialog.dismiss();
+            view.showMessage(context.getString(R.string.alert_failed_to_update_user));
+        } else if (entity == Constants.NEW_PHOTO) {
+            Log.e("Script", "Falha ao inserir foto");
+            dialog.dismiss();
+            view.showMessage(view.getContext().getString(R.string.alert_failed_to_insert_photo));
+        }
     }
 }

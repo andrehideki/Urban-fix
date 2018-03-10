@@ -1,16 +1,21 @@
 package com.mobile.urbanfix.urban_fix.presenter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
+import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.User;
 import com.mobile.urbanfix.urban_fix.view.MainActivity;
 import com.mobile.urbanfix.urban_fix.view.RegisterActivity;
 
 public class RegisterPresenter implements   MainMVP.IRegisterPresenter,
-                                            MainMVP.ICallbackPresenter {
+                                            MainMVP.ICallbackPresenter{
 
     private MainMVP.IRegisterView view;
+    private User user;
 
     public RegisterPresenter(MainMVP.IRegisterView view) {
         this.view = view;
@@ -35,7 +40,7 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter,
         * 4 - email
         * 5 - senha
         * */
-        User user = User.getInstance();
+        user = User.getInstance();
         user.setName(values[0] + " " + values[1]);
         user.setCpf(values[2]);
         user.setBirthDate(values[3]);
@@ -59,14 +64,31 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter,
     }
 
     @Override
-    public void onSuccessTask() {
-        view.showMessage(( (RegisterActivity) view).getString(R.string.register_user_succesful));
-        ((RegisterActivity) view).finish();
-        openMainView();
+    public void onSuccessTask(Constants task, Object o) {
+        if(task == Constants.NEW_USER) {
+            Context context = view.getContext();
+            view.showMessage(context.getString(R.string.register_user_succesful));
+            Log.i("Script", "Usuário registrado com sucesso. Tentado realizar login...");
+            User.doLogin(user.getEmail(), user.getPassword(),
+                    (Activity) view.getContext(), this);
+        } else if(task == Constants.DO_LOGIN) {
+            Log.i("Script","Login realizado com sucesso, abrindo tela principal");
+            view.finishView();
+            openMainView();
+            User u = User.getInstance();
+            Log.i("Script",u.toString());
+        }
     }
 
     @Override
-    public void onFailedTask() {
-        view.showMessage(( (RegisterActivity) view).getString(R.string.register_failed_create_user));
+    public void onFailedTask(Constants task) {
+        if(task == Constants.NEW_USER) {
+            view.showMessage(((RegisterActivity) view).getString(R.string.register_failed_create_user));
+            Log.i("Script", "Falha ao registrar usuário.");
+        } else if(task == Constants.DO_LOGIN) {
+            Log.i("Script","Falha ao realizar login...");
+            Context context = view.getContext();
+            view.showMessage(context.getString(R.string.login_failed_login));
+        }
     }
 }

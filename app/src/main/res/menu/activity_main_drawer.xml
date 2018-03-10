@@ -4,9 +4,6 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_user"
-            android:title="@string/nav_account_title"/>
         <item
             android:id="@+id/nav_alert"
             android:icon="@drawable/ic_add_alert"

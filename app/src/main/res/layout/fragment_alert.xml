@@ -48,7 +48,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/urgencySeekBar"></Spinner>
+        app:layout_constraintTop_toBottomOf="@+id/urgencySeekBar"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/descriptionTextInputLayout"
@@ -67,12 +67,10 @@
             style="large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="true"
             android:hint="@string/alert_description_textview"
             android:inputType="textMultiLine"
             android:isScrollContainer="true"
-            android:scrollbars="vertical"
-            android:textIsSelectable="true" />
+            android:scrollbars="vertical"/>
     </android.support.design.widget.TextInputLayout>
 
     <SeekBar

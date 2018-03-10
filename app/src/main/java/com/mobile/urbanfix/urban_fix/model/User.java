@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
@@ -44,7 +45,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setUUID(String UUID) {
-        user.UUID = UUID;
+        this.UUID = UUID;
     }
 
     public String getName() {
@@ -52,7 +53,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setName(String name) {
-        user.name = name;
+        this.name = name;
     }
 
     public String getCpf() {
@@ -60,7 +61,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setCpf(String cpf) {
-        user.cpf = cpf;
+        this.cpf = cpf;
     }
 
     public String getBirthDate() {
@@ -68,7 +69,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setBirthDate(String birthDate) {
-        user.birthDate = birthDate;
+        this.birthDate = birthDate;
     }
 
     public String getEmail() {
@@ -76,7 +77,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setEmail(String email) {
-        user.email = email;
+        this.email = email;
     }
 
     public String getPassword() {
@@ -84,7 +85,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setPassword(String password) {
-        user.password = password;
+        this.password = password;
     }
 
     public int getnAlertsDone() {
@@ -92,7 +93,7 @@ public class User implements Serializable, DAO<User> {
     }
 
     public void setnAlertsDone(int nAlertsDone) {
-        user.nAlertsDone = nAlertsDone;
+        this.nAlertsDone = nAlertsDone;
     }
 
     public static void doLogin(String email, String password, Activity activity,
@@ -103,9 +104,9 @@ public class User implements Serializable, DAO<User> {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if( task.isSuccessful() ) {
-                            presenter.onSuccessTask();
+                            presenter.onSuccessTask(Constants.DO_LOGIN, null);
                         } else {
-                            presenter.onFailedTask();
+                            presenter.onFailedTask(Constants.DO_LOGIN);
                         }
                     }
                 });
@@ -117,44 +118,40 @@ public class User implements Serializable, DAO<User> {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
-                    presenter.onSuccessTask();
+                    presenter.onSuccessTask(Constants.SEND_PASSWORD,null);
                 } else {
-                    presenter.onFailedTask();
+                    presenter.onFailedTask(Constants.SEND_PASSWORD);
                 }
             }
         });
     }
 
     @Override
-    public User find(String userUId, MainMVP.ICallbackPresenter presenter) {
+    public User find(String userUId, final MainMVP.ICallbackPresenter presenter) {
+        Log.i("Script", "Buscando usuário com uid: " + userUId);
+        final User[] u = new User[1];
         DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
-        databaseReference.child(userUId).addChildEventListener(new ChildEventListener() {
+        databaseReference.child(userUId).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                user = dataSnapshot.getValue(User.class);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                u[0] = dataSnapshot.getValue(User.class);
+                Log.i("Script", dataSnapshot.getValue(User.class).toString());
+                if (u[0] != null) {
+                    Log.i("Script", "Pegando dados do usuário: " + u[0].toString());
+                    presenter.onSuccessTask(Constants.FIND_USER, u[0]);
+                } else {
+                    Log.e("Script", "O usuário obitido é nulo!");
+                    presenter.onFailedTask(Constants.FIND_USER);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.i("Script", "Falha ao encontrar usuário");
+                presenter.onFailedTask(Constants.FIND_USER);
             }
         });
-        return user;
+        return u[0];
     }
 
     @Override
@@ -169,9 +166,9 @@ public class User implements Serializable, DAO<User> {
                             user.setUUID(fUser.getUid());
                             DatabaseReference db = ConnectionFactory.getUsersDatabaseReferente();
                             db.child(user.getUUID()).setValue(user);
-                            presenter.onSuccessTask();
+                            presenter.onSuccessTask(Constants.NEW_USER,null);
                         } else {
-                            presenter.onFailedTask();
+                            presenter.onFailedTask(Constants.NEW_USER);
                         }
                     }
                 });
@@ -180,14 +177,14 @@ public class User implements Serializable, DAO<User> {
     @Override
     public void update(User user, final MainMVP.ICallbackPresenter presenter) {
         DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
-        databaseReference.child(user.getUUID());
-        databaseReference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        databaseReference.child(user.getUUID()).
+                setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
-                    presenter.onSuccessTask();
+                    presenter.onSuccessTask(Constants.UPDATED_USER, null);
                 } else {
-                    presenter.onFailedTask();
+                    presenter.onFailedTask(Constants.UPDATED_USER);
                 }
             }
         });

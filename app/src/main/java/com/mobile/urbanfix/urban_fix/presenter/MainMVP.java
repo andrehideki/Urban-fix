@@ -14,6 +14,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.mobile.urbanfix.urban_fix.Constants;
+
 import java.io.Serializable;
 
 public interface MainMVP {
@@ -37,8 +39,8 @@ public interface MainMVP {
     }
 
     interface ICallbackPresenter {
-        void onSuccessTask();
-        void onFailedTask();
+        void onSuccessTask(Constants task, Object object);
+        void onFailedTask(Constants task);
     }
 
     interface ICallbackListOfAlerts {
@@ -68,7 +70,6 @@ public interface MainMVP {
     interface IMainPresenter {
         void initializeUser();
         void openMapView(AppCompatActivity activity);
-        void openAccountView(AppCompatActivity activity);
         void openAlertView(AppCompatActivity activity);
         void openNoticesView(AppCompatActivity activity);
         void openStatisticsView(AppCompatActivity activity);
@@ -78,6 +79,7 @@ public interface MainMVP {
     interface IView {
         void showMessage(String msg);
         Context getContext();
+        void finishView();
     }
 
     interface ILoginView extends IView {

@@ -47,7 +47,7 @@ public final class ConnectionFactory {
     }
 
     public static DatabaseReference getUsersDatabaseReferente() {
-        return getDatabaseReference().child("User").child(getFirebaseUser().getUid());
+        return getDatabaseReference().child("User");
     }
 
     public static DatabaseReference getProblemsDatabaseReference() {

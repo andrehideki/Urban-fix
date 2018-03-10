@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.adapter.MyAlertsAdapter;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
@@ -137,9 +138,9 @@ public class Problem implements DAO<Problem> {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
-                            presenter.onSuccessTask();
+                            presenter.onSuccessTask(Constants.NEW_ALERT, null);
                         } else {
-                            presenter.onFailedTask();
+                            presenter.onFailedTask(Constants.NEW_ALERT);
                         }
                     }
                 });
@@ -167,7 +168,9 @@ public class Problem implements DAO<Problem> {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(!task.isSuccessful()) {
-                    callback.onFailedTask();
+                    callback.onFailedTask(Constants.NEW_PHOTO);
+                } else {
+                    callback.onSuccessTask(Constants.NEW_PHOTO, null);
                 }
             }
         });

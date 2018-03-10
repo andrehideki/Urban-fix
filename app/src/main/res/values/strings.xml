@@ -83,8 +83,13 @@
     <string name="alert_description_textview_is_empty">Preencha este campo</string>
     <string name="alert_checked_initialized">Gerado em</string>
     <string name="alert_inserting_alert">Cadastrando problema</string>
-    <string name="alert_failed_to_insert_problem">Ocorreu um erro!</string>
+    <string name="alert_failed_to_insert_alert">Ocorreu um erro!</string>
     <string name="login_success">Login realizado</string>
+    <string name="login_welcome_user">Bem vindo</string>
+    <string name="login_failed_find_on_database">Usuário não encontrado</string>
+    <string name="alert_issued">Alerta emido!</string>
+    <string name="alert_failed_to_insert_photo">Falha ao subir foto</string>
+    <string name="alert_failed_to_update_user">Falha ao atualizar usuário</string>
 
     <string-array name="problems_array">
         <item>Selectione um problema</item>

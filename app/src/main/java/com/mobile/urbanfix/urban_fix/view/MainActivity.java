@@ -40,10 +40,6 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
-    public static User user;
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
-    private FirebaseUser firebaseUser;
     private MainMVP.IMainPresenter presenter;
 
     @Override
@@ -113,10 +109,6 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
 
         int id = item.getItemId();
         switch (id) {
-            case R.id.nav_profile:
-                getSupportActionBar().setHomeButtonEnabled(true);
-                presenter.openAccountView(this);
-                break;
             case R.id.nav_alert:
                 presenter.openAlertView(this);
                 break;
@@ -154,5 +146,10 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void finishView() {
+        finish();
     }
 }
