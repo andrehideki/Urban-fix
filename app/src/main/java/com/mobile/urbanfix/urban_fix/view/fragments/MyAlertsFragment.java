@@ -13,7 +13,7 @@ import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 import com.mobile.urbanfix.urban_fix.presenter.MyAlertsPresenter;
 import com.mobile.urbanfix.urban_fix.R;
 
-public class NoticyFragment extends Fragment implements MainMVP.IMyAlertsView {
+public class MyAlertsFragment extends Fragment implements MainMVP.IMyAlertsView {
 
     private TextView userNameTextView, numberOfAlertsTextView;
     private RecyclerView problemsRecyclerView;
@@ -23,7 +23,7 @@ public class NoticyFragment extends Fragment implements MainMVP.IMyAlertsView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_noticy, container, false);
+        return inflater.inflate(R.layout.fragment_my_alerts, container, false);
     }
 
     @Override

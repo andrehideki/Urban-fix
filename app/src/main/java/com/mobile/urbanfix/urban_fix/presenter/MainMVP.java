@@ -67,6 +67,16 @@ public interface MainMVP {
         void setupMyAlertsList(RecyclerView myAlerts, Context context);
     }
 
+    interface IMapsPresenter {
+        void openAlertFragment(AppCompatActivity activity);
+        void getLocationPermissions(Activity activity);
+        void startLocationListener(Activity activity);
+        void stopLocationListener();
+        void onRequestPermissionResult(Fragment fragment, int requestCode, String[] permissions, int[] grantResults);
+        void initMap();
+        void loadAlertsOnMap();
+    }
+
     interface IMainPresenter {
         void initializeUser();
         void openMapView(AppCompatActivity activity);
@@ -113,6 +123,10 @@ public interface MainMVP {
     interface IOnGpsPickupUserLocation extends Serializable {
         void onFailedGetUserLocation(Context context);
         void onSuccessGetUserLocation(String location);
+    }
+
+    interface IMapsView extends IView {
+
     }
 
 }

@@ -3,9 +3,7 @@ package com.mobile.urbanfix.urban_fix.model;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Adapter;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -13,7 +11,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mobile.urbanfix.urban_fix.Constants;
@@ -132,7 +129,7 @@ public class Problem implements DAO<Problem> {
 
     @Override
     public void insert(Problem object, final MainMVP.ICallbackPresenter presenter) {
-        DatabaseReference databaseReference = ConnectionFactory.getProblemsDatabaseReference();
+        DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
         databaseReference.child(object.getDate()).setValue(object).
                 addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -178,7 +175,7 @@ public class Problem implements DAO<Problem> {
 
     public static void getUserAlerts(final ArrayList<Problem> myAlerts , final MyAlertsAdapter adapter,
                                      final MainMVP.ICallbackListOfAlerts callback) {
-        DatabaseReference databaseReference = ConnectionFactory.getProblemsDatabaseReference();
+        DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

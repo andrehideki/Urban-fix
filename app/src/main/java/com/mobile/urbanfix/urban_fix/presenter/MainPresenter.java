@@ -15,12 +15,12 @@ import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.User;
 import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.MapsFragment;
-import com.mobile.urbanfix.urban_fix.view.fragments.NoticyFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.MyAlertsFragment;
 
 public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackPresenter {
 
     private MainMVP.IMainView view;
-    public final String TAG_STACK = "STACK";
+    public static final String TAG_STACK = "STACK";
     public FragmentManager fragmentManager;
 
     public MainPresenter(MainMVP.IMainView view) {
@@ -60,7 +60,7 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
 
     @Override
     public void openNoticesView(AppCompatActivity activity) {
-        NoticyFragment fragment = new NoticyFragment();
+        MyAlertsFragment fragment = new MyAlertsFragment();
         if(fragmentManager == null) fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.mainLayout, fragment);
