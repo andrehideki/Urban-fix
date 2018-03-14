@@ -51,6 +51,14 @@ public class Problem implements DAO<Problem> {
         this.location = location;
     }
 
+    public double getLatitude() {
+        return Double.parseDouble(this.location.split(";")[0]);
+    }
+
+    public double getLogintude() {
+        return Double.parseDouble(this.location.split(";")[1]);
+    }
+
     public String getDescription() {
         return description;
     }

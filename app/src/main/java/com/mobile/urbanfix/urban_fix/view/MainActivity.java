@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,22 +16,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 import com.mobile.urbanfix.urban_fix.presenter.MainPresenter;
-import com.mobile.urbanfix.urban_fix.model.User;
 
 public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener,
                                                                 MainMVP.IMainView {
@@ -152,4 +143,5 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     public void finishView() {
         finish();
     }
+
 }

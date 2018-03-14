@@ -30,13 +30,15 @@ import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.model.User;
+import com.mobile.urbanfix.urban_fix.view.dialog.ProblemDialogFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
 
 import java.util.ArrayList;
 
 public class MapsPresenter implements MainMVP.IMapsPresenter,
         LocationListener,
-        OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+        OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener {
 
     private MainMVP.IMapsView view;
     private LocationManager locationManager;
@@ -101,11 +103,10 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Problem p = dataSnapshot.getValue(Problem.class);
-                String latLong[] = (p.getLocation()).split(";");
-                double lat = Double.parseDouble( latLong[0] );
-                double longi = Double.parseDouble( latLong[1]);
+                double lat = p.getLatitude();
+                double longi = p.getLogintude();
                 problems.add(p);
-                int currentIndex = problems.size();
+                int currentIndex = problems.size() - 1;
                 markOnMap(lat, longi, p.getKindOfProblem(), currentIndex);
             }
 
@@ -165,6 +166,7 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
         try {
             this.googleMap = googleMap;
             this.googleMap.setMyLocationEnabled(true);
+            this.googleMap.setOnMarkerClickListener(this);
             loadAlertsOnMap();
         } catch (SecurityException e) {
             Log.e("Script", e.getMessage());
@@ -183,7 +185,13 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
     public boolean onMarkerClick(Marker marker) {
         int index = (int) marker.getTag();
         Problem selectedProblem = problems.get(index);
-
+        view.showMessage(selectedProblem.toString());
+        openProblemDialogFragment(selectedProblem);
         return false;
+    }
+
+    private void openProblemDialogFragment(Problem problem) {
+        ProblemDialogFragment dialog = ProblemDialogFragment.newInstance(problem);
+        dialog.show(view.getCurrentFragmentManager().beginTransaction(), "TESTE");
     }
 }

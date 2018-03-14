@@ -1,6 +1,7 @@
 package com.mobile.urbanfix.urban_fix.view;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -63,7 +64,6 @@ public class RegisterActivity   extends AppCompatActivity
     public void finishView() {
         finish();
     }
-
 
     @Override
     public void onClick(View v) {

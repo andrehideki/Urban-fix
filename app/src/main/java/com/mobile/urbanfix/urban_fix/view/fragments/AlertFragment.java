@@ -151,4 +151,6 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+
 }
