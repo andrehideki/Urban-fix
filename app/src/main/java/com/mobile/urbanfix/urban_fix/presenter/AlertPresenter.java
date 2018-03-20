@@ -56,12 +56,14 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     public void initAlert(Context context) {
         this.problem = new Problem();
         Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aaa");
         this.user = User.getInstance();
-        this.problem.setDate(date.toString());
+        this.problem.setDate(simpleDateFormat.format(date));
         this.problem.setId(user.getCpf());
-        this.problem.setChecked(context.getString(R.string.alert_checked_initialized) +
-                new SimpleDateFormat("dd-MM-yyyy hh:mm aaa").format(date));
+        this.problem.setChecked(false);
+        this.problem.setStatus(context.getString(R.string.alert_status_alert_has_been_issued));
         this.problem.setKindOfProblem("");
+        this.problem.setPhotoId(user.getCpf() + "_" + simpleDateFormat.format(date));
         this.currentPhotoPath = "";
         Log.i("Script", "User em tela realizar alerta:" + user.toString());
     }
@@ -167,7 +169,7 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
             //Insere foto do problema no banco de dados
             try {
                 Log.i("Script", "Tentando inserir foto no storage");
-                this.problem.insertProblemPhoto(this.bitmap, this.user.getCpf(), this);
+                Problem.insertProblemPhoto(this.bitmap, problem, this);
             } catch (IOException e) {
                 Log.e("Script", "Deu erro!" + e.getMessage());
             }

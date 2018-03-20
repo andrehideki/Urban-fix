@@ -13,9 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.mobile.urbanfix.urban_fix.Constants;
+import com.mobile.urbanfix.urban_fix.model.Problem;
 
 import java.io.Serializable;
 
@@ -87,6 +90,12 @@ public interface MainMVP {
         void doLogoff(AppCompatActivity activity);
     }
 
+    interface IProblemDialogPresenter {
+        void setInformations(Problem problem, TextView kindOfProblemTextView, TextView dateTextView,
+                             TextView statusTextView, TextView locationTextView, TextView descriptionTextView,
+                             TextView urgencyTextView, ImageView problemPhotoImageView);
+    }
+
     interface IView {
         void showMessage(String msg);
         Context getContext();
@@ -119,6 +128,10 @@ public interface MainMVP {
     interface IMyAlertsView {
         void setUserName(String userName);
         void setNumberOfAlerts(int numberOfAlerts);
+    }
+
+    interface IProblemDialogView {
+        void setImageBitmap(Bitmap bitmap);
     }
 
     interface IOnGpsPickupUserLocation extends Serializable {

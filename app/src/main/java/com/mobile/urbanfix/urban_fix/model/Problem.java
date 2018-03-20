@@ -30,8 +30,8 @@ public class Problem implements DAO<Problem> {
     private String kindOfProblem;
     private String date;
     private String status;
-    private String encodedImage;
-    private String checked;
+    private String photoId;
+    private boolean checked;
     private int urgency;
 
 
@@ -91,19 +91,19 @@ public class Problem implements DAO<Problem> {
         this.status = status;
     }
 
-    public String getEncodedImage() {
-        return encodedImage;
+    public String getPhotoId() {
+        return photoId;
     }
 
-    public void setEncodedImage(String encodedImage) {
-        this.encodedImage = encodedImage;
+    public void setPhotoId(String photoId) {
+        this.photoId = photoId;
     }
 
-    public String getChecked() {
+    public boolean getChecked() {
         return checked;
     }
 
-    public void setChecked(String checked) {
+    public void setChecked(boolean checked) {
         this.checked = checked;
     }
 
@@ -124,7 +124,7 @@ public class Problem implements DAO<Problem> {
                 ", kindOfProblem='" + kindOfProblem + '\'' +
                 ", date='" + date + '\'' +
                 ", status='" + status + '\'' +
-                ", encodedImage='" + encodedImage + '\'' +
+                ", photoId='" + photoId + '\'' +
                 ", checked='" + checked + '\'' +
                 ", urgency=" + urgency +
                 '}';
@@ -161,13 +161,13 @@ public class Problem implements DAO<Problem> {
 
     }
 
-    public void insertProblemPhoto(Bitmap photoBitmap, String userCpf,
+    public static void insertProblemPhoto(Bitmap photoBitmap, Problem problem,
                                    final MainMVP.ICallbackPresenter callback) throws IOException {
         StorageReference storage = ConnectionFactory.getFirebaseStorageReference();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] dados = baos.toByteArray();
-        storage.child(userCpf).child(getId())
+        storage.child(problem.getPhotoId())
                 .putBytes(dados)
                 .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override

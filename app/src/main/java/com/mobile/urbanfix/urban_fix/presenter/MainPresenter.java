@@ -30,9 +30,6 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
     @Override
     public void initializeUser() {
         User user = User.getInstance();
-        //String uid = ConnectionFactory.getFirebaseUser().getUid();
-        //user = user.find(uid, this);
-        //Log.i("Script", "User MaIN:" + user.toString());
     }
 
     @Override
@@ -40,9 +37,8 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
         MapsFragment mapsFragment = new MapsFragment();
         if(fragmentManager == null) fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.mainLayout, mapsFragment);
-        ft.addToBackStack(TAG_STACK);
-        ft.commit();
+        ft.replace(R.id.mainLayout, mapsFragment).
+                addToBackStack(TAG_STACK).commit();
         activity.setTitle(R.string.fragment_map_title);
     }
 

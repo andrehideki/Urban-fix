@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,6 +66,8 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         presenter.setupSpinner(getActivity(), typeOfProblemSpinner);
         typeOfProblemSpinner.setOnItemSelectedListener(this);
         presenter.initAlert(getContext());
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
 
     @Override
     public void finishView() {
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getChildFragmentManager();
         fragmentManager.popBackStack();
     }
 

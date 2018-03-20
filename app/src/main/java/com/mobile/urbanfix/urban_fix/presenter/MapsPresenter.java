@@ -99,7 +99,7 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
     public void loadAlertsOnMap() {
         User user = User.getInstance();
         DatabaseReference alertsDatabaseReference = ConnectionFactory.getAlertsDatabaseReference();
-        alertsDatabaseReference.child(user.getUUID()).addChildEventListener(new ChildEventListener() {
+        alertsDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Problem p = dataSnapshot.getValue(Problem.class);
@@ -185,7 +185,6 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
     public boolean onMarkerClick(Marker marker) {
         int index = (int) marker.getTag();
         Problem selectedProblem = problems.get(index);
-        view.showMessage(selectedProblem.toString());
         openProblemDialogFragment(selectedProblem);
         return false;
     }

@@ -22,11 +22,15 @@ public class MyAlertsAdapter extends RecyclerView.Adapter<MyAlertsAdapter.MyAler
     }
 
     public static class MyAlertsViewHolder extends RecyclerView.ViewHolder {
-        TextView dateTextView, kindOfProblemTextView;
+        TextView dateTextView, kindOfProblemTextView, statusTextView, locationTextView,
+        descriptionTextView;
         public MyAlertsViewHolder(View itemView) {
             super(itemView);
             dateTextView = itemView.findViewById(R.id.datetextView);
             kindOfProblemTextView = itemView.findViewById(R.id.kindOfProblemTextView);
+            statusTextView = itemView.findViewById(R.id.statusTextView);
+            locationTextView = itemView.findViewById(R.id.locationTextView);
+            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
         }
     }
 
@@ -44,8 +48,10 @@ public class MyAlertsAdapter extends RecyclerView.Adapter<MyAlertsAdapter.MyAler
         Log.i("Script", "Inflando a View");
         holder.dateTextView.setText(problem.getDate());
         holder.kindOfProblemTextView.setText(problem.getKindOfProblem());
+        holder.statusTextView.setText(problem.getStatus());
+        holder.locationTextView.setText(problem.getLocation());
+        holder.descriptionTextView.setText(problem.getDescription());
     }
-
 
     @Override
     public int getItemCount() {

@@ -90,6 +90,7 @@
     <string name="alert_issued">Alerta emido!</string>
     <string name="alert_failed_to_insert_photo">Falha ao subir foto</string>
     <string name="alert_failed_to_update_user">Falha ao atualizar usuário</string>
+    <string name="alert_status_alert_has_been_issued">Emitido</string>
 
     <string-array name="problems_array">
         <item>Selectione um problema</item>
