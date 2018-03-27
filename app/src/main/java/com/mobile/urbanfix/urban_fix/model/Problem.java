@@ -26,6 +26,7 @@ public class Problem implements DAO<Problem> {
 
     private String id;
     private String location;
+    private String address;
     private String description;
     private String kindOfProblem;
     private String date;
@@ -109,6 +110,18 @@ public class Problem implements DAO<Problem> {
 
     public int getUrgency() {
         return urgency;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public boolean isChecked() {
+        return checked;
     }
 
     public void setUrgency(int urgency) {

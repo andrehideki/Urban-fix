@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
@@ -23,18 +24,21 @@ import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.model.User;
+import com.mobile.urbanfix.urban_fix.services.FetchAddressReceiver;
+import com.mobile.urbanfix.urban_fix.services.FetchAddressSevice;
 import com.mobile.urbanfix.urban_fix.services.GPSService;
 import com.mobile.urbanfix.urban_fix.services.GpsReceiver;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
 public class AlertPresenter implements  MainMVP.IAlertPresenter,
-                                        MainMVP.IOnGpsPickupUserLocation,
+        MainMVP.IOnGpsPickupUserLocationAndPossibleAddresses,
                                         MainMVP.ICallbackPresenter {
     private transient User user;
     private transient Problem problem;
@@ -68,12 +72,6 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
         Log.i("Script", "User em tela realizar alerta:" + user.toString());
     }
 
-    @Override
-    public void setupSpinner(Activity activity, Spinner spinner) {
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(activity,
-                R.array.problems_array, android.R.layout.simple_expandable_list_item_1);
-        spinner.setAdapter(spinnerAdapter);
-    }
 
     @Override
     public void setUrgency(int urgency) {
@@ -86,6 +84,14 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
             this.problem.setKindOfProblem(kindOfProblem);
         }
     }
+
+    @Override
+    public void setAddress(int position, String address) {
+        if(position>0) {
+            this.problem.setAddress(address);
+        }
+    }
+
 
     @Override
     public void setDescription(String description, TextInputLayout descriptionTextInputLayout, Context context) {
@@ -101,6 +107,7 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     public void startGPS(Context context) {
         Intent gpsIntent = new Intent(context, GPSService.class);
         GpsReceiver.setPresenter(this);
+        FetchAddressReceiver.setPrensenter(this);
         context.startService(gpsIntent);
     }
 
@@ -217,6 +224,18 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     public void onSuccessGetUserLocation(String location) {
         this.problem.setLocation(location);
         this.view.onLocationDefined(location);
+        fetchPossibleUsersAddress();
+    }
+
+    @Override
+    public void onSuccessGetUserAddresses(ArrayList<String> possibleAddressesList) {
+        view.onAddressHasBeenFetched(possibleAddressesList);
+    }
+
+    @Override
+    public void onFailedGetUserAddresses(Context context) {
+        Log.e("Script", "Falha ao buscar localizações do usuário");
+        view.showMessage(context.getString(R.string.alert_failed_get_gps_location));
     }
 
     @Override
@@ -249,5 +268,13 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
             dialog.dismiss();
             view.showMessage(view.getContext().getString(R.string.alert_failed_to_insert_photo));
         }
+    }
+
+    private void fetchPossibleUsersAddress() {
+        Context context = view.getContext();
+        Intent fetchUsersAddressIntent = new Intent(context, FetchAddressSevice.class).
+                putExtra(User.ADDRESS, new double[]{problem.getLatitude(), problem.getLogintude()});
+        FetchAddressReceiver.setPrensenter(this);
+        context.startService(fetchUsersAddressIntent);
     }
 }

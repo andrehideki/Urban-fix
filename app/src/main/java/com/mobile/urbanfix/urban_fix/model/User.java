@@ -26,6 +26,7 @@ public class User implements Serializable, DAO<User> {
     private String UUID, name, cpf, birthDate, email, password;
     private int nAlertsDone;
     private static User user;
+    public final static String ADDRESS = "address";//Usado para passar a geoposição do usuário
 
     private User(){}
 

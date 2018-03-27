@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -27,6 +28,8 @@ import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.presenter.AlertPresenter;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
+import java.util.ArrayList;
+
 public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
                                                         View.OnClickListener,
                                                         AdapterView.OnItemSelectedListener {
@@ -36,7 +39,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
     private TextView locationTextView;
     private TextInputEditText alertDescriptionEditText;
     private TextInputLayout alertDescriptionLayout;
-    private Spinner typeOfProblemSpinner;
+    private Spinner typeOfProblemSpinner, userAddressSpinner;
     private SeekBar urgencySeekBar;
     private FloatingActionButton cameraButton;
     private MainMVP.IAlertPresenter presenter;
@@ -55,6 +58,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         alertDescriptionEditText = (TextInputEditText) view.findViewById(R.id.alertDescriptionEditText);
         alertDescriptionLayout = (TextInputLayout) view.findViewById(R.id.descriptionTextInputLayout);
         typeOfProblemSpinner = (Spinner) view.findViewById(R.id.typeOfProblemSpinner);
+        userAddressSpinner = (Spinner) view.findViewById(R.id.userAddressSpinner);
         urgencySeekBar = (SeekBar) view.findViewById(R.id.urgencySeekBar);
         cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         finishAlertButton = (Button) view.findViewById(R.id.finishAlertButton);
@@ -63,11 +67,13 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         finishAlertButton.setOnClickListener(this);
         cameraButton.setOnClickListener(this);
 
-        presenter.setupSpinner(getActivity(), typeOfProblemSpinner);
         typeOfProblemSpinner.setOnItemSelectedListener(this);
         presenter.initAlert(getContext());
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.problems_array, android.R.layout.simple_expandable_list_item_1);
+        typeOfProblemSpinner.setAdapter(spinnerAdapter);
     }
 
     @Override
@@ -134,6 +140,13 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
     @Override
     public void onLocationDefined(String location) {
         locationTextView.setText(location);
+    }
+
+    @Override
+    public void onAddressHasBeenFetched(ArrayList<String> addressesList) {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_list_item_1, addressesList);
+        userAddressSpinner.setAdapter(spinnerAdapter);
     }
 
     @Override

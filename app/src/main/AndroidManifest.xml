@@ -41,6 +41,13 @@
                 <action android:name="GPSHASBEENCONFIGURED"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".services.FetchAddressReceiver">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="ADDRESSESHASBEENDOWNLOADED"/>
+            </intent-filter>
+        </receiver>
+
         <provider
             android:authorities="com.mobile.urbanfix"
             android:name="android.support.v4.content.FileProvider"
@@ -53,6 +60,7 @@
         </provider>
 
         <service android:name=".services.GPSService" />
+        <service android:name=".services.FetchAddressSevice"/>
 
     </application>
 

@@ -21,6 +21,7 @@ import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public interface MainMVP {
 
@@ -53,9 +54,9 @@ public interface MainMVP {
 
     interface IAlertPresenter {
         void initAlert(Context context);
-        void setupSpinner(Activity activity, Spinner spinner);
         void setUrgency(int urgency);
         void setKindOfProblem(int position, String kindOfProblem);
+        void setAddress(int position, String address);
         void setDescription(String description, TextInputLayout descriptionTextInputLayout, Context context);
         void startGPS(Context context);
         void dispachTakePhotoIntent(Fragment fragment, MainMVP.IAlertView view);
@@ -123,6 +124,7 @@ public interface MainMVP {
     interface IAlertView extends IView {
         void setupPhotoImageView(Bitmap bitmap);
         void onLocationDefined(String location);
+        void onAddressHasBeenFetched(ArrayList<String> addressesList);
     }
 
     interface IMyAlertsView {
@@ -134,9 +136,11 @@ public interface MainMVP {
         void setImageBitmap(Bitmap bitmap);
     }
 
-    interface IOnGpsPickupUserLocation extends Serializable {
+    interface IOnGpsPickupUserLocationAndPossibleAddresses extends Serializable {
         void onFailedGetUserLocation(Context context);
         void onSuccessGetUserLocation(String location);
+        void onSuccessGetUserAddresses(ArrayList<String> possibleAddressesList);
+        void onFailedGetUserAddresses(Context context);
     }
 
     interface IMapsView extends IView {

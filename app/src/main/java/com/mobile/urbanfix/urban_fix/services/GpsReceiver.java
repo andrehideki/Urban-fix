@@ -8,9 +8,9 @@ import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
 public class GpsReceiver extends BroadcastReceiver {
 
-    private static MainMVP.IOnGpsPickupUserLocation presenter;
+    private static MainMVP.IOnGpsPickupUserLocationAndPossibleAddresses presenter;
 
-    public static void setPresenter(MainMVP.IOnGpsPickupUserLocation presenter) {
+    public static void setPresenter(MainMVP.IOnGpsPickupUserLocationAndPossibleAddresses presenter) {
         GpsReceiver.presenter = presenter;
     }
 
