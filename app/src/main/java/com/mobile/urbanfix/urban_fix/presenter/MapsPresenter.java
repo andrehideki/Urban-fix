@@ -97,7 +97,7 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
 
     @Override
     public void loadAlertsOnMap() {
-        User user = User.getInstance();
+        //User user = User.getInstance();
         DatabaseReference alertsDatabaseReference = ConnectionFactory.getAlertsDatabaseReference();
         alertsDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override

@@ -1,11 +1,8 @@
 package com.mobile.urbanfix.urban_fix.view.dialog;
 
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -36,19 +33,19 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_problem, container);
-        TextView kindOfProblemTextView, dateTextView, descriptionTextView, locationTextView,
+        TextView kindOfProblemTextView, dateTextView, descriptionTextView, addressTextView,
         statusTextView, urgencyTextView;
         startMVP();
 
         kindOfProblemTextView = (TextView) view.findViewById(R.id.kindOfProblemTextView);
         dateTextView = (TextView) view.findViewById(R.id.dateTextView);
         descriptionTextView = (TextView) view.findViewById(R.id.descriptionTextView);
-        locationTextView = (TextView) view.findViewById(R.id.locationTextView);
+        addressTextView = (TextView) view.findViewById(R.id.addressTextView);
         statusTextView = (TextView) view.findViewById(R.id.statusTextView);
         urgencyTextView = (TextView) view.findViewById(R.id.urgencyTextView);
         problemPhotoImageView = (ImageView) view.findViewById(R.id.problemPhotoImageView);
 
-        presenter.setInformations(problem, kindOfProblemTextView, dateTextView, statusTextView, locationTextView,
+        presenter.setInformations(problem, kindOfProblemTextView, dateTextView, statusTextView, addressTextView,
                 descriptionTextView, urgencyTextView, problemPhotoImageView);
 
         return view;

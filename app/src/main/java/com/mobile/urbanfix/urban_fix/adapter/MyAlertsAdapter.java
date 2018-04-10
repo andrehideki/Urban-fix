@@ -29,7 +29,7 @@ public class MyAlertsAdapter extends RecyclerView.Adapter<MyAlertsAdapter.MyAler
             dateTextView = itemView.findViewById(R.id.datetextView);
             kindOfProblemTextView = itemView.findViewById(R.id.kindOfProblemTextView);
             statusTextView = itemView.findViewById(R.id.statusTextView);
-            locationTextView = itemView.findViewById(R.id.locationTextView);
+            locationTextView = itemView.findViewById(R.id.addressTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
         }
     }

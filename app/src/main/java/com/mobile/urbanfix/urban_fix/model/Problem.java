@@ -100,7 +100,7 @@ public class Problem implements DAO<Problem> {
         this.photoId = photoId;
     }
 
-    public boolean getChecked() {
+    public boolean isChecked() {
         return checked;
     }
 
@@ -118,10 +118,6 @@ public class Problem implements DAO<Problem> {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public boolean isChecked() {
-        return checked;
     }
 
     public void setUrgency(int urgency) {

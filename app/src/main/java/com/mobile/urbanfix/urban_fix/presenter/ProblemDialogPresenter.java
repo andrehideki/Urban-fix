@@ -26,13 +26,13 @@ public class ProblemDialogPresenter implements MainMVP.IProblemDialogPresenter, 
 
     @Override
     public void setInformations(Problem problem, TextView kindOfProblemTextView, TextView dateTextView,
-                                TextView statusTextView, TextView locationTextView,
+                                TextView statusTextView, TextView addressTextView,
                                 TextView descriptionTextView, TextView urgencyTextView,
                                 ImageView problemPhotoImageView) {
         kindOfProblemTextView.setText(problem.getKindOfProblem());
         dateTextView.setText(problem.getDate());
         statusTextView.setText(problem.getStatus());
-        locationTextView.setText(problem.getLocation());
+        addressTextView.setText(problem.getAddress());
         descriptionTextView.setText(problem.getDescription());
         urgencyTextView.setText(problem.getUrgency() + "");
         getProblemPhotoAssync(problem, this);

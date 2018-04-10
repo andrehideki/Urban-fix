@@ -54,7 +54,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         super.onViewCreated(view, savedInstanceState);
         startMVP();
         photoImageView  = (ImageView) view.findViewById(R.id.photoImageView);
-        locationTextView = (TextView) view.findViewById(R.id.locationTextView);
+        locationTextView = (TextView) view.findViewById(R.id.addressTextView);
         alertDescriptionEditText = (TextInputEditText) view.findViewById(R.id.alertDescriptionEditText);
         alertDescriptionLayout = (TextInputLayout) view.findViewById(R.id.descriptionTextInputLayout);
         typeOfProblemSpinner = (Spinner) view.findViewById(R.id.typeOfProblemSpinner);
