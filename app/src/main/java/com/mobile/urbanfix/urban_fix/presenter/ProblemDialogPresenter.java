@@ -34,7 +34,7 @@ public class ProblemDialogPresenter implements MainMVP.IProblemDialogPresenter, 
         statusTextView.setText(problem.getStatus());
         addressTextView.setText(problem.getAddress());
         descriptionTextView.setText(problem.getDescription());
-        urgencyTextView.setText(problem.getUrgency() + "");
+        urgencyTextView.setText(problem.getUrgency());
         getProblemPhotoAssync(problem, this);
     }
 

@@ -11,6 +11,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
 
     private ImageView photoImageView;
     private Button finishAlertButton;
-    private TextView locationTextView;
+    private TextView urgencyTextView;
     private TextInputEditText alertDescriptionEditText;
     private TextInputLayout alertDescriptionLayout;
     private Spinner typeOfProblemSpinner, userAddressSpinner;
@@ -54,7 +55,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         super.onViewCreated(view, savedInstanceState);
         startMVP();
         photoImageView  = (ImageView) view.findViewById(R.id.photoImageView);
-        locationTextView = (TextView) view.findViewById(R.id.addressTextView);
+        urgencyTextView = (TextView) view.findViewById(R.id.urgencyTextView);
         alertDescriptionEditText = (TextInputEditText) view.findViewById(R.id.alertDescriptionEditText);
         alertDescriptionLayout = (TextInputLayout) view.findViewById(R.id.descriptionTextInputLayout);
         typeOfProblemSpinner = (Spinner) view.findViewById(R.id.typeOfProblemSpinner);
@@ -66,6 +67,18 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         alertDescriptionEditText.setOnClickListener(this);
         finishAlertButton.setOnClickListener(this);
         cameraButton.setOnClickListener(this);
+        urgencySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                presenter.setUrgency(urgencySeekBar.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
 
         typeOfProblemSpinner.setOnItemSelectedListener(this);
         presenter.initAlert(getContext());
@@ -137,16 +150,18 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         photoImageView.setImageBitmap(bitmap);
     }
 
-    @Override
-    public void onLocationDefined(String location) {
-        locationTextView.setText(location);
-    }
 
     @Override
     public void onAddressHasBeenFetched(ArrayList<String> addressesList) {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_list_item_1, addressesList);
         userAddressSpinner.setAdapter(spinnerAdapter);
+        userAddressSpinner.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    public void changeUrgencyStatus(String urgencyStatus) {
+        urgencyTextView.setText(urgencyStatus);
     }
 
     @Override
@@ -160,13 +175,18 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        this.presenter.setKindOfProblem(position, parent.getSelectedItem().toString());
+        int selectViewId = parent.getId();
+        if (this.typeOfProblemSpinner.getId() == selectViewId) {
+            this.presenter.setKindOfProblem(position, parent.getSelectedItem().toString());
+            showMessage(parent.getSelectedItem().toString());
+        } else if (this.userAddressSpinner.getId() == selectViewId) {
+            this.presenter.setAddress(position, parent.getSelectedItem().toString());
+            showMessage(parent.getSelectedItem().toString());
+        }
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+    public void onNothingSelected(AdapterView<?> parent) {}
 
 
 }

@@ -98,6 +98,9 @@
     <string name="problem_status_label">Status</string>
     <string name="problem_urgency_label" >Urgencia</string>
     <string name="problem_description">Descrição</string>
+    <string name="urgency_status_low">Baixa</string>
+    <string name="urgency_status_moderate">Moderado</string>
+    <string name="urgency_status_critical">Crítico</string>
 
     <string-array name="problems_array">
         <item>Selectione um problema</item>

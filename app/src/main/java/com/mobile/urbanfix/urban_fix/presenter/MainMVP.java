@@ -53,6 +53,7 @@ public interface MainMVP {
     }
 
     interface IAlertPresenter {
+        int LOW = 6, MODERATE =12, CRITICAL =18;
         void initAlert(Context context);
         void setUrgency(int urgency);
         void setKindOfProblem(int position, String kindOfProblem);
@@ -123,8 +124,8 @@ public interface MainMVP {
 
     interface IAlertView extends IView {
         void setupPhotoImageView(Bitmap bitmap);
-        void onLocationDefined(String location);
         void onAddressHasBeenFetched(ArrayList<String> addressesList);
+        void changeUrgencyStatus(String urgencyStatus);
     }
 
     interface IMyAlertsView {

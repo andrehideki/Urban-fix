@@ -41,7 +41,7 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
         dateTextView = (TextView) view.findViewById(R.id.dateTextView);
         descriptionTextView = (TextView) view.findViewById(R.id.descriptionTextView);
         addressTextView = (TextView) view.findViewById(R.id.addressTextView);
-        statusTextView = (TextView) view.findViewById(R.id.statusTextView);
+        statusTextView = (TextView) view.findViewById(R.id.textView);
         urgencyTextView = (TextView) view.findViewById(R.id.urgencyTextView);
         problemPhotoImageView = (ImageView) view.findViewById(R.id.problemPhotoImageView);
 

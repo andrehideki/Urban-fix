@@ -33,7 +33,7 @@ public class Problem implements DAO<Problem> {
     private String status;
     private String photoId;
     private boolean checked;
-    private int urgency;
+    private String urgency;
 
 
     public String getId() {
@@ -108,7 +108,7 @@ public class Problem implements DAO<Problem> {
         this.checked = checked;
     }
 
-    public int getUrgency() {
+    public String getUrgency() {
         return urgency;
     }
 
@@ -120,7 +120,7 @@ public class Problem implements DAO<Problem> {
         this.address = address;
     }
 
-    public void setUrgency(int urgency) {
+    public void setUrgency(String urgency) {
         this.urgency = urgency;
     }
 

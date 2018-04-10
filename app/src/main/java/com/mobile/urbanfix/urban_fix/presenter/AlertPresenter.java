@@ -75,7 +75,20 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
 
     @Override
     public void setUrgency(int urgency) {
-        this.problem.setUrgency(urgency);
+        Context context = view.getContext();
+        if (urgency < LOW) {
+            String s = context.getString(R.string.urgency_status_low);
+            problem.setUrgency(s);
+            view.changeUrgencyStatus(s);
+        } else if (urgency < MODERATE) {
+            String s = context.getString(R.string.urgency_status_moderate);
+            problem.setUrgency(s);
+            view.changeUrgencyStatus(s);
+        } else { //Critico
+            String s = context.getString(R.string.urgency_status_critical);
+            problem.setUrgency(s);
+            view.changeUrgencyStatus(s);
+        }
     }
 
     @Override
@@ -223,7 +236,6 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     @Override
     public void onSuccessGetUserLocation(String location) {
         this.problem.setLocation(location);
-        this.view.onLocationDefined(location);
         fetchPossibleUsersAddress();
     }
 
