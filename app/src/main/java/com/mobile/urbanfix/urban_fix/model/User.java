@@ -128,11 +128,11 @@ public class User implements Serializable, DAO<User> {
     }
 
     @Override
-    public User find(String userUId, final MainMVP.ICallbackPresenter presenter) {
+    public User find(final String userUId, final MainMVP.ICallbackPresenter presenter) {
         Log.i("Script", "Buscando usuário com uid: " + userUId);
         final User[] u = new User[1];
-        DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
-        databaseReference.child(userUId).addValueEventListener(new ValueEventListener() {
+        final DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 u[0] = dataSnapshot.getValue(User.class);
@@ -140,9 +140,11 @@ public class User implements Serializable, DAO<User> {
                 if (u[0] != null) {
                     Log.i("Script", "Pegando dados do usuário: " + u[0].toString());
                     presenter.onSuccessTask(Constants.FIND_USER, u[0]);
+                    databaseReference.child(userUId).removeEventListener(this);
                 } else {
                     Log.e("Script", "O usuário obitido é nulo!");
                     presenter.onFailedTask(Constants.FIND_USER);
+                    databaseReference.child(userUId).removeEventListener(this);
                 }
             }
 
@@ -150,8 +152,10 @@ public class User implements Serializable, DAO<User> {
             public void onCancelled(DatabaseError databaseError) {
                 Log.i("Script", "Falha ao encontrar usuário");
                 presenter.onFailedTask(Constants.FIND_USER);
+                databaseReference.child(userUId).removeEventListener(this);
             }
-        });
+        };
+        databaseReference.child(userUId).addValueEventListener(listener);
         return u[0];
     }
 

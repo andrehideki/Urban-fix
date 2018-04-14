@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.MapFragment;
 import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
@@ -28,6 +29,9 @@ import com.mobile.urbanfix.urban_fix.services.FetchAddressReceiver;
 import com.mobile.urbanfix.urban_fix.services.FetchAddressSevice;
 import com.mobile.urbanfix.urban_fix.services.GPSService;
 import com.mobile.urbanfix.urban_fix.services.GpsReceiver;
+import com.mobile.urbanfix.urban_fix.view.MainActivity;
+import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.MapsFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -186,7 +190,8 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
             Log.i("Script", "Tentando inserir Problema no banco de dados.");
             this.problem.insert(this.problem, this);
 
-            //Insere foto do problema no banco de dados
+
+        /*    //Insere foto do problema no banco de dados
             try {
                 Log.i("Script", "Tentando inserir foto no storage");
                 Problem.insertProblemPhoto(this.bitmap, problem, this);
@@ -194,14 +199,10 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
                 Log.e("Script", "Deu erro!" + e.getMessage());
             }
 
-            //Atualiza usuário
             Log.i("Script", "Tentando atualizar usuário");
             this.user.setnAlertsDone(user.getnAlertsDone() + 1);
             this.user.update(this.user, this);
-            Log.i("Script", "Usuário atualiado");
-
-            view.showMessage(view.getContext().getString(R.string.alert_issued));
-            view.finishView();
+            */
         }
     }
 
@@ -254,14 +255,37 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
     public void onSuccessTask(Constants entity, Object o) {
         if(entity == Constants.NEW_ALERT) {
             Log.i("Script", "Alerta inserido com sucesso!");
+
+            //Insere foto do problema no banco de dados
+            dialog.setMessage(view.getContext().getString(R.string.alert_inserting_photo));
+            try {
+                Log.i("Script", "Tentando inserir foto no storage");
+                Problem.insertProblemPhoto(this.bitmap, problem, this);
+            } catch (IOException e) {
+                Log.e("Script", "Deu erro!" + e.getMessage());
+            }
+
         } else if(entity == Constants.UPDATED_USER) {
-            Log.i("Script", "Usuário atualizado com sucesso!");
+            Log.i("Script", "Usuário atualizado com sucesso!Alerta finalizado");
             view.showMessage(view.getContext().getString(R.string.alert_issued));
             dialog.dismiss();
+            openMapView();
             view.finishView();
         } else if(entity == Constants.NEW_PHOTO) {
             Log.i("Script", "Foto inserida com sucesso!");
+
+            Log.i("Script", "Tentando atualizar usuário");
+            dialog.setMessage(view.getContext().getString(R.string.alert_updating_user));
+            this.user.setnAlertsDone(user.getnAlertsDone() + 1);
+            this.user.update(this.user, this);
         }
+    }
+
+    private void openMapView() {
+        MainActivity mainActivity = (MainActivity) view.getContext();
+        mainActivity.getSupportFragmentManager().beginTransaction().
+                replace(R.id.mainLayout, new MapsFragment()).
+                commit();
     }
 
     @Override

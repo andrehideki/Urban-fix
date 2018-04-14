@@ -8,14 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.User;
 import com.mobile.urbanfix.urban_fix.view.ForgotPasswordActivity;
-import com.mobile.urbanfix.urban_fix.view.LoginActivity;
 import com.mobile.urbanfix.urban_fix.view.MainActivity;
 import com.mobile.urbanfix.urban_fix.view.RegisterActivity;
 
@@ -37,13 +35,12 @@ public class LoginPresenter implements MainMVP.ILoginPresenter,
         Log.i("Script", "Verificando campos");
         if(verifyValues(email, password)) {
             Log.i("Script", "Campos válidos. Tentando realizar Login");
-            User.doLogin( email, password,  activity, this );
             dialog = new ProgressDialog(activity);
             dialog.setMessage(activity.getString(R.string.login_progressdialog_message));
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             dialog.show();
-            if(rememberUser)
-                saveUser(email, password, rememberUser, activity);
+            User.doLogin( email, password,  activity, this );
+            if(rememberUser) saveUser(email, password, rememberUser, activity);
         }
     }
 
@@ -69,7 +66,7 @@ public class LoginPresenter implements MainMVP.ILoginPresenter,
     }
 
     @Override
-    public void openMainView(AppCompatActivity activity) {
+    public void openMainView(Context activity) {
         Intent i = new Intent(activity, MainActivity.class);
         activity.startActivity(i);
     }
@@ -77,15 +74,17 @@ public class LoginPresenter implements MainMVP.ILoginPresenter,
     @Override
     public void onSuccessTask(Constants task, Object user) {
         if(task == Constants.FIND_USER) {
+            Context context = view.getContext();
             Log.i("Script", "Usuário carregado do banco de dados. Abrindo tela principal");
             User findedUser = (User) user;
             User.setInstance(findedUser);
             Log.i("Script", "Inforamações do usuário: " + User.getInstance().toString());
-            Context context = view.getContext();
+
             dialog.dismiss();
             view.showMessage(context.getString(R.string.login_welcome_user));
-            openMainView((AppCompatActivity) view.getContext());
-            view.finishView();
+            //view.finishView();
+            openMainView(context);
+
         } else if(task == Constants.DO_LOGIN) {
             Log.i("Script","Login realizado com sucesso");
             Context context = view.getContext();

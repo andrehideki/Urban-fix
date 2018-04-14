@@ -37,8 +37,7 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
         MapsFragment mapsFragment = new MapsFragment();
         if(fragmentManager == null) fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.mainLayout, mapsFragment).
-                addToBackStack(TAG_STACK).commit();
+        ft.replace(R.id.mainLayout, mapsFragment).commit();
         activity.setTitle(R.string.fragment_map_title);
     }
 
@@ -48,9 +47,7 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
         AlertFragment alertFragment = new AlertFragment();
         if(fragmentManager == null) fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.mainLayout, alertFragment);
-        ft.addToBackStack(TAG_STACK);
-        ft.commit();
+        ft.replace(R.id.mainLayout, alertFragment).commit();
         activity.setTitle(R.string.fragment_alert_title);
     }
 
@@ -59,9 +56,7 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
         MyAlertsFragment fragment = new MyAlertsFragment();
         if(fragmentManager == null) fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.mainLayout, fragment);
-        ft.addToBackStack(TAG_STACK);
-        ft.commit();
+        ft.replace(R.id.mainLayout, fragment).commit();
         activity.setTitle(R.string.fragment_noticy_title);
     }
 

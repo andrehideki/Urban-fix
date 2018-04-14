@@ -26,7 +26,6 @@ import com.mobile.urbanfix.urban_fix.presenter.MainPresenter;
 public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener,
                                                                 MainMVP.IMainView {
 
-    public final int REQUEST_PERMISSION = 100;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
@@ -54,30 +53,6 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     protected void onResume() {
         super.onResume();
         presenter.initializeUser();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private boolean verifyRuntimePermissions() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION);
-            return true;
-        }
-        return false;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == REQUEST_PERMISSION) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-                verifyRuntimePermissions();
-            }
-        }
     }
 
     @Override

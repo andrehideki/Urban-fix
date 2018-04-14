@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/register_name_hint"
-                    android:inputType="text"
+                    android:inputType="textPersonName"
                     android:textColor="@android:color/background_light"
                     android:textColorHint="@android:color/background_light" />
             </android.support.design.widget.TextInputLayout>
@@ -52,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/register_lastname_hint"
-                    android:inputType="text"
+                    android:inputType="textPersonName"
                     android:textColor="@android:color/background_light"
                     android:textColorHint="@android:color/background_light" />
             </android.support.design.widget.TextInputLayout>

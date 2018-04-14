@@ -4,17 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mobile.urbanfix.urban_fix.Constants;
@@ -31,7 +28,7 @@ public interface MainMVP {
                 rememberUserCheckBox, AppCompatActivity activity);
         void openForgotPasswordView(AppCompatActivity activity);
         void openRegisterView(AppCompatActivity activity);
-        void openMainView(AppCompatActivity activity);
+        void openMainView(Context activity);
     }
 
     interface IForgotPasswordPresenter {

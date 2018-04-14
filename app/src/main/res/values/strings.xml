@@ -101,6 +101,8 @@
     <string name="urgency_status_low">Baixa</string>
     <string name="urgency_status_moderate">Moderado</string>
     <string name="urgency_status_critical">Crítico</string>
+    <string name="alert_inserting_photo">Armazenando foto</string>
+    <string name="alert_updating_user">Atualizando usuário</string>
 
     <string-array name="problems_array">
         <item>Selectione um problema</item>
