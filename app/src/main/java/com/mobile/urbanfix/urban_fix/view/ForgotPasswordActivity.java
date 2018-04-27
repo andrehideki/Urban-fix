@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.mobile.urbanfix.urban_fix.R;
@@ -17,6 +18,7 @@ public class ForgotPasswordActivity extends AppCompatActivity
 
 
     private EditText emailForgotPasswordEditText;
+    private Button resetPasswordButton;
     private MainMVP.IForgotPasswordPresenter presenter;
 
     @Override
@@ -25,6 +27,8 @@ public class ForgotPasswordActivity extends AppCompatActivity
         setContentView(R.layout.activity_forgot_password);
         startMVP();
         emailForgotPasswordEditText = (EditText) findViewById(R.id.emailForgotPasswordEditText);
+        resetPasswordButton = (Button) findViewById(R.id.resetPasswordButton);
+        resetPasswordButton.setOnClickListener(this);
     }
 
 
@@ -56,7 +60,7 @@ public class ForgotPasswordActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        presenter.sendRecoverPasswordMessage();
+        presenter.sendRecoverPasswordMessage(emailForgotPasswordEditText.getText().toString());
     }
 
     private void startMVP() {

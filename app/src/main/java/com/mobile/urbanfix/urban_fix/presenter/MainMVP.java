@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 
@@ -23,6 +24,9 @@ import java.util.ArrayList;
 public interface MainMVP {
 
     interface ILoginPresenter {
+        String EMAIL_KEY = "email";
+        String PASSWORD_KEY = "passwd";
+        String REMEMBER_KEY = "remember";
         void doLogin(String email, String password, boolean remember, AppCompatActivity activity);
         void fillFields(EditText emailEditText, EditText passwordEditText, CheckBox
                 rememberUserCheckBox, AppCompatActivity activity);
@@ -32,12 +36,12 @@ public interface MainMVP {
     }
 
     interface IForgotPasswordPresenter {
-        void sendRecoverPasswordMessage();
+        void sendRecoverPasswordMessage(String email);
     }
 
     interface IRegisterPresenter {
-        void registerUser();
-        void openMainView();
+        void registerUser(String name, String lastName, String cpf, String birthday, String email, String password);
+        void showThanksDialog();
     }
 
     interface ICallbackPresenter {
@@ -81,7 +85,6 @@ public interface MainMVP {
     }
 
     interface IMainPresenter {
-        void initializeUser();
         void openMapView(AppCompatActivity activity);
         void openAlertView(AppCompatActivity activity);
         void openNoticesView(AppCompatActivity activity);
@@ -136,7 +139,7 @@ public interface MainMVP {
 
     interface IOnGpsPickupUserLocationAndPossibleAddresses extends Serializable {
         void onFailedGetUserLocation(Context context);
-        void onSuccessGetUserLocation(String location);
+        void onSuccessGetUserLocation(LatLng latLng);
         void onSuccessGetUserAddresses(ArrayList<String> possibleAddressesList);
         void onFailedGetUserAddresses(Context context);
     }

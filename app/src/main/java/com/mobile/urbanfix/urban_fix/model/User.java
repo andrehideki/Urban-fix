@@ -14,6 +14,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ValueEventListener;
 import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
@@ -23,9 +24,11 @@ import java.io.Serializable;
 
 public class User implements Serializable, DAO<User> {
 
-    private String UUID, name, cpf, birthDate, email, password;
-    private int nAlertsDone;
+    private String email, password;
     private static User user;
+    @Exclude
+    private String uid;
+
     public final static String ADDRESS = "address";//Usado para passar a geoposição do usuário
 
     private User(){}
@@ -37,113 +40,102 @@ public class User implements Serializable, DAO<User> {
         return user;
     }
 
-    public static void setInstance(User user) {
-        User.user = user;
-    }
-
-    public String getUUID() {
-        return UUID;
-    }
-
-    public void setUUID(String UUID) {
-        this.UUID = UUID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
-    }
-
     public String getEmail() {
-        return email;
+        return user.email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        user.email = email;
     }
 
     public String getPassword() {
-        return password;
+        return user.password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        user.password = password;
+    }
+    public String getUID() {
+        return user.uid;
     }
 
-    public int getnAlertsDone() {
-        return nAlertsDone;
+    public void setUID(String uid) {
+        user.uid = uid;
     }
 
-    public void setnAlertsDone(int nAlertsDone) {
-        this.nAlertsDone = nAlertsDone;
-    }
-
-    public static void doLogin(String email, String password, Activity activity,
-                               final MainMVP.ICallbackPresenter presenter) {
-        FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
-        auth.signInWithEmailAndPassword( email, password ).
-                addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if( task.isSuccessful() ) {
-                            presenter.onSuccessTask(Constants.DO_LOGIN, null);
-                        } else {
-                            presenter.onFailedTask(Constants.DO_LOGIN);
+    public void doLogin(Activity activity, final LoginUserCallback callback) {
+        if(user.getEmail() != null && user.getPassword()!= null) {
+            FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
+            auth.signInWithEmailAndPassword(user.getEmail(), user.getPassword() ).
+                    addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()) {
+                                user.setUID(ConnectionFactory.getFirebaseAuth().getUid());
+                                Log.i("Script", "UID? " + user.getUID());
+                                callback.onLoginSuccess();
+                            } else {
+                                callback.onFailedLogin();
+                            }
                         }
-                    }
-                });
+                    });
+        }
+
     }
 
-    public static void sendPassword(String email, final MainMVP.ICallbackPresenter presenter) {
-        FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
-        auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    presenter.onSuccessTask(Constants.SEND_PASSWORD,null);
-                } else {
-                    presenter.onFailedTask(Constants.SEND_PASSWORD);
+    public void sendPassword(final SendPasswordCallback callback) {
+        if(user.getEmail()!= null) {
+            FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
+            auth.sendPasswordResetEmail(user.getEmail()).addOnCompleteListener(
+                    new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        callback.onSendSuccess();
+                    } else {
+                        callback.onFailedToSend();
+                    }
                 }
-            }
-        });
+            });
+        }
+    }
+
+    public void register(final RegisterUserCallback callback) {
+        if(user.getEmail()!=null && user.getPassword()!= null) {
+            FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
+            auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).
+                    addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                FirebaseUser fUser = ConnectionFactory.getFirebaseUser();
+                                User u = User.getInstance();
+                                u.setUID(fUser.getUid());
+                                callback.onUserRegistered();
+                            } else {
+                                callback.onFailedToRegisterUser();
+                            }
+                        }
+                    });
+        }
     }
 
     @Override
-    public User find(final String userUId, final MainMVP.ICallbackPresenter presenter) {
+    public void find(final String userUId, final DAOCallback<User> callback) {
         Log.i("Script", "Buscando usuário com uid: " + userUId);
         final User[] u = new User[1];
         final DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
         ValueEventListener listener = new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 u[0] = dataSnapshot.getValue(User.class);
                 Log.i("Script", dataSnapshot.getValue(User.class).toString());
                 if (u[0] != null) {
                     Log.i("Script", "Pegando dados do usuário: " + u[0].toString());
-                    presenter.onSuccessTask(Constants.FIND_USER, u[0]);
                     databaseReference.child(userUId).removeEventListener(this);
                 } else {
                     Log.e("Script", "O usuário obitido é nulo!");
-                    presenter.onFailedTask(Constants.FIND_USER);
                     databaseReference.child(userUId).removeEventListener(this);
                 }
             }
@@ -151,16 +143,14 @@ public class User implements Serializable, DAO<User> {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.i("Script", "Falha ao encontrar usuário");
-                presenter.onFailedTask(Constants.FIND_USER);
                 databaseReference.child(userUId).removeEventListener(this);
             }
         };
         databaseReference.child(userUId).addValueEventListener(listener);
-        return u[0];
     }
 
     @Override
-    public void insert(final User user, final MainMVP.ICallbackPresenter presenter) {
+    public void insert(final User user, final DAOCallback<User> callback) {
         FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
         auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).
                 addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -168,28 +158,28 @@ public class User implements Serializable, DAO<User> {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
                             FirebaseUser fUser = ConnectionFactory.getFirebaseUser();
-                            user.setUUID(fUser.getUid());
+                            //user.setUUID(fUser.getUid());
                             DatabaseReference db = ConnectionFactory.getUsersDatabaseReferente();
-                            db.child(user.getUUID()).setValue(user);
-                            presenter.onSuccessTask(Constants.NEW_USER,null);
+                            //db.child(user.getUUID()).setValue(user);
+                            //presenter.onSuccessTask(Constants.NEW_USER,null);
                         } else {
-                            presenter.onFailedTask(Constants.NEW_USER);
+                            //presenter.onFailedTask(Constants.NEW_USER);
                         }
                     }
                 });
     }
 
     @Override
-    public void update(User user, final MainMVP.ICallbackPresenter presenter) {
+    public void update(User user, final DAOCallback<User> callback) {
         DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
-        databaseReference.child(user.getUUID()).
+        databaseReference.child(user.getUID()).
                 setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
-                    presenter.onSuccessTask(Constants.UPDATED_USER, null);
+                    callback.onObjectUpdated();
                 } else {
-                    presenter.onFailedTask(Constants.UPDATED_USER);
+                    callback.onFailedTask();
                 }
             }
         });
@@ -203,13 +193,23 @@ public class User implements Serializable, DAO<User> {
     @Override
     public String toString() {
         return "User{" +
-                "UUID='" + user.UUID + '\'' +
-                ", name='" + user.name + '\'' +
-                ", cpf='" + user.cpf + '\'' +
-                ", birthDate='" + user.birthDate + '\'' +
-                ", email='" + user.email + '\'' +
-                ", password='" + user.password + '\'' +
-                ", nAlertsDone=" + user.nAlertsDone +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 '}';
+    }
+
+    public interface RegisterUserCallback {
+        void onUserRegistered();
+        void onFailedToRegisterUser();
+    }
+
+    public interface LoginUserCallback {
+        void onLoginSuccess();
+        void onFailedLogin();
+    }
+
+    public interface SendPasswordCallback {
+        void onSendSuccess();
+        void onFailedToSend();
     }
 }

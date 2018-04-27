@@ -23,7 +23,8 @@ import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 import com.mobile.urbanfix.urban_fix.presenter.MainPresenter;
 
-public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener,
+public class MainActivity extends AppCompatActivity
+        implements  NavigationView.OnNavigationItemSelectedListener,
                                                                 MainMVP.IMainView {
 
     private Toolbar toolbar;
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.initializeUser();
     }
 
     @Override

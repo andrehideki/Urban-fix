@@ -1,6 +1,7 @@
 package com.mobile.urbanfix.urban_fix.view;
 
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ public class RegisterActivity   extends AppCompatActivity
                                 implements  View.OnClickListener,
                                             MainMVP.IRegisterView {
 
-    private EditText nameRegisterEditText, lastNameRegisterEditText, birthdayRegisterEditText,
+    private TextInputEditText nameRegisterEditText, lastNameRegisterEditText, birthdayRegisterEditText,
                         emailRegisterEditText, passwordRegisterEditText, cpfRegisterEditText;
     private Button finishRegisterButton;
 
@@ -28,12 +29,12 @@ public class RegisterActivity   extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         startMVP();
-        nameRegisterEditText        = (EditText) findViewById(R.id.nameRegisterEditText);
-        lastNameRegisterEditText    = (EditText) findViewById(R.id.lastNameRegisterEditText);
-        birthdayRegisterEditText    = (EditText) findViewById(R.id.birthdayRegisterEditText);
-        emailRegisterEditText       = (EditText) findViewById(R.id.emailRegisterEditText);
-        cpfRegisterEditText         = (EditText) findViewById(R.id.cpfRegisterEditText);
-        passwordRegisterEditText    = (EditText) findViewById(R.id.passwordRegisterEditText);
+        nameRegisterEditText        = (TextInputEditText) findViewById(R.id.nameRegisterEditText);
+        lastNameRegisterEditText    = (TextInputEditText) findViewById(R.id.lastNameRegisterEditText);
+        birthdayRegisterEditText    = (TextInputEditText) findViewById(R.id.birthdayRegisterEditText);
+        emailRegisterEditText       = (TextInputEditText) findViewById(R.id.emailRegisterEditText);
+        cpfRegisterEditText         = (TextInputEditText) findViewById(R.id.cpfRegisterEditText);
+        passwordRegisterEditText    = (TextInputEditText) findViewById(R.id.passwordRegisterEditText);
         finishRegisterButton        = (Button)   findViewById(R.id.finishAlertButton);
         finishRegisterButton.setOnClickListener(this);
     }
@@ -67,7 +68,12 @@ public class RegisterActivity   extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        presenter.registerUser();
+        presenter.registerUser(nameRegisterEditText.getText().toString(),
+                lastNameRegisterEditText.getText().toString(),
+                cpfRegisterEditText.getText().toString(),
+                birthdayRegisterEditText.getText().toString(),
+                emailRegisterEditText.getText().toString(),
+                passwordRegisterEditText.getText().toString());
     }
 
     private void startMVP() {

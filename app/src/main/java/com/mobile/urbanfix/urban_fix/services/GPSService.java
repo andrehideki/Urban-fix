@@ -14,6 +14,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class GPSService extends Service {
 
     private FusedLocationProviderClient locationProvider;
+    public static final String LAT_KEY = "LATITUDE";
+    public static final String LONG_KEY = "LONGITUDE";
 
     @SuppressLint("MissingPermission")
     @Override
@@ -26,7 +28,8 @@ public class GPSService extends Service {
                 Intent it = new Intent();
                 it.setAction("GPSHASBEENCONFIGURED");
                 if(location != null) {
-                    it.putExtra("LOCATION", location.getLatitude() + ";" + location.getLongitude());
+                    it.putExtra(LAT_KEY, location.getLatitude());
+                    it.putExtra(LONG_KEY, location.getLongitude());
                 }
                 sendBroadcast(it);
             }

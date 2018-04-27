@@ -5,31 +5,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
-import com.mobile.urbanfix.urban_fix.model.User;
-import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.AlertDialogFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.MapsFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.MyAlertsFragment;
 
-public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackPresenter {
+public class MainPresenter implements MainMVP.IMainPresenter {
 
     private MainMVP.IMainView view;
-    public static final String TAG_STACK = "STACK";
     public FragmentManager fragmentManager;
 
     public MainPresenter(MainMVP.IMainView view) {
         this.view = view;
-    }
-
-    @Override
-    public void initializeUser() {
-        User user = User.getInstance();
     }
 
     @Override
@@ -41,13 +32,12 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
         activity.setTitle(R.string.fragment_map_title);
     }
 
-
     @Override
     public void openAlertView(AppCompatActivity activity) {
-        AlertFragment alertFragment = new AlertFragment();
+        AlertDialogFragment alertDialogFragment = new AlertDialogFragment();
         if(fragmentManager == null) fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.mainLayout, alertFragment).commit();
+        ft.replace(R.id.mainLayout, alertDialogFragment).commit();
         activity.setTitle(R.string.fragment_alert_title);
     }
 
@@ -91,15 +81,5 @@ public class MainPresenter implements MainMVP.IMainPresenter, MainMVP.ICallbackP
                 });
         builder.setIcon(R.drawable.ic_warning);
         builder.show();
-    }
-
-    @Override
-    public void onSuccessTask(Constants task, Object o) {
-
-    }
-
-    @Override
-    public void onFailedTask(Constants task) {
-        Log.e("Script", "Erro");
     }
 }

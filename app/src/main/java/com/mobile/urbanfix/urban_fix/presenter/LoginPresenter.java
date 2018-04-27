@@ -1,5 +1,6 @@
 package com.mobile.urbanfix.urban_fix.presenter;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,36 +13,99 @@ import android.widget.EditText;
 import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
+import com.mobile.urbanfix.urban_fix.model.DAO;
+import com.mobile.urbanfix.urban_fix.model.Person;
 import com.mobile.urbanfix.urban_fix.model.User;
 import com.mobile.urbanfix.urban_fix.view.ForgotPasswordActivity;
 import com.mobile.urbanfix.urban_fix.view.MainActivity;
 import com.mobile.urbanfix.urban_fix.view.RegisterActivity;
 
-public class LoginPresenter implements MainMVP.ILoginPresenter,
-        MainMVP.ICallbackPresenter {
+
+public class LoginPresenter implements MainMVP.ILoginPresenter {
 
     private MainMVP.ILoginView view;
-    public static final String EMAIL_KEY = "email";
-    public static final String PASSWORD_KEY = "passwd";
-    public static final String REMEMBER_KEY = "remember";
+    private Person person;
+    private User user;
     public ProgressDialog dialog;
+
 
     public LoginPresenter(MainMVP.ILoginView view) {
         this.view = view;
+        this.person = Person.getInstance();
+        this.user = User.getInstance();
     }
 
     @Override
-    public void doLogin(String email, String password, boolean rememberUser, AppCompatActivity activity) {
+    public void doLogin(final String email, final String password,
+                        final boolean rememberUser, final AppCompatActivity activity) {
         Log.i("Script", "Verificando campos");
         if(verifyValues(email, password)) {
+
+            final Context context = view.getContext();
             Log.i("Script", "Campos válidos. Tentando realizar Login");
-            dialog = new ProgressDialog(activity);
+            dialog = new ProgressDialog(context);
             dialog.setMessage(activity.getString(R.string.login_progressdialog_message));
-            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             dialog.show();
-            User.doLogin( email, password,  activity, this );
-            if(rememberUser) saveUser(email, password, rememberUser, activity);
+
+            user.setEmail(email);
+            user.setPassword(password);
+
+            user.doLogin((Activity) context, new User.LoginUserCallback() {
+                @Override
+                public void onLoginSuccess() {
+                    Log.i("Script","Login realizado com sucesso");
+                    dialog.setMessage(context.getString(R.string.login_finding_user));
+                    tryToFindPerson();
+                    if(rememberUser) saveUser(email, password, rememberUser, (AppCompatActivity) context);
+                }
+
+                @Override
+                public void onFailedLogin() {
+                    Log.i("Script","Falha ao realizar Login...");
+                    view.showMessage(context.getString(R.string.login_failed_login));
+                    dialog.cancel();
+                }
+            });
         }
+    }
+
+    private void tryToFindPerson() {
+        person.find(user.getUID(), new DAO.DAOCallback<Person>() {
+            @Override
+            public void onObjectFinded(Person result) {
+                Context context = view.getContext();
+                person.setName(result.getName());
+                person.setCpf(result.getCpf());
+                person.setBirthDate(result.getBirthDate());
+                person.setnAlertsDone(result.getnAlertsDone());
+                view.showMessage(context.getString(R.string.login_welcome_user));
+                dialog.cancel();
+                openMainView(context);
+
+                Log.i("Script", person.toString());
+            }
+
+            @Override
+            public void onObjectInserted() {
+
+            }
+
+            @Override
+            public void onObjectUpdated() {
+
+            }
+
+            @Override
+            public void onObjectDeleted() {
+
+            }
+
+            @Override
+            public void onFailedTask() {
+                view.showMessage(view.getContext().getString(R.string.login_failed_find_on_database));
+                dialog.cancel();
+            }
+        });
     }
 
     @Override
@@ -69,44 +133,6 @@ public class LoginPresenter implements MainMVP.ILoginPresenter,
     public void openMainView(Context activity) {
         Intent i = new Intent(activity, MainActivity.class);
         activity.startActivity(i);
-    }
-
-    @Override
-    public void onSuccessTask(Constants task, Object user) {
-        if(task == Constants.FIND_USER) {
-            Context context = view.getContext();
-            Log.i("Script", "Usuário carregado do banco de dados. Abrindo tela principal");
-            User findedUser = (User) user;
-            User.setInstance(findedUser);
-            Log.i("Script", "Inforamações do usuário: " + User.getInstance().toString());
-
-            dialog.dismiss();
-            view.showMessage(context.getString(R.string.login_welcome_user));
-            //view.finishView();
-            openMainView(context);
-
-        } else if(task == Constants.DO_LOGIN) {
-            Log.i("Script","Login realizado com sucesso");
-            Context context = view.getContext();
-            view.showMessage(context.getString(R.string.login_success));
-            Log.i("Script", "Buscando informações do usuário");
-            User u = User.getInstance();
-            u.find(ConnectionFactory.getFirebaseUser().getUid(),this);
-        }
-    }
-
-    @Override
-    public void onFailedTask(Constants task) {
-        if(task == Constants.FIND_USER) {
-            Log.i("Script", "Falha ao encontrar o usuário no banco de dados.");
-            Context context = view.getContext();
-            view.showMessage(context.getString(R.string.login_failed_find_on_database));
-        } else if(task == Constants.DO_LOGIN) {
-            Log.i("Script","Falha ao realizar Login...");
-            Context context = view.getContext();
-            dialog.dismiss();
-            view.showMessage(context.getString(R.string.login_failed_login));
-        }
     }
 
     private boolean verifyValues( String email, String password ) {

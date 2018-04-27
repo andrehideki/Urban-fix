@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
-import com.mobile.urbanfix.urban_fix.presenter.ProblemDialogPresenter;
+import com.mobile.urbanfix.urban_fix.presenter.AlertDialogPresenter;
 
 public class ProblemDialogFragment extends DialogFragment implements MainMVP.IProblemDialogView {
 
@@ -27,6 +27,12 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
         ProblemDialogFragment dialogFragment = new ProblemDialogFragment();
         ProblemDialogFragment.problem = problem;
         return dialogFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.AppTheme);
     }
 
     @Nullable
@@ -48,6 +54,7 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
         presenter.setInformations(problem, kindOfProblemTextView, dateTextView, statusTextView, addressTextView,
                 descriptionTextView, urgencyTextView, problemPhotoImageView);
 
+
         return view;
     }
 
@@ -58,6 +65,6 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
     }
 
     private void startMVP() {
-        this.presenter = new ProblemDialogPresenter(this);
+        this.presenter = new AlertDialogPresenter(this);
     }
 }

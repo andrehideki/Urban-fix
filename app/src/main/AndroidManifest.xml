@@ -15,9 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".view.LoginActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,41 +24,44 @@
         </activity>
         <activity android:name=".view.RegisterActivity" />
         <activity android:name=".view.ForgotPasswordActivity" />
-        <activity android:windowSoftInputMode="adjustResize|adjustPan"
+        <activity
             android:name=".view.MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="userPortrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <receiver android:name=".services.GpsReceiver">
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="GPSHASBEENCONFIGURED"/>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="GPSHASBEENCONFIGURED" />
             </intent-filter>
         </receiver>
         <receiver android:name=".services.FetchAddressReceiver">
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="ADDRESSESHASBEENDOWNLOADED"/>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="ADDRESSESHASBEENDOWNLOADED" />
             </intent-filter>
         </receiver>
 
         <provider
-            android:authorities="com.mobile.urbanfix"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.mobile.urbanfix"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-            </meta-data>
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
 
         <service android:name=".services.GPSService" />
-        <service android:name=".services.FetchAddressSevice"/>
+        <service android:name=".services.FetchAddressSevice" />
 
     </application>
 

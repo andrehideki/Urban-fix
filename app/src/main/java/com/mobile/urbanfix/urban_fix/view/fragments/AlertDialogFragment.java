@@ -11,7 +11,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
 import java.util.ArrayList;
 
-public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
+public class AlertDialogFragment extends Fragment implements  MainMVP.IAlertView,
                                                         View.OnClickListener,
                                                         AdapterView.OnItemSelectedListener {
 

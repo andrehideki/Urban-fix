@@ -47,11 +47,15 @@ public final class ConnectionFactory {
     }
 
     public static DatabaseReference getUsersDatabaseReferente() {
-        return getDatabaseReference().child("User");
+        return getDatabaseReference().child("Users");
     }
 
     public static DatabaseReference getAlertsDatabaseReference() {
         return getDatabaseReference().child("Alerts");
+    }
+
+    public static DatabaseReference getPersonsDatabaseReference() {
+        return getDatabaseReference().child("Persons");
     }
 
 

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class Problem implements DAO<Problem> {
 
     private String id;
-    private String location;
+    //private String location;
     private String address;
     private String description;
     private String kindOfProblem;
@@ -34,6 +34,8 @@ public class Problem implements DAO<Problem> {
     private String photoId;
     private boolean checked;
     private String urgency;
+    private int validations;
+    private Location location;
 
 
     public String getId() {
@@ -44,7 +46,7 @@ public class Problem implements DAO<Problem> {
         this.id = id;
     }
 
-    public String getLocation() {
+    /*public String getLocation() {
         return location;
     }
 
@@ -58,6 +60,14 @@ public class Problem implements DAO<Problem> {
 
     public double getLogintude() {
         return Double.parseDouble(this.location.split(";")[1]);
+    }*/
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getDescription() {
@@ -140,38 +150,40 @@ public class Problem implements DAO<Problem> {
     }
 
     @Override
-    public Problem find(String s, MainMVP.ICallbackPresenter presenter) {
-        return null;
+    public void find(String s, final DAOCallback<Problem> callback) {
+
     }
 
     @Override
-    public void insert(Problem object, final MainMVP.ICallbackPresenter presenter) {
+    public void insert(Problem object, final DAOCallback<Problem> callback) {
         DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
         databaseReference.child(object.getDate()).setValue(object).
                 addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
-                            presenter.onSuccessTask(Constants.NEW_ALERT, null);
+                            //presenter.onSuccessTask(Constants.NEW_ALERT, null);
                         } else {
-                            presenter.onFailedTask(Constants.NEW_ALERT);
+                            //presenter.onFailedTask(Constants.NEW_ALERT);
                         }
                     }
                 });
     }
 
     @Override
-    public void update(Problem object, MainMVP.ICallbackPresenter presenter) {
+    public void update(Problem object, DAOCallback<Problem> callback) {
 
     }
+
+
 
     @Override
     public void delete(Problem object, MainMVP.ICallbackPresenter presenter) {
 
     }
 
-    public static void insertProblemPhoto(Bitmap photoBitmap, Problem problem,
-                                   final MainMVP.ICallbackPresenter callback) throws IOException {
+    public void insertProblemPhoto(Bitmap photoBitmap, Problem problem,
+                                   final StorageCallback callback) throws IOException {
         StorageReference storage = ConnectionFactory.getFirebaseStorageReference();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -181,10 +193,10 @@ public class Problem implements DAO<Problem> {
                 .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if(!task.isSuccessful()) {
-                    callback.onFailedTask(Constants.NEW_PHOTO);
+                if(task.isSuccessful()) {
+                    callback.onSuccess();
                 } else {
-                    callback.onSuccessTask(Constants.NEW_PHOTO, null);
+                    callback.onFailed();
                 }
             }
         });
@@ -226,5 +238,10 @@ public class Problem implements DAO<Problem> {
 
             }
         });
+    }
+
+    public interface StorageCallback {
+        void onSuccess();
+        void onFailed();
     }
 }

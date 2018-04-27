@@ -29,9 +29,8 @@ import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.Problem;
-import com.mobile.urbanfix.urban_fix.model.User;
 import com.mobile.urbanfix.urban_fix.view.dialog.ProblemDialogFragment;
-import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.AlertDialogFragment;
 
 import java.util.ArrayList;
 
@@ -55,7 +54,7 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
 
     @Override
     public void openAlertFragment(AppCompatActivity activity) {
-        AlertFragment fragment = new AlertFragment();
+        AlertDialogFragment fragment = new AlertDialogFragment();
         FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainLayout, fragment);
         fragmentTransaction.addToBackStack(TAG_STACK);
@@ -103,8 +102,8 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Problem p = dataSnapshot.getValue(Problem.class);
-                double lat = p.getLatitude();
-                double longi = p.getLogintude();
+                double lat = p.getLocation().getLatitude();
+                double longi = p.getLocation().getLongitude();
                 problems.add(p);
                 int currentIndex = problems.size() - 1;
                 markOnMap(lat, longi, p.getKindOfProblem(), currentIndex);

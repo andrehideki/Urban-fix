@@ -31,7 +31,7 @@ public class MyAlertsPresenter implements MainMVP.IMyAlertsPresenter, MainMVP.IC
 
     @Override
     public void configureUserInformations() {
-        view.setUserName(user.getName());
+        //view.setUserName(user.getName());
         view.setNumberOfAlerts(userAlerts.size());
     }
 

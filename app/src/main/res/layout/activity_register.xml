@@ -33,7 +33,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/nameRegisterEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/lastNameRegisterEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/birthdayRegisterEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="wrap_content"
                     android:layout_width="match_parent">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/emailRegisterEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/passwordRegisterEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/cpfRegisterEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -119,8 +119,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/background_light"
         android:text="@string/register_finish_button"
-        android:textColor="@color/colorPrimaryDark"
-        android:onClick="actionfinishRegisterButton"/>
+        android:textColor="@color/colorPrimaryDark"/>
 
 
 </LinearLayout>

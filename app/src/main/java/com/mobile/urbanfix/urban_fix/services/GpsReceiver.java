@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
 public class GpsReceiver extends BroadcastReceiver {
@@ -16,9 +17,11 @@ public class GpsReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String received = intent.getStringExtra("LOCATION");
-        if(received != null) {
-            presenter.onSuccessGetUserLocation(received);
+        double latitude = intent.getDoubleExtra(GPSService.LAT_KEY, 0.0);
+        double longitude = intent.getDoubleExtra(GPSService.LONG_KEY, 0.0);
+        if(latitude != 0 && longitude !=0) {
+            LatLng latLng = new LatLng(latitude, longitude);
+            presenter.onSuccessGetUserLocation(latLng);
         } else {
             presenter.onFailedGetUserLocation(context);
         }

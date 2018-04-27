@@ -49,7 +49,7 @@ public class MyAlertsAdapter extends RecyclerView.Adapter<MyAlertsAdapter.MyAler
         holder.dateTextView.setText(problem.getDate());
         holder.kindOfProblemTextView.setText(problem.getKindOfProblem());
         holder.statusTextView.setText(problem.getStatus());
-        holder.locationTextView.setText(problem.getLocation());
+        //holder.locationTextView.setText(problem.getLocation());
         holder.descriptionTextView.setText(problem.getDescription());
     }
 

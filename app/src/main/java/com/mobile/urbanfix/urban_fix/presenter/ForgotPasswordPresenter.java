@@ -13,17 +13,25 @@ public class ForgotPasswordPresenter implements MainMVP.IForgotPasswordPresenter
     public ForgotPasswordPresenter(MainMVP.IForgotPasswordView view) {
         this.view = view;
     }
+
     @Override
-    public void sendRecoverPasswordMessage() {
-        String email = view.getEmail();
-        if(email!=null) {
-            if (!email.isEmpty()) {
-                User.sendPassword(email, this);
-            } else {
-                view.showMessage(((ForgotPasswordActivity) view).
+    public void sendRecoverPasswordMessage(final String email) {
+        if(!email.isEmpty()) {
+            User user = User.getInstance();
+            user.setEmail(email);
+            user.sendPassword(new User.SendPasswordCallback() {
+                @Override
+                public void onSendSuccess() {
+                    view.showMessage(view.getContext().getString(R.string.forgot_password_msg_sended) + email);
+                }
+
+                @Override
+                public void onFailedToSend() {
+                    view.showMessage(view.getContext().getString(R.string.forgot_password_email_failed));
+                }
+            });
+        } else view.showMessage(((ForgotPasswordActivity) view).
                         getString(R.string.forgot_password_email_is_empty));
-            }
-        }
     }
 
     @Override

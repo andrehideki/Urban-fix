@@ -15,12 +15,12 @@ import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 
-public class ProblemDialogPresenter implements MainMVP.IProblemDialogPresenter, MainMVP.ICallbackPresenter {
+public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, MainMVP.ICallbackPresenter {
 
     private MainMVP.IProblemDialogView view;
     public final int ONE_MEGABYTE = 1024 * 1024;
 
-    public ProblemDialogPresenter(MainMVP.IProblemDialogView view) {
+    public AlertDialogPresenter(MainMVP.IProblemDialogView view) {
         this.view = view;
     }
 
