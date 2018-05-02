@@ -108,6 +108,10 @@
     <string name="register_creating_new_user">Criando novo usuário</string>
     <string name="register_inserting_user_on_db">Cadastrando usuário no banco de dados!</string>
     <string name="login_finding_user">Buscando usuário</string>
+    <string name="problem_feelling_label">Reação</string>
+    <string name="problem_write_your_comment">Escreva seu comentário aqui</string>
+    <string name="problem_photo_description">Foto do problema</string>
+    <string name="problem_no_content">...</string>
 
     <string-array name="problems_array">
         <item>Selectione um problema</item>

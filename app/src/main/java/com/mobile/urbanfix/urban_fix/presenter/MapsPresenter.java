@@ -25,6 +25,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
@@ -43,8 +44,7 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
     private LocationManager locationManager;
     private GoogleMap googleMap;
     private ArrayList<Problem> problems;
-    public static final String TAG_STACK = "STACK";
-    public static final int LOCATION_REQUEST_CODE = 1998;
+    private static final int LOCATION_REQUEST_CODE = 1998;
 
     public MapsPresenter(MainMVP.IMapsView view) {
         this.view = view;
@@ -53,12 +53,8 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
 
 
     @Override
-    public void openAlertFragment(AppCompatActivity activity) {
-        AlertDialogFragment fragment = new AlertDialogFragment();
-        FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.mainLayout, fragment);
-        fragmentTransaction.addToBackStack(TAG_STACK);
-        fragmentTransaction.commit();
+    public void openAlertFragment() {
+        view.showMapsView();
     }
 
     @Override
@@ -82,9 +78,7 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
     }
 
     @Override
-    public void onRequestPermissionResult(Fragment fragment, int requestCode, String[] permissions, int[] grantResults) {
-
-    }
+    public void onRequestPermissionResult(Fragment fragment, int requestCode, String[] permissions, int[] grantResults) {}
 
     @Override
     public void initMap() {
@@ -96,7 +90,6 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
 
     @Override
     public void loadAlertsOnMap() {
-        //User user = User.getInstance();
         DatabaseReference alertsDatabaseReference = ConnectionFactory.getAlertsDatabaseReference();
         alertsDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -117,9 +110,6 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Problem p = dataSnapshot.getValue(Problem.class);
-                //String latLong[] = (p.getLocation()).split(";");
-                //double lat = Double.parseDouble( latLong[0] );
-                //double longi = Double.parseDouble( latLong[1]);
                 problems.remove(p);
             }
 

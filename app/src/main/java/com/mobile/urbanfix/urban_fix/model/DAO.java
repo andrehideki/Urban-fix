@@ -1,6 +1,6 @@
 package com.mobile.urbanfix.urban_fix.model;
 
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 
 public interface DAO<T> {
 

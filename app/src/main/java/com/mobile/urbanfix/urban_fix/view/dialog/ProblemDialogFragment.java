@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.model.Problem;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.presenter.AlertDialogPresenter;
 
 public class ProblemDialogFragment extends DialogFragment implements MainMVP.IProblemDialogView {
@@ -43,13 +43,13 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
         statusTextView, urgencyTextView;
         startMVP();
 
-        kindOfProblemTextView = (TextView) view.findViewById(R.id.kindOfProblemTextView);
-        dateTextView = (TextView) view.findViewById(R.id.dateTextView);
-        descriptionTextView = (TextView) view.findViewById(R.id.descriptionTextView);
-        addressTextView = (TextView) view.findViewById(R.id.addressTextView);
-        statusTextView = (TextView) view.findViewById(R.id.textView);
-        urgencyTextView = (TextView) view.findViewById(R.id.urgencyTextView);
-        problemPhotoImageView = (ImageView) view.findViewById(R.id.problemPhotoImageView);
+        kindOfProblemTextView = view.findViewById(R.id.kindOfProblemTextView);
+        dateTextView = view.findViewById(R.id.dateTextView);
+        descriptionTextView = view.findViewById(R.id.descriptionTextView);
+        addressTextView = view.findViewById(R.id.addressTextView);
+        statusTextView = view.findViewById(R.id.textView);
+        urgencyTextView = view.findViewById(R.id.urgencyTextView);
+        problemPhotoImageView = view.findViewById(R.id.problemPhotoImageView);
 
         presenter.setInformations(problem, kindOfProblemTextView, dateTextView, statusTextView, addressTextView,
                 descriptionTextView, urgencyTextView, problemPhotoImageView);

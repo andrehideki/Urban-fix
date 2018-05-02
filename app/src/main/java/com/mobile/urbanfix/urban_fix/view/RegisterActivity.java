@@ -2,16 +2,14 @@ package com.mobile.urbanfix.urban_fix.view;
 
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mobile.urbanfix.urban_fix.R;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.presenter.RegisterPresenter;
 
 public class RegisterActivity   extends AppCompatActivity
@@ -29,13 +27,13 @@ public class RegisterActivity   extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         startMVP();
-        nameRegisterEditText        = (TextInputEditText) findViewById(R.id.nameRegisterEditText);
-        lastNameRegisterEditText    = (TextInputEditText) findViewById(R.id.lastNameRegisterEditText);
-        birthdayRegisterEditText    = (TextInputEditText) findViewById(R.id.birthdayRegisterEditText);
-        emailRegisterEditText       = (TextInputEditText) findViewById(R.id.emailRegisterEditText);
-        cpfRegisterEditText         = (TextInputEditText) findViewById(R.id.cpfRegisterEditText);
-        passwordRegisterEditText    = (TextInputEditText) findViewById(R.id.passwordRegisterEditText);
-        finishRegisterButton        = (Button)   findViewById(R.id.finishAlertButton);
+        nameRegisterEditText        =  findViewById(R.id.nameRegisterEditText);
+        lastNameRegisterEditText    =  findViewById(R.id.lastNameRegisterEditText);
+        birthdayRegisterEditText    =  findViewById(R.id.birthdayRegisterEditText);
+        emailRegisterEditText       =  findViewById(R.id.emailRegisterEditText);
+        cpfRegisterEditText         =  findViewById(R.id.cpfRegisterEditText);
+        passwordRegisterEditText    =  findViewById(R.id.passwordRegisterEditText);
+        finishRegisterButton        =    findViewById(R.id.finishAlertButton);
         finishRegisterButton.setOnClickListener(this);
     }
 

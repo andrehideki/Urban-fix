@@ -1,16 +1,13 @@
 package com.mobile.urbanfix.urban_fix.presenter;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
-import com.mobile.urbanfix.urban_fix.Constants;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.R;
-import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.DAO;
 import com.mobile.urbanfix.urban_fix.model.Person;
 import com.mobile.urbanfix.urban_fix.model.User;
@@ -114,9 +111,7 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter {
     private boolean verifyFields(String values[]) {
         int i=0;
         for(;i<values.length && !(values[i].isEmpty());i++);
-        if(i == values.length)
-            return true;
-        return false;
+        return i == values.length? true : false;
     }
 
     public void openMainView() {

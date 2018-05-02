@@ -5,24 +5,16 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
-import com.google.firebase.database.ValueEventListener;
-import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
 
 import java.io.Serializable;
 
-public class User implements Serializable, DAO<User> {
+public class User implements Serializable {
 
     private String email, password;
     private static User user;
@@ -119,7 +111,7 @@ public class User implements Serializable, DAO<User> {
                     });
         }
     }
-
+/*
     @Override
     public void find(final String userUId, final DAOCallback<User> callback) {
         Log.i("Script", "Buscando usuário com uid: " + userUId);
@@ -189,7 +181,7 @@ public class User implements Serializable, DAO<User> {
     public void delete(User user, MainMVP.ICallbackPresenter presenter) {
 
     }
-
+*/
     @Override
     public String toString() {
         return "User{" +

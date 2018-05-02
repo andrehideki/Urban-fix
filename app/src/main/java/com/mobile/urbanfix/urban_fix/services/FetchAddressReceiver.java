@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.mobile.urbanfix.urban_fix.R;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 
 import java.util.ArrayList;
 

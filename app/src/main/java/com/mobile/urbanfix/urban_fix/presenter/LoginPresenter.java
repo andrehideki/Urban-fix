@@ -10,9 +10,8 @@ import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.mobile.urbanfix.urban_fix.Constants;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.R;
-import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.DAO;
 import com.mobile.urbanfix.urban_fix.model.Person;
 import com.mobile.urbanfix.urban_fix.model.User;

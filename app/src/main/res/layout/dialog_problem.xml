@@ -1,31 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:theme="@style/AppTheme">
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/problemPhotoImageView"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="200dp"
                 android:adjustViewBounds="false"
                 android:cropToPadding="false"
                 android:scaleType="fitXY"
+                android:contentDescription="@string/problem_photo_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_menu_camera" />
+                app:srcCompat="@drawable/problem_photo" />
 
             <TextView
                 android:id="@+id/kindOfProblemTextView"
@@ -33,41 +29,39 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Tipo de problema"
+                android:text="@string/problem_no_content"
                 app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/problemPhotoImageView" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewU" />
 
             <TextView
                 android:id="@+id/addressTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="Endereço"
-                app:layout_constraintStart_toEndOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/dateTextView" />
+                android:text="string/problem_no_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
             <TextView
                 android:id="@+id/descriptionTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_width="10dp"
+                android:layout_height="17dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Descrição"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="string/problem_no_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/textViewSt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Estado atual"
+                android:text="string/problem_no_content"
                 app:layout_constraintStart_toEndOf="@+id/textView5"
-                app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <TextView
                 android:id="@+id/dateTextView"
@@ -75,9 +69,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Data"
+                android:text="string/problem_no_content"
                 app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toBottomOf="@+id/kindOfProblemTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
 
             <TextView
                 android:id="@+id/urgencyTextView"
@@ -85,9 +79,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Urgencia"
-                app:layout_constraintStart_toEndOf="@+id/textView6"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                android:text="string/problem_no_content"
+                app:layout_constraintStart_toEndOf="@+id/textViewU"
+                app:layout_constraintTop_toBottomOf="@+id/problemPhotoImageView" />
 
             <TextView
                 android:id="@+id/textView"
@@ -95,9 +89,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_kind_of_problem"
                 android:text="@string/problem_kind_of_problem_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/problemPhotoImageView" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewU" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -105,9 +100,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_date"
                 android:text="@string/problem_date_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -115,9 +111,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_address"
                 android:text="@string/problem_address_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -125,19 +122,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_status"
                 android:text="@string/problem_status_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/textViewU"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_urgency"
                 android:text="@string/problem_urgency_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/problemPhotoImageView" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -145,10 +144,55 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_description"
                 android:text="@string/problem_description"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewF" />
+
+            <TextView
+                android:id="@+id/textViewF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:drawableStart="@drawable/ic_felling"
+                android:text="@string/problem_feelling_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewSt" />
+
+            <TextView
+                android:id="@+id/fellingTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="string/problem_no_content"
+                app:layout_constraintStart_toEndOf="@+id/textViewF"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/textview_border"
+                android:text="@string/problem_write_your_comment"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/descriptionTextView" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
         </android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.CardView>
-</LinearLayout>
+</ScrollView>

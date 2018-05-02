@@ -10,7 +10,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 
 public class Person implements DAO<Person> {
 

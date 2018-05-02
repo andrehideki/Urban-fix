@@ -13,10 +13,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.adapter.MyAlertsAdapter;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,8 +24,6 @@ import java.util.ArrayList;
 public class Problem implements DAO<Problem> {
 
     private String id;
-    //private String location;
-    private String address;
     private String description;
     private String kindOfProblem;
     private String date;
@@ -45,22 +42,6 @@ public class Problem implements DAO<Problem> {
     public void setId(String id) {
         this.id = id;
     }
-
-    /*public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public double getLatitude() {
-        return Double.parseDouble(this.location.split(";")[0]);
-    }
-
-    public double getLogintude() {
-        return Double.parseDouble(this.location.split(";")[1]);
-    }*/
 
     public Location getLocation() {
         return location;
@@ -122,14 +103,6 @@ public class Problem implements DAO<Problem> {
         return urgency;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public void setUrgency(String urgency) {
         this.urgency = urgency;
     }
@@ -162,9 +135,9 @@ public class Problem implements DAO<Problem> {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
-                            //presenter.onSuccessTask(Constants.NEW_ALERT, null);
+                            callback.onObjectInserted();
                         } else {
-                            //presenter.onFailedTask(Constants.NEW_ALERT);
+                            callback.onFailedTask();
                         }
                     }
                 });
@@ -176,14 +149,13 @@ public class Problem implements DAO<Problem> {
     }
 
 
-
     @Override
     public void delete(Problem object, MainMVP.ICallbackPresenter presenter) {
 
     }
 
     public void insertProblemPhoto(Bitmap photoBitmap, Problem problem,
-                                   final StorageCallback callback) throws IOException {
+                                   final StorageCallback callback)  {
         StorageReference storage = ConnectionFactory.getFirebaseStorageReference();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);

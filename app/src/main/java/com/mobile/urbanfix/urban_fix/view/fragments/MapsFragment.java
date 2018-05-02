@@ -1,5 +1,6 @@
 package com.mobile.urbanfix.urban_fix.view.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,13 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
+import com.mobile.urbanfix.urban_fix.presenter.MainPresenter;
 import com.mobile.urbanfix.urban_fix.presenter.MapsPresenter;
 import com.mobile.urbanfix.urban_fix.R;
 
@@ -23,6 +26,7 @@ public class MapsFragment extends Fragment
 
     private FloatingActionButton alertButton;
     private MainMVP.IMapsPresenter presenter;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,16 +44,17 @@ public class MapsFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         startMVP();
         presenter.getLocationPermissions(getActivity());
-        alertButton = (FloatingActionButton) view.findViewById(R.id.alertButton);
+        alertButton = view.findViewById(R.id.alertButton);
         alertButton.setOnClickListener(this);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         presenter.startLocationListener(getActivity());
         presenter.initMap();
     }
+
 
     @Override
     public Context getContext() {
@@ -88,7 +93,7 @@ public class MapsFragment extends Fragment
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.alertButton){
-            presenter.openAlertFragment((AppCompatActivity) getActivity());
+            presenter.openAlertFragment();
         }
     }
 
@@ -96,6 +101,16 @@ public class MapsFragment extends Fragment
     public FragmentManager getCurrentFragmentManager() {
         return getFragmentManager();
     }
+
+    @Override
+    public void showMapsView() {
+        AlertDialogFragment fragment = new AlertDialogFragment();
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.mainLayout, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private void startMVP() {
         this.presenter = new MapsPresenter(this);
     }

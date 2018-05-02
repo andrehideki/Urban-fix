@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.presenter.AlertPresenter;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 
 import java.util.ArrayList;
 
@@ -53,15 +53,15 @@ public class AlertDialogFragment extends Fragment implements  MainMVP.IAlertView
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         startMVP();
-        photoImageView  = (ImageView) view.findViewById(R.id.photoImageView);
-        urgencyTextView = (TextView) view.findViewById(R.id.urgencyTextView);
-        alertDescriptionEditText = (TextInputEditText) view.findViewById(R.id.alertDescriptionEditText);
-        alertDescriptionLayout = (TextInputLayout) view.findViewById(R.id.descriptionTextInputLayout);
-        typeOfProblemSpinner = (Spinner) view.findViewById(R.id.typeOfProblemSpinner);
-        userAddressSpinner = (Spinner) view.findViewById(R.id.userAddressSpinner);
-        urgencySeekBar = (SeekBar) view.findViewById(R.id.urgencySeekBar);
-        cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
-        finishAlertButton = (Button) view.findViewById(R.id.finishAlertButton);
+        photoImageView  =  view.findViewById(R.id.photoImageView);
+        urgencyTextView = view.findViewById(R.id.urgencyTextView);
+        alertDescriptionEditText = view.findViewById(R.id.alertDescriptionEditText);
+        alertDescriptionLayout = view.findViewById(R.id.descriptionTextInputLayout);
+        typeOfProblemSpinner = view.findViewById(R.id.typeOfProblemSpinner);
+        userAddressSpinner = view.findViewById(R.id.userAddressSpinner);
+        urgencySeekBar = view.findViewById(R.id.urgencySeekBar);
+        cameraButton = view.findViewById(R.id.cameraButton);
+        finishAlertButton = view.findViewById(R.id.finishAlertButton);
 
         alertDescriptionEditText.setOnClickListener(this);
         finishAlertButton.setOnClickListener(this);
@@ -129,7 +129,7 @@ public class AlertDialogFragment extends Fragment implements  MainMVP.IAlertView
 
     @Override
     public void finishView() {
-        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.popBackStack();
     }
 
@@ -152,7 +152,7 @@ public class AlertDialogFragment extends Fragment implements  MainMVP.IAlertView
 
     @Override
     public void onAddressHasBeenFetched(ArrayList<String> addressesList) {
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(),
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, addressesList);
         userAddressSpinner.setAdapter(spinnerAdapter);
         userAddressSpinner.setOnItemSelectedListener(this);

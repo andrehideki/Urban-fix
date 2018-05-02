@@ -3,7 +3,6 @@ package com.mobile.urbanfix.urban_fix.view;
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.presenter.LoginPresenter;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, MainMVP.ILoginView {
 
@@ -29,16 +28,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         startMVP();
-        emailLoginEditText = (TextInputEditText) findViewById(R.id.emailLoginEditText);
+        emailLoginEditText =  findViewById(R.id.emailLoginEditText);
         emailLoginEditText.setOnClickListener(this);
-        passwordLoginEditText = (TextInputEditText) findViewById(R.id.passwordLoginEditText);
+        passwordLoginEditText =  findViewById(R.id.passwordLoginEditText);
         passwordLoginEditText.setOnClickListener(this);
-        rememberLoginCheckBox = (CheckBox) findViewById(R.id.rememberLoginCheckBox);
-        loginButton = (Button) findViewById(R.id.loginButton);
+        rememberLoginCheckBox =  findViewById(R.id.rememberLoginCheckBox);
+        loginButton =  findViewById(R.id.loginButton);
         loginButton.setOnClickListener( this );
-        forgotPasswordTextView = (TextView) findViewById(R.id.forgotPasswordTextView);
+        forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
         forgotPasswordTextView.setOnClickListener( this );
-        registerButton = (Button) findViewById(R.id.registerButton);
+        registerButton = findViewById(R.id.registerButton);
         registerButton.setOnClickListener( this );
         loginPresenter.fillFields(emailLoginEditText, passwordLoginEditText, rememberLoginCheckBox,
                 this);

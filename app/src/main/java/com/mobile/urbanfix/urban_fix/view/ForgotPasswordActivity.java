@@ -1,7 +1,6 @@
 package com.mobile.urbanfix.urban_fix.view;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.presenter.ForgotPasswordPresenter;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 
 public class ForgotPasswordActivity extends AppCompatActivity
                                     implements  MainMVP.IForgotPasswordView,
@@ -26,8 +25,8 @@ public class ForgotPasswordActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
         startMVP();
-        emailForgotPasswordEditText = (EditText) findViewById(R.id.emailForgotPasswordEditText);
-        resetPasswordButton = (Button) findViewById(R.id.resetPasswordButton);
+        emailForgotPasswordEditText =  findViewById(R.id.emailForgotPasswordEditText);
+        resetPasswordButton =  findViewById(R.id.resetPasswordButton);
         resetPasswordButton.setOnClickListener(this);
     }
 

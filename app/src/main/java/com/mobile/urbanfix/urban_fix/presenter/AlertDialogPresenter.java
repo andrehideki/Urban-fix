@@ -12,13 +12,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.mobile.urbanfix.urban_fix.Constants;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 
 public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, MainMVP.ICallbackPresenter {
 
     private MainMVP.IProblemDialogView view;
-    public final int ONE_MEGABYTE = 1024 * 1024;
+    private final int ONE_MEGABYTE = 1024 * 1024;
 
     public AlertDialogPresenter(MainMVP.IProblemDialogView view) {
         this.view = view;
@@ -32,7 +33,7 @@ public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, Ma
         kindOfProblemTextView.setText(problem.getKindOfProblem());
         dateTextView.setText(problem.getDate());
         statusTextView.setText(problem.getStatus());
-        addressTextView.setText(problem.getAddress());
+        addressTextView.setText(problem.getLocation().getAddress());
         descriptionTextView.setText(problem.getDescription());
         urgencyTextView.setText(problem.getUrgency());
         getProblemPhotoAssync(problem, this);

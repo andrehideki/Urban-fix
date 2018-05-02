@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 
 public class GpsReceiver extends BroadcastReceiver {
 

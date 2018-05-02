@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.adapter.MyAlertsAdapter;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.model.User;

@@ -1,36 +1,33 @@
 package com.mobile.urbanfix.urban_fix.view;
 
-import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mobile.urbanfix.urban_fix.R;
-import com.mobile.urbanfix.urban_fix.presenter.MainMVP;
+import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.presenter.MainPresenter;
+import com.mobile.urbanfix.urban_fix.view.fragments.AlertDialogFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.MapsFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.MyAlertsFragment;
+import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 
 public class MainActivity extends AppCompatActivity
         implements  NavigationView.OnNavigationItemSelectedListener,
-                                                                MainMVP.IMainView {
-
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle toggle;
-    private NavigationView navigationView;
+                                                                MainMVP.IMainView,
+        OnBackStackChangedListener {
     private MainMVP.IMainPresenter presenter;
 
     @Override
@@ -38,16 +35,18 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startMVP();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        presenter.openMapView(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+
+        showMapView();
     }
 
     @Override
@@ -62,42 +61,23 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            presenter.doLogoff(this);
+            presenter.onBackPressed();
         }
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
-        switch (id) {
-            case R.id.nav_alert:
-                presenter.openAlertView(this);
-                break;
-            case R.id.nav_notices:
-                presenter.openNoticesView(this);
-                break;
-            case R.id.nav_map:
-                presenter.openMapView(this);
-                break;
-            case R.id.nav_statistics:
-                presenter.openStatisticsView(this);
-                break;
-            case R.id.nav_logout:
-                presenter.doLogoff(this);
-                break;
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        presenter.onNavigationItemSelected(id);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
 
 
     private void startMVP() {
@@ -119,4 +99,68 @@ public class MainActivity extends AppCompatActivity
         finish();
     }
 
+    @Override
+    public void showMapView() {
+        MapsFragment mapsFragment = new MapsFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.mainLayout, mapsFragment)
+                .addToBackStack(null)
+                .commit();
+        setTitle(R.string.fragment_map_title);
+    }
+
+    @Override
+    public void showAlertView() {
+        AlertDialogFragment alertDialogFragment = new AlertDialogFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.mainLayout, alertDialogFragment).
+                addToBackStack(null).
+                commit();
+        setTitle(R.string.fragment_alert_title);
+    }
+
+    @Override
+    public void showNoticesView() {
+        MyAlertsFragment fragment = new MyAlertsFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.mainLayout, fragment)
+                .addToBackStack(null)
+                .commit();
+        setTitle(R.string.fragment_noticy_title);
+    }
+
+
+    @Override
+    public void showLogoffDialog() {
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(getString( R.string.main_loggof_alert_title))
+                .setMessage(getString( R.string.main_loggof_alert_message ) )
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.doLogoff();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        builder.setIcon(R.drawable.ic_warning);
+        builder.show();
+    }
+
+    @Override
+    public void closeCurrentView() {
+        getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        presenter.onBackStackChagend(count);
+    }
 }
