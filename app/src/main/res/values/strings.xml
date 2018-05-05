@@ -111,7 +111,10 @@
     <string name="problem_feelling_label">Reação</string>
     <string name="problem_write_your_comment">Escreva seu comentário aqui</string>
     <string name="problem_photo_description">Foto do problema</string>
-    <string name="problem_no_content">...</string>
+    <string name="problem_no_content">xxxx</string>
+    <string name="comment_insert_comment_hint">Insira o seu comentário</string>
+    <string name="comment_cancel_button">Cancelar</string>
+    <string name="comment_button">Comentar</string>
 
     <string-array name="problems_array">
         <item>Selectione um problema</item>

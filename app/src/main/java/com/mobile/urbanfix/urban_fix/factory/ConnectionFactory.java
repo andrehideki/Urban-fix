@@ -58,6 +58,10 @@ public final class ConnectionFactory {
         return getDatabaseReference().child("Persons");
     }
 
+    public static DatabaseReference getAlertCommentsDatabaseReference() {
+        return getDatabaseReference().child("Comments");
+    }
+
 
     public static FirebaseUser getFirebaseUser() {
         return firebaseUser;

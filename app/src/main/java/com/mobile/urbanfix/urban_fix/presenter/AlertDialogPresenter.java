@@ -12,14 +12,23 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.mobile.urbanfix.urban_fix.Constants;
+import com.mobile.urbanfix.urban_fix.Logger;
 import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
+import com.mobile.urbanfix.urban_fix.model.AlertComment;
+import com.mobile.urbanfix.urban_fix.model.Comment;
+import com.mobile.urbanfix.urban_fix.model.DAO;
+import com.mobile.urbanfix.urban_fix.model.Person;
 import com.mobile.urbanfix.urban_fix.model.Problem;
+
+import java.util.ArrayList;
 
 public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, MainMVP.ICallbackPresenter {
 
     private MainMVP.IProblemDialogView view;
     private final int ONE_MEGABYTE = 1024 * 1024;
+    private Problem problem;
+    private AlertComment alertComment;
 
     public AlertDialogPresenter(MainMVP.IProblemDialogView view) {
         this.view = view;
@@ -36,7 +45,89 @@ public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, Ma
         addressTextView.setText(problem.getLocation().getAddress());
         descriptionTextView.setText(problem.getDescription());
         urgencyTextView.setText(problem.getUrgency());
+
+        view.setAlertInformations(problem.getKindOfProblem(), problem.getDate(), problem.getStatus(),
+                problem.getLocation().getAddress(), problem.getDescription(), problem.getUrgency());
+        this.problem = problem;
         getProblemPhotoAssync(problem, this);
+    }
+
+    @Override
+    public void loadComments() {
+        alertComment = new AlertComment(problem.getId());
+        alertComment.find(alertComment.getAlertId(), new DAO.DAOCallback<AlertComment>() {
+            @Override
+            public void onObjectFinded(AlertComment result) {
+                alertComment.setComments(result.getComments());
+                view.onCommentsLoaded(alertComment.getComments());
+            }
+
+            @Override
+            public void onFailedTask() {
+                alertComment.setComments(new ArrayList<Comment>(0));
+                view.onCommentsLoaded(alertComment.getComments());
+                Logger.logI("Sem nenhum alerta no banco de dados");
+            }
+
+            @Override
+            public void onObjectInserted() {}
+
+            @Override
+            public void onObjectUpdated() {}
+
+            @Override
+            public void onObjectDeleted() {}
+        });
+    }
+
+    @Override
+    public void onInsertCommentClicked() {
+        view.showDialogComment();
+    }
+
+    @Override
+    public void onCancelCommentClicked() {
+        view.closeDialogComment();
+    }
+
+    @Override
+    public void onCommentClicked(String comment) {
+        String name = Person.getInstance().getName();
+        int index = alertComment.getCommentsSize();
+        alertComment.insertComment(new Comment(index, name, comment));
+        view.closeDialogComment();
+        view.onCommentInserted(index);
+
+        tryToInsertCommentsIntoDatabase();
+    }
+
+    private void tryToInsertCommentsIntoDatabase() {
+        alertComment.insert(alertComment, new DAO.DAOCallback<AlertComment>() {
+            @Override
+            public void onObjectFinded(AlertComment result) {
+
+            }
+
+            @Override
+            public void onObjectInserted() {
+                Logger.logI("Comentário inserirido com sucesso");
+            }
+
+            @Override
+            public void onObjectUpdated() {
+
+            }
+
+            @Override
+            public void onObjectDeleted() {
+
+            }
+
+            @Override
+            public void onFailedTask() {
+                Logger.logI("Falhou em inserir o comentário");
+            }
+        });
     }
 
     @Override
@@ -45,7 +136,7 @@ public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, Ma
         if(task == Constants.DOWNLOAD_IMAGE) {
             byte[] byteArray = (byte[]) object;
             Bitmap photoBitMap = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
-            view.setImageBitmap(photoBitMap);
+            view.setAlertPhoto(photoBitMap);
         }
     }
 
