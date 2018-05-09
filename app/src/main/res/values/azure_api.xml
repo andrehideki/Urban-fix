@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="azure_key">215ee64de86d4b5ebcd634fedb9c994d</string>
+    <string name="azure_url">https://brazilsouth.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment</string>
+</resources>

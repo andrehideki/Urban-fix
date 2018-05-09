@@ -14,9 +14,12 @@ import com.google.firebase.storage.StorageReference;
 import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.Logger;
 import com.mobile.urbanfix.urban_fix.MainMVP;
+import com.mobile.urbanfix.urban_fix.R;
+import com.mobile.urbanfix.urban_fix.Sentiments;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.AlertComment;
 import com.mobile.urbanfix.urban_fix.model.Comment;
+import com.mobile.urbanfix.urban_fix.model.ConsultSentmentAzureService;
 import com.mobile.urbanfix.urban_fix.model.DAO;
 import com.mobile.urbanfix.urban_fix.model.Person;
 import com.mobile.urbanfix.urban_fix.model.Problem;
@@ -92,13 +95,36 @@ public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, Ma
 
     @Override
     public void onCommentClicked(String comment) {
-        String name = Person.getInstance().getName();
-        int index = alertComment.getCommentsSize();
-        alertComment.insertComment(new Comment(index, name, comment));
-        view.closeDialogComment();
-        view.onCommentInserted(index);
+        if(!comment.isEmpty()) {
+            String name = Person.getInstance().getName();
+            final int index = alertComment.getCommentsSize();
+            alertComment.insertComment(new Comment(index, name, comment));
+            view.closeDialogComment();
+            view.onCommentInserted(index);
 
-        tryToInsertCommentsIntoDatabase();
+            ConsultSentmentAzureService consultSentment = new ConsultSentmentAzureService(
+                    new ConsultSentmentAzureService.CallBack() {
+                @Override
+                public void onConsultSentimentFinished(double score) {
+                    Comment c = alertComment.getComments().get(index);
+                    c.setSentiment(getSentiment(score));
+
+                    tryToInsertCommentsIntoDatabase();
+                }
+            });
+
+            consultSentment.execute(view.getProjectString(R.string.azure_key), view.getProjectString(R.string.azure_url),
+                    comment);
+        }
+    }
+
+    private Sentiments.SENTIMENTS getSentiment(double sentiment) {
+        if(sentiment < 0.5) {
+            return Sentiments.SENTIMENTS.DISSATISFIED;
+        } else if(sentiment < 0.7) {
+            return Sentiments.SENTIMENTS.NEUTRAL;
+        }
+        return Sentiments.SENTIMENTS.SATISFIED;
     }
 
     private void tryToInsertCommentsIntoDatabase() {

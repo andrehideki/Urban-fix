@@ -1,6 +1,7 @@
 package com.mobile.urbanfix.urban_fix.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -39,10 +40,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         forgotPasswordTextView.setOnClickListener( this );
         registerButton = findViewById(R.id.registerButton);
         registerButton.setOnClickListener( this );
-        loginPresenter.fillFields(emailLoginEditText, passwordLoginEditText, rememberLoginCheckBox,
-                this);
+
         emailTextInputLayout = findViewById(R.id.emailTextInputLayout);
         passwordTextInputLayout = findViewById(R.id.passwordTextInputLayout);
+
+        loginPresenter.onCreateLoginActivity();
     }
 
     @Override
@@ -52,14 +54,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.loginButton: {
                 loginPresenter.doLogin( emailLoginEditText.getText().toString(),
                         passwordLoginEditText.getText().toString(),
-                        rememberLoginCheckBox.isChecked(), this);
+                        rememberLoginCheckBox.isChecked());
                 break;
             }
             case R.id.registerButton:
-                loginPresenter.openRegisterView(this);
+                loginPresenter.onRegisterButtonClicked();
                 break;
             case R.id.forgotPasswordTextView:
-                loginPresenter.openForgotPasswordView(this);
+                loginPresenter.onForgotPasswordButtonClicked();
                 break;
             case R.id.emailLoginEditText: {
                 emailTextInputLayout.setErrorEnabled(false);
@@ -86,6 +88,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void passwordIsEmpty() {
         passwordTextInputLayout.setErrorEnabled(true);
         passwordTextInputLayout.setError(getString(R.string.login_password_is_empty));
+    }
+
+    @Override
+    public void openForgotPasswordView() {
+        Intent i = new Intent(this, ForgotPasswordActivity.class );
+        startActivity(i);
+    }
+
+    @Override
+    public void openRegisterView() {
+        Intent i = new Intent(this, RegisterActivity.class );
+        startActivity(i);
+    }
+
+    @Override
+    public void openMainView() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+    }
+
+    @Override
+    public void fillUserInformations(String email, String password, boolean rememberUser) {
+        emailLoginEditText.setText(email);
+        passwordLoginEditText.setText(password);
+        rememberLoginCheckBox.setChecked(rememberUser);
     }
 
     @Override

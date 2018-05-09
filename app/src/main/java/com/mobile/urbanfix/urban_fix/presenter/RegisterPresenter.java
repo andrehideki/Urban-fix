@@ -31,9 +31,8 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter {
 
         String values[] = {name, lastName, cpf, birthday, email, password};
         if(verifyFields(values)) {
-            Context context = view.getContext();
-            dialog = new ProgressDialog(context);
-            dialog.setMessage(context.getString(R.string.register_creating_new_user));
+            view.showCreatingUserDialog();
+
             user = createUserWithValues(email, password);
             person = createPersonWithValues(name + " " + lastName, cpf, birthday);
 
@@ -46,14 +45,13 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter {
         user.register(new User.RegisterUserCallback() {
             @Override
             public void onUserRegistered() {
-                dialog.setMessage(view.getContext().getString(R.string.register_inserting_user_on_db));
+                view.showInsertingUserIntoDBDialog();
                 insertPerson();
             }
 
             @Override
             public void onFailedToRegisterUser() {
-                dialog.cancel();
-                view.showMessage(view.getContext().getString(R.string.register_failed_create_user));
+                view.onInsertingUserIntoDBFailed();
             }
         });
     }
@@ -67,9 +65,8 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter {
 
             @Override
             public void onObjectInserted() {
-                view.showMessage(view.getContext().getString(R.string.register_user_succesful));
-                dialog.cancel();
-                showThanksDialog();
+                view.finishDialog();
+                view.showThanksDialog();
             }
 
             @Override
@@ -84,7 +81,7 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter {
 
             @Override
             public void onFailedTask() {
-                view.showMessage(view.getContext().getString(R.string.register_failed_create_user));
+                view.onInsertingUserIntoDBFailed();
                 dialog.cancel();
             }
         });
@@ -112,26 +109,5 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter {
         int i=0;
         for(;i<values.length && !(values[i].isEmpty());i++);
         return i == values.length? true : false;
-    }
-
-    public void openMainView() {
-        Intent intent = new Intent( ((RegisterActivity) view), MainActivity.class);
-        ((RegisterActivity) view).startActivity(intent);
-    }
-
-    @Override
-    public void showThanksDialog() {
-        Context context = view.getContext();
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setMessage(context.getString(R.string.register_thanks_for_register))
-                .setNeutralButton(context.getString(R.string.register_back_button), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        view.finishView();
-                    }
-                })
-                .create();
-
-        dialog.show();
     }
 }

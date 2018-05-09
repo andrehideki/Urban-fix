@@ -1,7 +1,10 @@
 package com.mobile.urbanfix.urban_fix.view;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +24,7 @@ public class RegisterActivity   extends AppCompatActivity
     private Button finishRegisterButton;
 
     private MainMVP.IRegisterPresenter presenter;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +42,6 @@ public class RegisterActivity   extends AppCompatActivity
     }
 
 
-    @Override
-    public String[] getFieldsValues() {
-        String[] values = { nameRegisterEditText.getText().toString(),
-                            lastNameRegisterEditText.getText().toString(),
-                            cpfRegisterEditText.getText().toString(),
-                            birthdayRegisterEditText.getText().toString(),
-                            emailRegisterEditText.getText().toString(),
-                            passwordRegisterEditText.getText().toString()};
-        return values;
-    }
 
     @Override
     public void showMessage(String msg ) {
@@ -77,4 +71,45 @@ public class RegisterActivity   extends AppCompatActivity
     private void startMVP() {
         presenter = new RegisterPresenter(this);
     }
+
+    @Override
+    public void showCreatingUserDialog() {
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.register_creating_new_user));
+        dialog.show();
+    }
+
+    @Override
+    public void showInsertingUserIntoDBDialog() {
+        if(dialog != null) {
+            dialog.setMessage(getString(R.string.register_inserting_user_on_db));
+        }
+    }
+
+    @Override
+    public void showThanksDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.register_thanks_for_register))
+                .setNeutralButton(getString(R.string.register_back_button), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    @Override
+    public void onInsertingUserIntoDBFailed() {
+        dialog.cancel();
+        showMessage(getString(R.string.register_failed_create_user));
+    }
+
+    @Override
+    public void finishDialog() {
+        dialog.cancel();
+    }
+
+
 }

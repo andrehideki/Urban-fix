@@ -130,7 +130,7 @@ public class Problem implements DAO<Problem> {
     @Override
     public void insert(Problem object, final DAOCallback<Problem> callback) {
         DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
-        databaseReference.child(object.getDate()).setValue(object).
+        databaseReference.child(object.getId()).setValue(object).
                 addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

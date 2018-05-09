@@ -72,7 +72,9 @@ public class AlertComment implements DAO<AlertComment>{
                             alertComment.setAlertId(alertId);
                             Logger.logI("Finded:" + alertComment.toString());
                             callback.onObjectFinded(alertComment);
-                        }
+                        } else
+                            callback.onFailedTask();
+
                     }
 
                     @Override
@@ -86,7 +88,9 @@ public class AlertComment implements DAO<AlertComment>{
     @Override
     public void insert(AlertComment alertComment, final DAOCallback<AlertComment> callback) {
         DatabaseReference databaseReference = ConnectionFactory.getAlertCommentsDatabaseReference();
-        databaseReference.child(alertId).setValue(alertComment).addOnCompleteListener(new OnCompleteListener<Void>() {
+        databaseReference.child(alertId)
+                .setValue(alertComment)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {

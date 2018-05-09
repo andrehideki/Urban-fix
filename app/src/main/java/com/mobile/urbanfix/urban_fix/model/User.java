@@ -9,10 +9,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User implements Serializable {
 
@@ -111,77 +117,39 @@ public class User implements Serializable {
                     });
         }
     }
-/*
-    @Override
-    public void find(final String userUId, final DAOCallback<User> callback) {
-        Log.i("Script", "Buscando usuário com uid: " + userUId);
-        final User[] u = new User[1];
-        final DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
-        ValueEventListener listener = new ValueEventListener() {
+
+    public void getAlertsDone(UserAlertsCallback callback) {
+        final ArrayList<Problem> problems = new ArrayList<>();
+        final DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Problem userAlert = dataSnapshot.getValue(Problem.class);
+                problems.add(userAlert);
+            }
 
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                u[0] = dataSnapshot.getValue(User.class);
-                Log.i("Script", dataSnapshot.getValue(User.class).toString());
-                if (u[0] != null) {
-                    Log.i("Script", "Pegando dados do usuário: " + u[0].toString());
-                    databaseReference.child(userUId).removeEventListener(this);
-                } else {
-                    Log.e("Script", "O usuário obitido é nulo!");
-                    databaseReference.child(userUId).removeEventListener(this);
-                }
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.i("Script", "Falha ao encontrar usuário");
-                databaseReference.child(userUId).removeEventListener(this);
-            }
-        };
-        databaseReference.child(userUId).addValueEventListener(listener);
-    }
 
-    @Override
-    public void insert(final User user, final DAOCallback<User> callback) {
-        FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
-        auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).
-                addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
-                            FirebaseUser fUser = ConnectionFactory.getFirebaseUser();
-                            //user.setUUID(fUser.getUid());
-                            DatabaseReference db = ConnectionFactory.getUsersDatabaseReferente();
-                            //db.child(user.getUUID()).setValue(user);
-                            //presenter.onSuccessTask(Constants.NEW_USER,null);
-                        } else {
-                            //presenter.onFailedTask(Constants.NEW_USER);
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void update(User user, final DAOCallback<User> callback) {
-        DatabaseReference databaseReference = ConnectionFactory.getUsersDatabaseReferente();
-        databaseReference.child(user.getUID()).
-                setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    callback.onObjectUpdated();
-                } else {
-                    callback.onFailedTask();
-                }
             }
         });
     }
 
-    @Override
-    public void delete(User user, MainMVP.ICallbackPresenter presenter) {
-
-    }
-*/
     @Override
     public String toString() {
         return "User{" +
@@ -203,5 +171,10 @@ public class User implements Serializable {
     public interface SendPasswordCallback {
         void onSendSuccess();
         void onFailedToSend();
+    }
+
+    public interface UserAlertsCallback {
+        void onFindedUserAlerts(List<Problem> problems);
+        void onFailedToGetUserAlerts();
     }
 }

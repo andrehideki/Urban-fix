@@ -11,8 +11,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -31,7 +29,6 @@ import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.view.dialog.ProblemDialogFragment;
-import com.mobile.urbanfix.urban_fix.view.fragments.AlertDialogFragment;
 
 import java.util.ArrayList;
 

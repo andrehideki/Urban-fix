@@ -2,6 +2,9 @@ package com.mobile.urbanfix.urban_fix.view.dialog;
 
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 
 import com.mobile.urbanfix.urban_fix.Logger;
 import com.mobile.urbanfix.urban_fix.R;
+import com.mobile.urbanfix.urban_fix.Sentiments;
 import com.mobile.urbanfix.urban_fix.model.Comment;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.MainMVP;
@@ -33,7 +37,7 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
     private static Problem problem;
     private ImageView problemPhotoImageView;
     private static MainMVP.IProblemDialogPresenter presenter;
-    private CommentDialog commentDialog;
+    private AlertDialog commentDialog;
     private CommentsAdapter adapter;
     private RecyclerView commentsRecyclerView;
 
@@ -102,19 +106,43 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
 
     @Override
     public void showDialogComment() {
-        commentDialog = new CommentDialog();
-        commentDialog.show(getFragmentManager(), null);
+        LayoutInflater inflater = getLayoutInflater();
+        View v = inflater.inflate(R.layout.dialog_comment, null);
+        final AppCompatEditText commentEditText = v.findViewById(R.id.commentEditText);
+        commentDialog = new AlertDialog.Builder(getContext())
+                .setView(v)
+                .setPositiveButton(getString(R.string.problem_comment_button), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String comment = commentEditText.getText().toString();
+                        presenter.onCommentClicked(comment);
+                    }
+                })
+                .setNegativeButton(getString(R.string.problem_cancel_comment_button), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.onCancelCommentClicked();
+                    }
+                })
+                .create();
+
+        commentDialog.show();
     }
 
     @Override
     public void closeDialogComment() {
-        commentDialog.dismiss();
+        commentDialog.cancel();
     }
 
     @Override
     public void onCommentInserted(int position) {
         Logger.logI("Inserirdo na posição : " + position);
         adapter.notifyItemInserted(position);
+    }
+
+    @Override
+    public String getProjectString(int id) {
+        return getString(id);
     }
 
     @Override
@@ -126,40 +154,6 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
 
     private void startMVP() {
         this.presenter = new AlertDialogPresenter(this);
-    }
-
-    @SuppressLint("ValidFragment")
-    static class CommentDialog extends DialogFragment {
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.dialog_comment, container);
-            Button cancelButton, commentButton;
-            final AppCompatEditText commentEditText;
-
-            commentEditText = v.findViewById(R.id.commentEditText);
-            cancelButton = v.findViewById(R.id.cancelButton);
-            cancelButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    presenter.onCancelCommentClicked();
-                }
-            });
-            commentButton = v.findViewById(R.id.commentButton);
-            commentButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String comment = commentEditText.getText().toString();
-                    presenter.onCommentClicked(comment);
-                }
-            });
-            return v;
-        }
-
-        @Override
-        public void onCreate(@Nullable Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-        }
     }
 
     class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
@@ -182,6 +176,7 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
             Comment comment = comments.get(position);
             holder.personNameTextView.setText(comment.getPersonName());
             holder.commentTextView.setText(comment.getContent());
+            holder.sentimentImageView.setImageResource(Sentiments.getId(comment.getSentiment()));
         }
 
         @Override
@@ -191,10 +186,12 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
 
         class CommentViewHolder extends RecyclerView.ViewHolder {
             TextView personNameTextView, commentTextView;
+            ImageView sentimentImageView;
             public CommentViewHolder(View itemView) {
                 super(itemView);
                 personNameTextView = itemView.findViewById(R.id.personNameTextView);
                 commentTextView = itemView.findViewById(R.id.commentTextView);
+                sentimentImageView = itemView.findViewById(R.id.sentimentImageView);
             }
         }
 

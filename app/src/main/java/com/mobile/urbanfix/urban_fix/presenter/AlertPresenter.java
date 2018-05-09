@@ -40,6 +40,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class AlertPresenter implements  MainMVP.IAlertPresenter,
         MainMVP.IOnGpsPickupUserLocationAndPossibleAddresses {
+
     private transient User user;
     private transient Person person;
     private transient Problem problem;
@@ -65,7 +66,7 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aaa");
         this.user = User.getInstance();
         this.problem.setDate(simpleDateFormat.format(date));
-        this.problem.setId(person.getCpf());
+        this.problem.setId(person.getCpf() + person.getnAlertsDone());
         this.problem.setChecked(false);
         this.problem.setStatus(context.getString(R.string.alert_status_alert_has_been_issued));
         this.problem.setKindOfProblem("");

@@ -91,7 +91,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/ic_kind_of_problem"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:text="@string/problem_kind_of_problem_label"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"

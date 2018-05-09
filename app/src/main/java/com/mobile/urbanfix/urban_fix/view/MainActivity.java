@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.presenter.MainPresenter;
-import com.mobile.urbanfix.urban_fix.view.fragments.AlertDialogFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.MapsFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.MyAlertsFragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void showAlertView() {
-        AlertDialogFragment alertDialogFragment = new AlertDialogFragment();
+        AlertFragment alertDialogFragment = new AlertFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.mainLayout, alertDialogFragment).
                 addToBackStack(null).

@@ -17,7 +17,6 @@ public class ForgotPasswordActivity extends AppCompatActivity
 
 
     private EditText emailForgotPasswordEditText;
-    private Button resetPasswordButton;
     private MainMVP.IForgotPasswordPresenter presenter;
 
     @Override
@@ -26,14 +25,8 @@ public class ForgotPasswordActivity extends AppCompatActivity
         setContentView(R.layout.activity_forgot_password);
         startMVP();
         emailForgotPasswordEditText =  findViewById(R.id.emailForgotPasswordEditText);
-        resetPasswordButton =  findViewById(R.id.resetPasswordButton);
+        Button resetPasswordButton = findViewById(R.id.resetPasswordButton);
         resetPasswordButton.setOnClickListener(this);
-    }
-
-
-    @Override
-    public void cleanFields() {
-        emailForgotPasswordEditText.setText("");
     }
 
     @Override
@@ -52,19 +45,24 @@ public class ForgotPasswordActivity extends AppCompatActivity
     }
 
     @Override
-    public String getEmail() {
-        return emailForgotPasswordEditText.getText().toString();
-    }
-
-
-    @Override
     public void onClick(View v) {
         presenter.sendRecoverPasswordMessage(emailForgotPasswordEditText.getText().toString());
+    }
+
+    @Override
+    public void showFailedMessage() {
+        Toast.makeText(this, getString(R.string.forgot_password_msg_sended) +
+                emailForgotPasswordEditText.getText().toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showSuccessMessage() {
+        Toast.makeText(this, getString(R.string.forgot_password_email_failed) +
+                emailForgotPasswordEditText.getText().toString(), Toast.LENGTH_SHORT).show();
     }
 
     private void startMVP() {
         presenter = new ForgotPasswordPresenter(this);
     }
-
 
 }

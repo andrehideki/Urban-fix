@@ -1,6 +1,5 @@
 package com.mobile.urbanfix.urban_fix.view.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,14 +8,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.mobile.urbanfix.urban_fix.MainMVP;
-import com.mobile.urbanfix.urban_fix.presenter.MainPresenter;
 import com.mobile.urbanfix.urban_fix.presenter.MapsPresenter;
 import com.mobile.urbanfix.urban_fix.R;
 
@@ -104,7 +101,7 @@ public class MapsFragment extends Fragment
 
     @Override
     public void showMapsView() {
-        AlertDialogFragment fragment = new AlertDialogFragment();
+        AlertFragment fragment = new AlertFragment();
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.mainLayout, fragment)
                 .addToBackStack(null)

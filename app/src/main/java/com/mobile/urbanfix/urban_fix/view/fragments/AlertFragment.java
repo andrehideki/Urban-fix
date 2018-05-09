@@ -30,7 +30,7 @@ import com.mobile.urbanfix.urban_fix.MainMVP;
 
 import java.util.ArrayList;
 
-public class AlertDialogFragment extends Fragment implements  MainMVP.IAlertView,
+public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
                                                         View.OnClickListener,
                                                         AdapterView.OnItemSelectedListener {
 

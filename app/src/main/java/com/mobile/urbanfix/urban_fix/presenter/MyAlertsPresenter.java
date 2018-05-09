@@ -26,7 +26,7 @@ public class MyAlertsPresenter implements MainMVP.IMyAlertsPresenter, MainMVP.IC
     }
 
     @Override
-    public void getUserAlerts() {
+    public void onCreateUserAlerts() {
         Problem.getUserAlerts(this.userAlerts, adapter, this);
     }
 

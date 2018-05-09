@@ -31,31 +31,55 @@ public interface MainMVP {
         String EMAIL_KEY = "email";
         String PASSWORD_KEY = "passwd";
         String REMEMBER_KEY = "remember";
-        void doLogin(String email, String password, boolean remember, AppCompatActivity activity);
-        void fillFields(EditText emailEditText, EditText passwordEditText, CheckBox
-                rememberUserCheckBox, AppCompatActivity activity);//Refatorar
-        void openForgotPasswordView(AppCompatActivity activity);//Refatorar
-        void openRegisterView(AppCompatActivity activity);//Refatorar
-        void openMainView(Context activity);//Refatorar
+        void onCreateLoginActivity();
+        void doLogin(String email, String password, boolean remember);
+        void onForgotPasswordButtonClicked();
+        void onRegisterButtonClicked();
     }
 
     interface ILoginView extends IView {
         void emailIsEmpty();
         void passwordIsEmpty();
+        void openForgotPasswordView();//Refatorar
+        void openRegisterView();//Refatorar
+        void openMainView();//Refatorar
+        void fillUserInformations(String email, String password, boolean rememberUser);
     }
 
 
 
 
+    /* *
+     * [ ForgotPassoword contracts ]
+     * */
+    interface IForgotPasswordView extends IView{
+        void showFailedMessage();
+        void showSuccessMessage();
+    }
 
     interface IForgotPasswordPresenter {
         void sendRecoverPasswordMessage(String email);
     }
 
+
+
+    /* *
+     * [ Register contracts ]
+     * */
+    interface IRegisterView extends IView {
+        void showCreatingUserDialog();
+        void showInsertingUserIntoDBDialog();
+        void showThanksDialog();
+        void onInsertingUserIntoDBFailed();
+        void finishDialog();
+    }
+
     interface IRegisterPresenter {
         void registerUser(String name, String lastName, String cpf, String birthday, String email, String password);
-        void showThanksDialog();
+
     }
+
+
 
     interface ICallbackPresenter {
         void onSuccessTask(Constants task, Object object);
@@ -90,10 +114,20 @@ public interface MainMVP {
     }
 
 
+
+
+    /* *
+     * [ My Alerts contracts ]
+     * */
     interface IMyAlertsPresenter {
-        void getUserAlerts();
+        void onCreateUserAlerts();
         void configureUserInformations();
         void setupMyAlertsList(RecyclerView myAlerts, Context context);
+    }
+
+    interface IMyAlertsView {
+        void setUserName(String userName);
+        void setNumberOfAlerts(int numberOfAlerts);
     }
 
 
@@ -138,6 +172,7 @@ public interface MainMVP {
         void showDialogComment();
         void closeDialogComment();
         void onCommentInserted(int position);
+        String getProjectString(int id);
         void onCommentsLoaded(List<Comment> comments);
     }
 
@@ -147,15 +182,6 @@ public interface MainMVP {
         void showMessage(String msg);
         Context getContext();
         void finishView();
-    }
-
-    interface IForgotPasswordView extends IView{
-        void cleanFields();
-        String getEmail();
-    }
-
-    interface IRegisterView extends IView{
-        String[] getFieldsValues();
     }
 
     /* *
@@ -178,14 +204,6 @@ public interface MainMVP {
         void showLogoffDialog();
         void closeCurrentView();
     }
-
-
-
-    interface IMyAlertsView {
-        void setUserName(String userName);
-        void setNumberOfAlerts(int numberOfAlerts);
-    }
-
 
 
     interface IOnGpsPickupUserLocationAndPossibleAddresses extends Serializable {

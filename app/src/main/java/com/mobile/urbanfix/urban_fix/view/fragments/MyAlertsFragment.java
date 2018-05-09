@@ -40,7 +40,7 @@ public class MyAlertsFragment extends Fragment implements MainMVP.IMyAlertsView 
     public void onResume() {
         super.onResume();
         presenter.setupMyAlertsList(this.problemsRecyclerView, getContext());
-        presenter.getUserAlerts();
+        presenter.onCreateUserAlerts();
         presenter.configureUserInformations();
     }
 

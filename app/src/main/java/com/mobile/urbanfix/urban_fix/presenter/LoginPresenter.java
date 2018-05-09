@@ -35,15 +35,25 @@ public class LoginPresenter implements MainMVP.ILoginPresenter {
     }
 
     @Override
+    public void onCreateLoginActivity() {
+        SharedPreferences preferences = ((Activity)view.getContext()).getPreferences(Context.MODE_PRIVATE);
+        String email = preferences.getString(EMAIL_KEY, "");
+        String password = preferences.getString(PASSWORD_KEY, "");
+        boolean rememberUser = preferences.getBoolean(REMEMBER_KEY, false);
+
+        view.fillUserInformations(email, password, rememberUser);
+    }
+
+    @Override
     public void doLogin(final String email, final String password,
-                        final boolean rememberUser, final AppCompatActivity activity) {
+                        final boolean rememberUser) {
         Log.i("Script", "Verificando campos");
         if(verifyValues(email, password)) {
 
             final Context context = view.getContext();
             Log.i("Script", "Campos válidos. Tentando realizar Login");
             dialog = new ProgressDialog(context);
-            dialog.setMessage(activity.getString(R.string.login_progressdialog_message));
+            dialog.setMessage(view.getContext().getString(R.string.login_progressdialog_message));
             dialog.show();
 
             user.setEmail(email);
@@ -79,7 +89,8 @@ public class LoginPresenter implements MainMVP.ILoginPresenter {
                 person.setnAlertsDone(result.getnAlertsDone());
                 view.showMessage(context.getString(R.string.login_welcome_user));
                 dialog.cancel();
-                openMainView(context);
+
+                view.openMainView();
 
                 Log.i("Script", person.toString());
             }
@@ -108,30 +119,13 @@ public class LoginPresenter implements MainMVP.ILoginPresenter {
     }
 
     @Override
-    public void fillFields(EditText emailEditText, EditText passwordEditText, CheckBox rememberUserCheckBox,
-                           AppCompatActivity activity) {
-        SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
-        emailEditText.setText(sharedPreferences.getString(EMAIL_KEY, ""));
-        passwordEditText.setText(sharedPreferences.getString(PASSWORD_KEY, ""));
-        rememberUserCheckBox.setChecked(sharedPreferences.getBoolean(REMEMBER_KEY, false));
+    public void onForgotPasswordButtonClicked() {
+        view.openForgotPasswordView();
     }
 
     @Override
-    public void openForgotPasswordView(AppCompatActivity activity) {
-        Intent i = new Intent(activity, ForgotPasswordActivity.class );
-        activity.startActivity(i);
-    }
-
-    @Override
-    public void openRegisterView(AppCompatActivity activity) {
-        Intent i = new Intent( activity, RegisterActivity.class );
-        activity.startActivity(i);
-    }
-
-    @Override
-    public void openMainView(Context activity) {
-        Intent i = new Intent(activity, MainActivity.class);
-        activity.startActivity(i);
+    public void onRegisterButtonClicked() {
+        view.openRegisterView();
     }
 
     private boolean verifyValues( String email, String password ) {
