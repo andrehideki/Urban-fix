@@ -2,10 +2,12 @@ package com.mobile.urbanfix.urban_fix.model;
 
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -13,15 +15,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mobile.urbanfix.urban_fix.adapter.MyAlertsAdapter;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
-import com.mobile.urbanfix.urban_fix.MainMVP;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 
-public class Problem implements DAO<Problem> {
+public class Problem {
 
     private String id;
     private String description;
@@ -31,7 +29,6 @@ public class Problem implements DAO<Problem> {
     private String photoId;
     private boolean checked;
     private String urgency;
-    private int validations;
     private Location location;
 
 
@@ -122,40 +119,25 @@ public class Problem implements DAO<Problem> {
                 '}';
     }
 
-    @Override
-    public void find(String s, final DAOCallback<Problem> callback) {
 
-    }
-
-    @Override
-    public void insert(Problem object, final DAOCallback<Problem> callback) {
+    public void insert(Problem object, final Callback.SimpleAsync<Problem> callback) {
         DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
         databaseReference.child(object.getId()).setValue(object).
                 addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
-                            callback.onObjectInserted();
+                            callback.onTaskDone(null, true);
                         } else {
-                            callback.onFailedTask();
+                            callback.onTaskDone(null, false);
                         }
                     }
                 });
     }
 
-    @Override
-    public void update(Problem object, DAOCallback<Problem> callback) {
-
-    }
-
-
-    @Override
-    public void delete(Problem object, MainMVP.ICallbackPresenter presenter) {
-
-    }
 
     public void insertProblemPhoto(Bitmap photoBitmap, Problem problem,
-                                   final StorageCallback callback)  {
+                                   final Callback.SimpleAsync<Void> callback)  {
         StorageReference storage = ConnectionFactory.getFirebaseStorageReference();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -166,25 +148,21 @@ public class Problem implements DAO<Problem> {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()) {
-                    callback.onSuccess();
+                    callback.onTaskDone(null, true);
                 } else {
-                    callback.onFailed();
+                    callback.onTaskDone(null, false);
                 }
             }
         });
     }
 
-    public static void getUserAlerts(final ArrayList<Problem> myAlerts , final MyAlertsAdapter adapter,
-                                     final MainMVP.ICallbackListOfAlerts callback) {
+    public void findAllAlerts(final Callback.FetchList<Problem> callback) {
         DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Problem p = dataSnapshot.getValue(Problem.class);
-                Log.i("Script","Problema:" + p.toString());
-                myAlerts.add(p);
-                adapter.notifyDataSetChanged();
-                callback.onListOfAlertsChanged();
+                callback.onItemAdded(p);
             }
 
             @Override
@@ -194,10 +172,8 @@ public class Problem implements DAO<Problem> {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                int position = myAlerts.indexOf(dataSnapshot.getValue(Problem.class));
-                myAlerts.remove(position);
-                adapter.notifyItemRemoved(position);
-                callback.onListOfAlertsChanged();
+                Problem p = dataSnapshot.getValue(Problem.class);
+                callback.onItemRemoved(p);
             }
 
             @Override
@@ -207,13 +183,31 @@ public class Problem implements DAO<Problem> {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                callback.onFailed();
             }
         });
     }
 
-    public interface StorageCallback {
-        void onSuccess();
-        void onFailed();
+    public void donwloadAlertPhoto(final String photoId, final Callback.SimpleAsync<Bitmap> callback) {
+        new Thread() {
+            public void run() {
+                final int oneMegabyte = 1024 * 1024;
+                StorageReference storageReference = ConnectionFactory.getFirebaseStorageReference();
+                storageReference.child(photoId).getBytes(oneMegabyte).
+                        addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                            @Override
+                            public void onSuccess(byte[] bytes) {
+                                Bitmap photoBitMap = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
+                                callback.onTaskDone(photoBitMap, true);
+                            }
+                        }).
+                        addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                callback.onTaskDone(null, false);
+                            }
+                        });
+            }
+        }.start();
     }
 }

@@ -2,35 +2,24 @@ package com.mobile.urbanfix.urban_fix.presenter;
 
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.StorageReference;
-import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.Logger;
 import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.Sentiments;
-import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.model.AlertComment;
+import com.mobile.urbanfix.urban_fix.model.Callback;
 import com.mobile.urbanfix.urban_fix.model.Comment;
-import com.mobile.urbanfix.urban_fix.model.ConsultSentmentAzureService;
-import com.mobile.urbanfix.urban_fix.model.DAO;
+import com.mobile.urbanfix.urban_fix.services.ConsultSentmentAzureService;
 import com.mobile.urbanfix.urban_fix.model.Person;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 
 import java.util.ArrayList;
 
-public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, MainMVP.ICallbackPresenter {
+public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter {
 
     private MainMVP.IProblemDialogView view;
-    private final int ONE_MEGABYTE = 1024 * 1024;
-    private Problem problem;
+    private static Problem problem;
     private AlertComment alertComment;
 
     public AlertDialogPresenter(MainMVP.IProblemDialogView view) {
@@ -38,48 +27,36 @@ public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, Ma
     }
 
     @Override
-    public void setInformations(Problem problem, TextView kindOfProblemTextView, TextView dateTextView,
-                                TextView statusTextView, TextView addressTextView,
-                                TextView descriptionTextView, TextView urgencyTextView,
-                                ImageView problemPhotoImageView) {
-        kindOfProblemTextView.setText(problem.getKindOfProblem());
-        dateTextView.setText(problem.getDate());
-        statusTextView.setText(problem.getStatus());
-        addressTextView.setText(problem.getLocation().getAddress());
-        descriptionTextView.setText(problem.getDescription());
-        urgencyTextView.setText(problem.getUrgency());
+    public void onStart() {
+        if(problem != null) {
+            view.setAlertInformations(problem.getKindOfProblem(), problem.getDate(), problem.getStatus(),
+                    problem.getLocation().getAddress(), problem.getDescription(), problem.getUrgency());
+            getProblemPhotoAssync();
+            tryToLoadComments();
+        }
+    }
 
-        view.setAlertInformations(problem.getKindOfProblem(), problem.getDate(), problem.getStatus(),
-                problem.getLocation().getAddress(), problem.getDescription(), problem.getUrgency());
-        this.problem = problem;
-        getProblemPhotoAssync(problem, this);
+
+    public static void setProblem(Problem problem) {
+        AlertDialogPresenter.problem = problem;
     }
 
     @Override
-    public void loadComments() {
+    public void tryToLoadComments() {
         alertComment = new AlertComment(problem.getId());
-        alertComment.find(alertComment.getAlertId(), new DAO.DAOCallback<AlertComment>() {
+        alertComment.find(alertComment.getAlertId(), new Callback.SimpleAsync<AlertComment>() {
             @Override
-            public void onObjectFinded(AlertComment result) {
-                alertComment.setComments(result.getComments());
-                view.onCommentsLoaded(alertComment.getComments());
+            public void onTaskDone(AlertComment result, boolean success) {
+                if(success) {
+                    alertComment.setComments(result.getComments());
+                    view.onCommentsLoaded(alertComment.getComments());
+                    Logger.logI("Encontrado no banco de dados" + result.toString());
+                } else {
+                    alertComment.setComments(new ArrayList<Comment>(0));
+                    view.onCommentsLoaded(alertComment.getComments());
+                    Logger.logI("Sem nenhum comentário no banco de dados");
+                }
             }
-
-            @Override
-            public void onFailedTask() {
-                alertComment.setComments(new ArrayList<Comment>(0));
-                view.onCommentsLoaded(alertComment.getComments());
-                Logger.logI("Sem nenhum alerta no banco de dados");
-            }
-
-            @Override
-            public void onObjectInserted() {}
-
-            @Override
-            public void onObjectUpdated() {}
-
-            @Override
-            public void onObjectDeleted() {}
         });
     }
 
@@ -103,17 +80,18 @@ public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, Ma
             view.onCommentInserted(index);
 
             ConsultSentmentAzureService consultSentment = new ConsultSentmentAzureService(
-                    new ConsultSentmentAzureService.CallBack() {
-                @Override
-                public void onConsultSentimentFinished(double score) {
-                    Comment c = alertComment.getComments().get(index);
-                    c.setSentiment(getSentiment(score));
+                    new Callback.SimpleAsync<Double>() {
+                        @Override
+                        public void onTaskDone(Double result, boolean success) {
+                            Comment c = alertComment.getComments().get(index);
+                            c.setSentiment(getSentiment(result));
 
-                    tryToInsertCommentsIntoDatabase();
-                }
-            });
+                            tryToInsertCommentsIntoDatabase();
+                        }
+                    });
 
-            consultSentment.execute(view.getProjectString(R.string.azure_key), view.getProjectString(R.string.azure_url),
+            consultSentment.execute(view.getProjectString(R.string.azure_key),
+                    view.getProjectString(R.string.azure_url),
                     comment);
         }
     }
@@ -128,69 +106,29 @@ public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter, Ma
     }
 
     private void tryToInsertCommentsIntoDatabase() {
-        alertComment.insert(alertComment, new DAO.DAOCallback<AlertComment>() {
+        alertComment.insert(alertComment, new Callback.SimpleAsync<AlertComment>() {
             @Override
-            public void onObjectFinded(AlertComment result) {
-
-            }
-
-            @Override
-            public void onObjectInserted() {
-                Logger.logI("Comentário inserirido com sucesso");
-            }
-
-            @Override
-            public void onObjectUpdated() {
-
-            }
-
-            @Override
-            public void onObjectDeleted() {
-
-            }
-
-            @Override
-            public void onFailedTask() {
-                Logger.logI("Falhou em inserir o comentário");
+            public void onTaskDone(AlertComment result, boolean success) {
+                if(success) {
+                    Logger.logI("Comentário inserido com sucesso");
+                } else {
+                    Logger.logI("Falhou em inserir o comentário");
+                }
             }
         });
     }
 
-    @Override
-    public void onSuccessTask(Constants task, Object object) {
-        Log.i("Script", "Imagem baixada com sucesso");
-        if(task == Constants.DOWNLOAD_IMAGE) {
-            byte[] byteArray = (byte[]) object;
-            Bitmap photoBitMap = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
-            view.setAlertPhoto(photoBitMap);
-        }
-    }
-
-    @Override
-    public void onFailedTask(Constants task) {
-        Log.e("Script","Ocorreu um erro ao tentar baixar a imagem" );
-    }
-
-    private void getProblemPhotoAssync(Problem problem, final MainMVP.ICallbackPresenter callback) {
-        final String photoId = problem.getPhotoId();
-            new Thread() {
-                public void run() {
-                    StorageReference storageReference = ConnectionFactory.getFirebaseStorageReference();
-                    storageReference.child(photoId).getBytes(ONE_MEGABYTE).
-                            addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                @Override
-                                public void onSuccess(byte[] bytes) {
-                                    callback.onSuccessTask(Constants.DOWNLOAD_IMAGE, bytes);
-                                }
-                            }).
-                            addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e("Script", e.getMessage());
-                                    callback.onFailedTask(Constants.DOWNLOAD_IMAGE);
-                                }
-                            });
+    private void getProblemPhotoAssync() {
+        problem.donwloadAlertPhoto(problem.getPhotoId(), new Callback.SimpleAsync<Bitmap>() {
+            @Override
+            public void onTaskDone(Bitmap result, boolean success) {
+                if(success) {
+                    Logger.logI("Foto baixada com sucesso");
+                    view.setAlertPhoto(result);
+                } else {
+                    Logger.logE("Falha ao baixar foto");
                 }
-            }.start();
+            }
+        });
     }
 }

@@ -21,7 +21,7 @@ import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.presenter.MainPresenter;
 import com.mobile.urbanfix.urban_fix.view.fragments.AlertFragment;
 import com.mobile.urbanfix.urban_fix.view.fragments.MapsFragment;
-import com.mobile.urbanfix.urban_fix.view.fragments.MyAlertsFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.PersonAlertsFragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 
 public class MainActivity extends AppCompatActivity
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void showNoticesView() {
-        MyAlertsFragment fragment = new MyAlertsFragment();
+        PersonAlertsFragment fragment = new PersonAlertsFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.mainLayout, fragment)
                 .addToBackStack(null)

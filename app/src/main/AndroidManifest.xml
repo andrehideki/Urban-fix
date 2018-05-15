@@ -35,14 +35,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <receiver android:name=".services.GpsReceiver">
+        <receiver android:name=".services.GPSService$GpsReceiver">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <action android:name="GPSHASBEENCONFIGURED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".services.FetchAddressReceiver">
+        <receiver android:name=".services.FetchAddressSevice$FetchAddressReceiver">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -57,7 +56,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths"/>
         </provider>
 
         <service android:name=".services.GPSService" />

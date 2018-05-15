@@ -1,6 +1,8 @@
 package com.mobile.urbanfix.urban_fix.services;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.mobile.urbanfix.urban_fix.R;
+import com.mobile.urbanfix.urban_fix.model.Callback;
 import com.mobile.urbanfix.urban_fix.model.User;
 
 import java.io.IOException;
@@ -66,4 +70,30 @@ public class FetchAddressSevice extends IntentService {
         }
         return addressesInformationsList;
     }
+
+    public static class FetchAddressReceiver extends BroadcastReceiver {
+
+        public static final String ACTION = "ADDRESSESHASBEENDOWNLOADED";
+        public static Callback.SimpleAsync<ArrayList<String>> callback;
+
+        public static void setCallback(Callback.SimpleAsync<ArrayList<String>>  callback) {
+            FetchAddressReceiver.callback = callback;
+        }
+
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle b = intent.getExtras();
+            int result = b.getInt(FetchAddressSevice.RESULT);
+            if (result == FetchAddressSevice.RESULT_OK) {
+                ArrayList<String> posibleAddresseList = b.getStringArrayList(FetchAddressSevice.ADDRESSES_LIST);
+                posibleAddresseList.add(0, context.getString(R.string.select_your_address));
+
+                callback.onTaskDone(posibleAddresseList, true);
+            } else
+                callback.onTaskDone(null, false);
+
+        }
+    }
+
 }

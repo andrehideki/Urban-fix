@@ -9,37 +9,34 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mobile.urbanfix.urban_fix.Logger;
 import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
-import com.mobile.urbanfix.urban_fix.model.DAO;
+import com.mobile.urbanfix.urban_fix.model.Callback;
 import com.mobile.urbanfix.urban_fix.model.Location;
 import com.mobile.urbanfix.urban_fix.model.Person;
 import com.mobile.urbanfix.urban_fix.model.Problem;
 import com.mobile.urbanfix.urban_fix.model.User;
-import com.mobile.urbanfix.urban_fix.services.FetchAddressReceiver;
 import com.mobile.urbanfix.urban_fix.services.FetchAddressSevice;
 import com.mobile.urbanfix.urban_fix.services.GPSService;
-import com.mobile.urbanfix.urban_fix.services.GpsReceiver;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AlertPresenter implements  MainMVP.IAlertPresenter,
-        MainMVP.IOnGpsPickupUserLocationAndPossibleAddresses {
+public class AlertPresenter implements  MainMVP.IAlertPresenter {
 
     private transient User user;
     private transient Person person;
@@ -58,21 +55,22 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
         this.view = view;
     }
 
+
     @Override
-    public void initAlert(Context context) {
+    public void initAlert() {
         this.problem = new Problem();
         this.person = Person.getInstance();
         Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aaa");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aaa",
+                Locale.getDefault());
         this.user = User.getInstance();
         this.problem.setDate(simpleDateFormat.format(date));
         this.problem.setId(person.getCpf() + person.getnAlertsDone());
         this.problem.setChecked(false);
-        this.problem.setStatus(context.getString(R.string.alert_status_alert_has_been_issued));
+        this.problem.setStatus(view.getContext().getString(R.string.alert_status_alert_has_been_issued));
         this.problem.setKindOfProblem("");
         this.problem.setPhotoId(person.getCpf() + "_" + simpleDateFormat.format(date));
         this.currentPhotoPath = "";
-        Log.i("Script", "User em tela realizar alerta:" + user.toString());
     }
 
 
@@ -108,33 +106,46 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
         }
     }
 
-
     @Override
-    public void setDescription(String description, TextInputLayout descriptionTextInputLayout, Context context) {
+    public void setDescription(String description) {
         if(!description.isEmpty()) {
             this.problem.setDescription(description);
         } else {
-            descriptionTextInputLayout.setErrorEnabled(true);
-            descriptionTextInputLayout.setError(context.getString(R.string.alert_description_textview_is_empty));
+            view.showDescriptionError();
         }
     }
 
     @Override
-    public void startGPS(Context context) {
-        Intent gpsIntent = new Intent(context, GPSService.class);
-        GpsReceiver.setPresenter(this);
-        FetchAddressReceiver.setPrensenter(this);
+    public void startGPS() {
+        Context context = view.getContext();
+        final Intent gpsIntent = new Intent(context, GPSService.class);
+        GPSService.GpsReceiver.setCallback(new Callback.SimpleAsync<LatLng>() {
+            @Override
+            public void onTaskDone(LatLng result, boolean success) {
+                if(success) {
+                    Location location = new Location();
+                    location.setLatitude(result.latitude);
+                    location.setLongitude(result.longitude);
+
+                    problem.setLocation(location);
+
+                    fetchPossibleUsersAddress();
+                } else {
+                    Logger.logE("Erro ao pegar localização do usuário");
+                }
+            }
+        });
+
         context.startService(gpsIntent);
     }
 
     @Override
-    public void dispachTakePhotoIntent(Fragment fragment, MainMVP.IAlertView view) {
+    public void dispachTakePhotoIntent() {
 
-        this.view = view;
-        Activity activity = fragment.getActivity();
+        Activity activity =  (Activity) view.getContext();
         if(SystemUtils.askPermission(activity, Manifest.permission.CAMERA, CAMERA_PERMISSION_REQUEST)) {
             if(activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-                takePhoto(fragment);
+                takePhoto();
             } else {
                 Log.i("Script", "O dispositivo não possui camera");
             }
@@ -149,7 +160,7 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
         switch (requestCode) {
             case CAMERA_PERMISSION_REQUEST: {
                 if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED) {
-                    takePhoto(fragment);
+                    takePhoto();
                 }
                 break;
             }
@@ -186,98 +197,71 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
             dialog.show();
 
             Log.i("Script", "Tentando inserir Problema no banco de dados.");
-            problem.insert(this.problem, new DAO.DAOCallback<Problem>() {
-
+            problem.insert(this.problem, new Callback.SimpleAsync<Problem>() {
                 @Override
-                public void onObjectInserted() {
-                    Log.i("Script", "Alerta inserido com sucesso!");
-                    dialog.setMessage(view.getContext().getString(R.string.alert_inserting_photo));
-                    tryToInsertPhotoOnStorage();
+                public void onTaskDone(Problem result, boolean success) {
+                    if(success) {
+                        Log.i("Script", "Alerta inserido com sucesso!");
+                        dialog.setMessage(view.getContext().getString(R.string.alert_inserting_photo));
+                        tryToInsertPhotoOnStorage();
+                    } else {
+                        Log.e("Script", "Falha ao inserir alerta!");
+                        dialog.dismiss();
+                        view.showMessage(view.getContext().getString(R.string.alert_failed_to_insert_alert));
+                    }
                 }
-
-                @Override
-                public void onFailedTask() {
-                    Log.e("Script", "Falha ao inserir alerta!");
-                    dialog.dismiss();
-                    view.showMessage(view.getContext().getString(R.string.alert_failed_to_insert_alert));
-                }
-
-                @Override
-                public void onObjectFinded(Problem result) {}
-                @Override
-                public void onObjectUpdated() {}
-                @Override
-                public void onObjectDeleted() {}
-
-
             });
+
         }
     }
 
     private void tryToInsertPhotoOnStorage() {
         Log.i("Script", "Tentando inserir foto no storage");
-        problem.insertProblemPhoto(this.bitmap, problem, new Problem.StorageCallback() {
-            @Override
-            public void onSuccess() {
-                Log.i("Script", "Foto inserida com sucesso!");
-                Log.i("Script", "Tentando atualizar usuário");
-                dialog.setMessage(view.getContext().getString(R.string.alert_updating_user));
-                tryToUpdateUser();
-            }
-
-            @Override
-            public void onFailed() {
-                Log.e("Script", "Falha ao inserir foto");
-                dialog.cancel();
-                view.showMessage(view.getContext().getString(R.string.alert_failed_to_insert_photo));
-            }
-        });
+        problem.insertProblemPhoto(this.bitmap, problem, new Callback.SimpleAsync<Void>() {
+                    @Override
+                    public void onTaskDone(Void result, boolean success) {
+                        if(success) {
+                            Log.i("Script", "Foto inserida com sucesso!");
+                            Log.i("Script", "Tentando atualizar usuário");
+                            dialog.setMessage(view.getContext().getString(R.string.alert_updating_user));
+                            tryToUpdateUser();
+                        } else {
+                            Log.e("Script", "Falha ao inserir foto");
+                            dialog.cancel();
+                            view.showMessage(view.getContext().getString(R.string.alert_failed_to_insert_photo));
+                        }
+                    }
+                });
     }
 
     private void tryToUpdateUser() {
         this.person.setnAlertsDone(person.getnAlertsDone() + 1);
-        this.person.update(this.person, new DAO.DAOCallback<Person>() {
+        this.person.update(this.person, new Callback.SimpleAsync<Void>() {
             @Override
-            public void onObjectFinded(Person result) {
-
-            }
-
-            @Override
-            public void onObjectInserted() {
-
-            }
-
-            @Override
-            public void onObjectUpdated() {
-                Log.i("Script", "Usuário atualizado com sucesso!Alerta finalizado");
-                view.showMessage(view.getContext().getString(R.string.alert_issued));
-                dialog.cancel();
-                view.finishView();
-            }
-
-            @Override
-            public void onObjectDeleted() {
-
-            }
-
-            @Override
-            public void onFailedTask() {
-                Context context = view.getContext();
-                view.showMessage(context.getString(R.string.alert_failed_to_update_user));
-                dialog.cancel();
+            public void onTaskDone(Void result, boolean success) {
+                if(success) {
+                    Log.i("Script", "Usuário atualizado com sucesso!Alerta finalizado");
+                    view.showMessage(view.getContext().getString(R.string.alert_issued));
+                    dialog.cancel();
+                    view.finishView();
+                } else {
+                    Context context = view.getContext();
+                    view.showMessage(context.getString(R.string.alert_failed_to_update_user));
+                    dialog.cancel();
+                }
             }
         });
     }
 
-    private void takePhoto(Fragment fragment) {
+    private void takePhoto() {
         try {
-            Context context = fragment.getContext();
+            Context context = view.getContext();
             File f = SystemUtils.createTempFile(context);
             Uri photoUri = FileProvider.getUriForFile(context, "com.mobile.urbanfix",f);
             Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
 
-            fragment.startActivityForResult(takePhotoIntent, CAMERA_REQUEST);
+            view.startForResult(takePhotoIntent, CAMERA_REQUEST);
 
             this.currentPhotoPath = f.getAbsolutePath();
         } catch (IOException e) {
@@ -291,39 +275,24 @@ public class AlertPresenter implements  MainMVP.IAlertPresenter,
                 && !this.problem.getKindOfProblem().isEmpty();
     }
 
-    @Override
-    public void onFailedGetUserLocation(Context context) {
-        SystemUtils.showMessage(context, context.getString(R.string.alert_failed_get_gps_location),
-                Toast.LENGTH_LONG);
-    }
-
-    @Override
-    public void onSuccessGetUserLocation(LatLng latLng) {
-        Location location = new Location();
-        location.setLatitude(latLng.latitude);
-        location.setLongitude(latLng.longitude);
-
-        this.problem.setLocation(location);
-        fetchPossibleUsersAddress();
-    }
-
-    @Override
-    public void onSuccessGetUserAddresses(ArrayList<String> possibleAddressesList) {
-        view.onAddressHasBeenFetched(possibleAddressesList);
-    }
-
-    @Override
-    public void onFailedGetUserAddresses(Context context) {
-        Log.e("Script", "Falha ao buscar localizações do usuário");
-        view.showMessage(context.getString(R.string.alert_failed_get_gps_location));
-    }
 
     private void fetchPossibleUsersAddress() {
+        FetchAddressSevice.FetchAddressReceiver.setCallback(new Callback.SimpleAsync<ArrayList<String>>() {
+            @Override
+            public void onTaskDone(ArrayList<String> result, boolean success) {
+                if(success) {
+                    Logger.logI("Sucesso ao pegar possiveis endereços do usuário");
+                    view.onAddressHasBeenFetched(result);
+                } else {
+                    Logger.logE("Erro ao pegar endereços do usuário");
+                }
+            }
+        });
+
         Context context = view.getContext();
         Intent fetchUsersAddressIntent = new Intent(context, FetchAddressSevice.class).
                 putExtra(User.ADDRESS, new double[]{problem.getLocation().getLatitude(),
                         problem.getLocation().getLongitude()});
-        FetchAddressReceiver.setPrensenter(this);
         context.startService(fetchUsersAddressIntent);
     }
 }

@@ -1,17 +1,14 @@
 package com.mobile.urbanfix.urban_fix.presenter;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.R;
-import com.mobile.urbanfix.urban_fix.model.DAO;
+import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
+import com.mobile.urbanfix.urban_fix.model.Callback;
 import com.mobile.urbanfix.urban_fix.model.Person;
 import com.mobile.urbanfix.urban_fix.model.User;
-import com.mobile.urbanfix.urban_fix.view.MainActivity;
 import com.mobile.urbanfix.urban_fix.view.RegisterActivity;
 
 public class RegisterPresenter implements   MainMVP.IRegisterPresenter {
@@ -42,47 +39,33 @@ public class RegisterPresenter implements   MainMVP.IRegisterPresenter {
     }
 
     private void tryToRegisterEmail() {
-        user.register(new User.RegisterUserCallback() {
+        user.register(new Callback.SimpleAsync<Void>() {
             @Override
-            public void onUserRegistered() {
-                view.showInsertingUserIntoDBDialog();
-                insertPerson();
-            }
-
-            @Override
-            public void onFailedToRegisterUser() {
-                view.onInsertingUserIntoDBFailed();
+            public void onTaskDone(Void result, boolean success) {
+                if(success) {
+                    view.showInsertingUserIntoDBDialog();
+                    FirebaseUser fUser = ConnectionFactory.getFirebaseUser();
+                    User u = User.getInstance();
+                    u.setUID(fUser.getUid());
+                    tryToInsertPerson();
+                } else {
+                    view.onInsertingUserIntoDBFailed();
+                }
             }
         });
     }
 
-    private void insertPerson() {
-        person.insert(person, new DAO.DAOCallback<Person>() {
+    private void tryToInsertPerson() {
+        person.insert(person, new Callback.SimpleAsync<Person>() {
             @Override
-            public void onObjectFinded(Person result) {
-
-            }
-
-            @Override
-            public void onObjectInserted() {
-                view.finishDialog();
-                view.showThanksDialog();
-            }
-
-            @Override
-            public void onObjectUpdated() {
-
-            }
-
-            @Override
-            public void onObjectDeleted() {
-
-            }
-
-            @Override
-            public void onFailedTask() {
-                view.onInsertingUserIntoDBFailed();
-                dialog.cancel();
+            public void onTaskDone(Person result, boolean success) {
+                if(success) {
+                    view.finishDialog();
+                    view.showThanksDialog();
+                } else {
+                    view.onInsertingUserIntoDBFailed();
+                    dialog.cancel();
+                }
             }
         });
     }

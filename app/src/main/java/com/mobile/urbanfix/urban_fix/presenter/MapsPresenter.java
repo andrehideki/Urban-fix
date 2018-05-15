@@ -19,23 +19,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
+import com.mobile.urbanfix.urban_fix.Logger;
 import com.mobile.urbanfix.urban_fix.MainMVP;
 import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
-import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
+import com.mobile.urbanfix.urban_fix.model.Callback;
 import com.mobile.urbanfix.urban_fix.model.Problem;
-import com.mobile.urbanfix.urban_fix.view.dialog.ProblemDialogFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.ProblemDialogFragment;
 
 import java.util.ArrayList;
 
 public class MapsPresenter implements MainMVP.IMapsPresenter,
         LocationListener,
         OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener, Callback.FetchList<Problem> {
 
     private MainMVP.IMapsView view;
     private LocationManager locationManager;
@@ -87,39 +84,8 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
 
     @Override
     public void loadAlertsOnMap() {
-        DatabaseReference alertsDatabaseReference = ConnectionFactory.getAlertsDatabaseReference();
-        alertsDatabaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Problem p = dataSnapshot.getValue(Problem.class);
-                double lat = p.getLocation().getLatitude();
-                double longi = p.getLocation().getLongitude();
-                problems.add(p);
-                int currentIndex = problems.size() - 1;
-                markOnMap(lat, longi, p.getKindOfProblem(), currentIndex);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Problem p = dataSnapshot.getValue(Problem.class);
-                problems.remove(p);
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        Problem p = new Problem();
+        p.findAllAlerts(this);
     }
 
 
@@ -176,7 +142,28 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
     }
 
     private void openProblemDialogFragment(Problem problem) {
+        AlertDialogPresenter.setProblem(problem);
         ProblemDialogFragment dialog = ProblemDialogFragment.newInstance(problem);
         dialog.show(view.getCurrentFragmentManager().beginTransaction(), "TESTE");
+    }
+
+
+    @Override
+    public void onItemAdded(Problem result) {
+        double lat = result.getLocation().getLatitude();
+        double longi = result.getLocation().getLongitude();
+        problems.add(result);
+        int currentIndex = problems.size() - 1;
+        markOnMap(lat, longi, result.getKindOfProblem(), currentIndex);
+    }
+
+    @Override
+    public void onItemRemoved(Problem result) {
+        problems.remove(result);
+    }
+
+    @Override
+    public void onFailed() {
+        Logger.logE("Deu erro na busca dos alertas.");
     }
 }

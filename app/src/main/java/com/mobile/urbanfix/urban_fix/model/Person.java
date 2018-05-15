@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -12,7 +13,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import com.mobile.urbanfix.urban_fix.MainMVP;
 
-public class Person implements DAO<Person> {
+import java.util.ArrayList;
+
+public class Person  {
 
     private int nAlertsDone;
     private String name, cpf, birthDate;
@@ -57,6 +60,96 @@ public class Person implements DAO<Person> {
         this.birthDate = birthDate;
     }
 
+    public void find(String uid, final Callback.SimpleAsync<Person> callback) {
+
+        final DatabaseReference personDatabaseReference =
+                ConnectionFactory.getPersonsDatabaseReference().child(uid);
+        final ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Person person = dataSnapshot.getValue(Person.class);
+                if(person != null) {
+                    callback.onTaskDone(person, true);
+                } else {
+                    callback.onTaskDone(null, false);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onTaskDone(null, false);
+            }
+        };
+        personDatabaseReference.addListenerForSingleValueEvent(listener);
+    }
+
+    public void insert(Person person, final Callback.SimpleAsync<Person> callback) {
+        DatabaseReference personDatabaseReference =
+                ConnectionFactory.getPersonsDatabaseReference().child(User.getInstance().getUID());
+        personDatabaseReference.setValue(person).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    callback.onTaskDone(null, true);
+                } else {
+                    callback.onTaskDone(null, false);
+                }
+
+            }
+        });
+    }
+
+    public void update(Person person, final Callback.SimpleAsync<Void> callback) {
+        DatabaseReference databaseReference =
+                ConnectionFactory.getPersonsDatabaseReference().child(User.getInstance().getUID());
+        databaseReference.setValue(person).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    callback.onTaskDone(null, true);
+                } else {
+                    callback.onTaskDone(null, false);
+                }
+            }
+        });
+    }
+
+
+    public void getPersonAlerts(final Callback.FetchList<Problem> callback) {
+
+        final String cpf = getInstance().getCpf();
+
+        DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
+        databaseReference.orderByKey().startAt(cpf).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Problem p = dataSnapshot.getValue(Problem.class);
+                callback.onItemAdded(p);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Problem p = dataSnapshot.getValue(Problem.class);
+                callback.onItemRemoved(p);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailed();
+            }
+        });
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -65,61 +158,5 @@ public class Person implements DAO<Person> {
                 ", cpf='" + cpf + '\'' +
                 ", birthDate='" + birthDate + '\'' +
                 '}';
-    }
-
-    @Override
-    public void find(String uid, final DAOCallback<Person> daoCallback) {
-        DatabaseReference personDatabaseReference =
-                ConnectionFactory.getPersonsDatabaseReference().child(uid);
-        personDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Person person = dataSnapshot.getValue(Person.class);
-                daoCallback.onObjectFinded(person);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Script", databaseError.getDetails());
-                daoCallback.onFailedTask();
-            }
-        });
-    }
-
-    @Override
-    public void insert(Person person, final DAOCallback<Person> callback) {
-        DatabaseReference personDatabaseReference =
-                ConnectionFactory.getPersonsDatabaseReference().child(User.getInstance().getUID());
-        personDatabaseReference.setValue(person).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    callback.onObjectInserted();
-                } else {
-                    callback.onFailedTask();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void update(Person person, final DAOCallback<Person> callback) {
-        DatabaseReference databaseReference =
-                ConnectionFactory.getPersonsDatabaseReference().child(User.getInstance().getUID());
-        databaseReference.setValue(person).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    callback.onObjectUpdated();
-                } else {
-                    callback.onFailedTask();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void delete(Person object, MainMVP.ICallbackPresenter presenter) {
-
     }
 }

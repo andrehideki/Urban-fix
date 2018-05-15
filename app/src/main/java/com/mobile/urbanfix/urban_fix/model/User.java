@@ -2,6 +2,7 @@ package com.mobile.urbanfix.urban_fix.model;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.telecom.Call;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,7 +28,7 @@ public class User implements Serializable {
     @Exclude
     private String uid;
 
-    public final static String ADDRESS = "address";//Usado para passar a geoposição do usuário
+    public final static String ADDRESS = "address";
 
     private User(){}
 
@@ -61,7 +62,7 @@ public class User implements Serializable {
         user.uid = uid;
     }
 
-    public void doLogin(Activity activity, final LoginUserCallback callback) {
+    public void doLogin(Activity activity, final Callback.SimpleAsync<Void> callback) {
         if(user.getEmail() != null && user.getPassword()!= null) {
             FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
             auth.signInWithEmailAndPassword(user.getEmail(), user.getPassword() ).
@@ -70,10 +71,9 @@ public class User implements Serializable {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
                                 user.setUID(ConnectionFactory.getFirebaseAuth().getUid());
-                                Log.i("Script", "UID? " + user.getUID());
-                                callback.onLoginSuccess();
+                                callback.onTaskDone(null, true);
                             } else {
-                                callback.onFailedLogin();
+                                callback.onTaskDone(null, false);
                             }
                         }
                     });
@@ -81,24 +81,24 @@ public class User implements Serializable {
 
     }
 
-    public void sendPassword(final SendPasswordCallback callback) {
+    public void sendPassword(final Callback.SimpleAsync<Void> callback) {
         if(user.getEmail()!= null) {
             FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
             auth.sendPasswordResetEmail(user.getEmail()).addOnCompleteListener(
                     new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        callback.onSendSuccess();
-                    } else {
-                        callback.onFailedToSend();
-                    }
+                    if (task.isSuccessful())
+                        callback.onTaskDone(null, true);
+                    else
+                        callback.onTaskDone(null, false);
+
                 }
             });
         }
     }
 
-    public void register(final RegisterUserCallback callback) {
+    public void register(final Callback.SimpleAsync<Void> callback) {
         if(user.getEmail()!=null && user.getPassword()!= null) {
             FirebaseAuth auth = ConnectionFactory.getFirebaseAuth();
             auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).
@@ -106,49 +106,15 @@ public class User implements Serializable {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                FirebaseUser fUser = ConnectionFactory.getFirebaseUser();
-                                User u = User.getInstance();
-                                u.setUID(fUser.getUid());
-                                callback.onUserRegistered();
+                                callback.onTaskDone(null, true);
                             } else {
-                                callback.onFailedToRegisterUser();
+                                callback.onTaskDone(null, false);
                             }
                         }
                     });
         }
     }
 
-    public void getAlertsDone(UserAlertsCallback callback) {
-        final ArrayList<Problem> problems = new ArrayList<>();
-        final DatabaseReference databaseReference = ConnectionFactory.getAlertsDatabaseReference();
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Problem userAlert = dataSnapshot.getValue(Problem.class);
-                problems.add(userAlert);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     @Override
     public String toString() {
@@ -156,25 +122,5 @@ public class User implements Serializable {
                 "email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
-    }
-
-    public interface RegisterUserCallback {
-        void onUserRegistered();
-        void onFailedToRegisterUser();
-    }
-
-    public interface LoginUserCallback {
-        void onLoginSuccess();
-        void onFailedLogin();
-    }
-
-    public interface SendPasswordCallback {
-        void onSendSuccess();
-        void onFailedToSend();
-    }
-
-    public interface UserAlertsCallback {
-        void onFindedUserAlerts(List<Problem> problems);
-        void onFailedToGetUserAlerts();
     }
 }

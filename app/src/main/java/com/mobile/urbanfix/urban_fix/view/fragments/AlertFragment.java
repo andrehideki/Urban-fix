@@ -80,7 +80,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         });
 
         typeOfProblemSpinner.setOnItemSelectedListener(this);
-        presenter.initAlert(getContext());
+        presenter.initAlert();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -96,7 +96,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
     @Override
     public void onResume() {
         super.onResume();
-        presenter.startGPS(getContext());
+        presenter.startGPS();
     }
 
     @Override
@@ -104,19 +104,19 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
         int id = v.getId();
         switch (id) {
             case R.id.cameraButton: {
-                presenter.dispachTakePhotoIntent(this, this);
+                presenter.dispachTakePhotoIntent();
                 break;
             }
             case R.id.finishAlertButton: {
-                presenter.setDescription(alertDescriptionEditText.getText().toString(), alertDescriptionLayout,
-                        getContext());
+                String description = alertDescriptionEditText.getText().toString();
+                presenter.setDescription(description);
                 presenter.setUrgency(urgencySeekBar.getProgress());
                 presenter.finishAlert(getActivity());
                 break;
             }
             case R.id.alertDescriptionEditText: {
-                presenter.setDescription(alertDescriptionEditText.getText().toString(),
-                       alertDescriptionLayout, getContext());
+                String description = alertDescriptionEditText.getText().toString();
+                presenter.setDescription(description);
                 break;
             }
         }
@@ -164,6 +164,17 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
     }
 
     @Override
+    public void showDescriptionError() {
+        alertDescriptionLayout.setErrorEnabled(true);
+        alertDescriptionLayout.setError(getString(R.string.alert_description_textview_is_empty));
+    }
+
+    @Override
+    public void startForResult(Intent i, int request) {
+        startActivityForResult(i, request);
+    }
+
+    @Override
     public void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
@@ -186,6 +197,7 @@ public class AlertFragment extends Fragment implements  MainMVP.IAlertView,
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
+
 
 
 }

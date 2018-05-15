@@ -17,7 +17,7 @@ import com.mobile.urbanfix.urban_fix.factory.ConnectionFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlertComment implements DAO<AlertComment>{
+public class AlertComment {
 
 
     private String alertId;
@@ -60,33 +60,31 @@ public class AlertComment implements DAO<AlertComment>{
         return comments != null ? comments.size() : 0;
     }
 
-    @Override
-    public void find(final String alertId, final DAOCallback<AlertComment> callback) {
+
+    public void find(final String alertId, final Callback.SimpleAsync<AlertComment> callback) {
         DatabaseReference databaseReference = ConnectionFactory.getAlertCommentsDatabaseReference()
                 .child(alertId);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         AlertComment alertComment = dataSnapshot.getValue(AlertComment.class);
                         if(alertComment != null) {
                             alertComment.setAlertId(alertId);
-                            Logger.logI("Finded:" + alertComment.toString());
-                            callback.onObjectFinded(alertComment);
+                            callback.onTaskDone(alertComment, true);
                         } else
-                            callback.onFailedTask();
+                            callback.onTaskDone(null, false);
 
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Logger.logI("Entrou aqui");
-                        callback.onFailedTask();
+                        callback.onTaskDone(null, false);
+
                     }
                 });
     }
 
-    @Override
-    public void insert(AlertComment alertComment, final DAOCallback<AlertComment> callback) {
+    public void insert(AlertComment alertComment, final Callback.SimpleAsync<AlertComment> callback) {
         DatabaseReference databaseReference = ConnectionFactory.getAlertCommentsDatabaseReference();
         databaseReference.child(alertId)
                 .setValue(alertComment)
@@ -94,23 +92,14 @@ public class AlertComment implements DAO<AlertComment>{
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
-                    callback.onObjectInserted();
+                    callback.onTaskDone(null, true);
                 } else {
-                    callback.onFailedTask();
+                    callback.onTaskDone(null, false);
                 }
             }
         });
     }
 
-    @Override
-    public void update(AlertComment object, DAOCallback<AlertComment> callback) {
-
-    }
-
-    @Override
-    public void delete(AlertComment object, MainMVP.ICallbackPresenter presenter) {
-
-    }
 
     @Override
     public String toString() {

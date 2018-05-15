@@ -1,9 +1,7 @@
-package com.mobile.urbanfix.urban_fix.view.dialog;
+package com.mobile.urbanfix.urban_fix.view.fragments;
 
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -17,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +35,8 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
     private ImageView problemPhotoImageView;
     private static MainMVP.IProblemDialogPresenter presenter;
     private AlertDialog commentDialog;
+    private TextView kindOfProblemTextView, dateTextView, descriptionTextView, addressTextView,
+            statusTextView, urgencyTextView;
     private CommentsAdapter adapter;
     private RecyclerView commentsRecyclerView;
 
@@ -55,12 +54,12 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.AppTheme);
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_problem, container);
-        TextView kindOfProblemTextView, dateTextView, descriptionTextView, addressTextView,
-        statusTextView, urgencyTextView, insertCommentTextView;
+        TextView insertCommentTextView;
         commentsRecyclerView = view.findViewById(R.id.commentsRecyclerView);
         commentsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
@@ -75,9 +74,6 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
         insertCommentTextView = view.findViewById(R.id.insertCommentTextView);
         problemPhotoImageView = view.findViewById(R.id.problemPhotoImageView);
 
-        presenter.setInformations(problem, kindOfProblemTextView, dateTextView, statusTextView, addressTextView,
-                descriptionTextView, urgencyTextView, problemPhotoImageView);
-
         insertCommentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,12 +87,18 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
     @Override
     public void onStart() {
         super.onStart();
-        presenter.loadComments();
+        presenter.onStart();
     }
 
     @Override
-    public void setAlertInformations(String kindOfProblem, String date, String status, String address, String description, String urgency) {
-
+    public void setAlertInformations(String kindOfProblem, String date, String status, String address,
+                                     String description, String urgency) {
+        kindOfProblemTextView.setText(kindOfProblem);
+        dateTextView.setText(date);
+        statusTextView.setText(status);
+        addressTextView.setText(address);
+        descriptionTextView.setText(description);
+        urgencyTextView.setText(urgency);
     }
 
     @Override
@@ -193,10 +195,6 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
                 commentTextView = itemView.findViewById(R.id.commentTextView);
                 sentimentImageView = itemView.findViewById(R.id.sentimentImageView);
             }
-        }
-
-        public void setComments(ArrayList<Comment> comments) {
-            this.comments = comments;
         }
     }
 

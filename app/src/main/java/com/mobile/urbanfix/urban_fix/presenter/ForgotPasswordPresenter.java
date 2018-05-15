@@ -1,10 +1,8 @@
 package com.mobile.urbanfix.urban_fix.presenter;
 
-import com.mobile.urbanfix.urban_fix.Constants;
 import com.mobile.urbanfix.urban_fix.MainMVP;
-import com.mobile.urbanfix.urban_fix.R;
+import com.mobile.urbanfix.urban_fix.model.Callback;
 import com.mobile.urbanfix.urban_fix.model.User;
-import com.mobile.urbanfix.urban_fix.view.ForgotPasswordActivity;
 
 public class ForgotPasswordPresenter implements MainMVP.IForgotPasswordPresenter {
 
@@ -19,15 +17,13 @@ public class ForgotPasswordPresenter implements MainMVP.IForgotPasswordPresenter
         if(!email.isEmpty()) {
             User user = User.getInstance();
             user.setEmail(email);
-            user.sendPassword(new User.SendPasswordCallback() {
+            user.sendPassword(new Callback.SimpleAsync<Void>() {
                 @Override
-                public void onSendSuccess() {
-                    view.showSuccessMessage();
-                }
-
-                @Override
-                public void onFailedToSend() {
-                    view.showFailedMessage();
+                public void onTaskDone(Void result, boolean success) {
+                    if(success)
+                        view.showSuccessMessage();
+                    else
+                        view.showFailedMessage();
                 }
             });
         }

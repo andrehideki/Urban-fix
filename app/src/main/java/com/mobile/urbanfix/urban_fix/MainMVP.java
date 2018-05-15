@@ -24,6 +24,13 @@ import java.util.List;
 
 public interface MainMVP {
 
+    interface IView {
+        void showMessage(String msg);
+        Context getContext();
+        void finishView();
+    }
+
+
     /* *
     * [ Login contracts ]
     * */
@@ -40,9 +47,9 @@ public interface MainMVP {
     interface ILoginView extends IView {
         void emailIsEmpty();
         void passwordIsEmpty();
-        void openForgotPasswordView();//Refatorar
-        void openRegisterView();//Refatorar
-        void openMainView();//Refatorar
+        void openForgotPasswordView();
+        void openRegisterView();
+        void openMainView();
         void fillUserInformations(String email, String password, boolean rememberUser);
     }
 
@@ -81,26 +88,18 @@ public interface MainMVP {
 
 
 
-    interface ICallbackPresenter {
-        void onSuccessTask(Constants task, Object object);
-        void onFailedTask(Constants task);
-    }
-
-    interface ICallbackListOfAlerts {
-        void onListOfAlertsChanged();
-    }
-
-
-
+    /* *
+     * [ Alert contracts ]
+     * */
     interface IAlertPresenter {
         int LOW = 6, MODERATE =12, CRITICAL =18;
-        void initAlert(Context context);
+        void initAlert();
         void setUrgency(int urgency);
         void setKindOfProblem(int position, String kindOfProblem);
         void setAddress(int position, String address);
-        void setDescription(String description, TextInputLayout descriptionTextInputLayout, Context context);
-        void startGPS(Context context);
-        void dispachTakePhotoIntent(Fragment fragment, MainMVP.IAlertView view);
+        void setDescription(String description);
+        void startGPS();
+        void dispachTakePhotoIntent();
         void onRequestPermissionResult(Fragment fragment, int requestCode, String[] permissions, int[] grantResults);
         void onActivityResult(int requestCode, int resultCode, Intent data);
         void cancelAlert(Fragment fragment);
@@ -111,6 +110,8 @@ public interface MainMVP {
         void setupPhotoImageView(Bitmap bitmap);
         void onAddressHasBeenFetched(ArrayList<String> addressesList);
         void changeUrgencyStatus(String urgencyStatus);
+        void showDescriptionError();
+        void startForResult(Intent i, int request);
     }
 
 
@@ -119,16 +120,20 @@ public interface MainMVP {
     /* *
      * [ My Alerts contracts ]
      * */
-    interface IMyAlertsPresenter {
-        void onCreateUserAlerts();
+    interface IPersonAlertsPresenter {
         void configureUserInformations();
-        void setupMyAlertsList(RecyclerView myAlerts, Context context);
+        ArrayList<Problem> getPersonAlerts();
+        void onItemClicked(int postion);
     }
 
-    interface IMyAlertsView {
+    interface IPersonAlertsView {
         void setUserName(String userName);
         void setNumberOfAlerts(int numberOfAlerts);
+        void onNewAlertFinded(int position);
+        void onAlertRemoved(int position);
+        void showAlertDialog();
     }
+
 
 
 
@@ -156,10 +161,8 @@ public interface MainMVP {
     * Problem dialog contracts
     * */
     interface IProblemDialogPresenter {
-        void setInformations(Problem problem, TextView kindOfProblemTextView, TextView dateTextView,
-                             TextView statusTextView, TextView locationTextView, TextView descriptionTextView,
-                             TextView urgencyTextView, ImageView problemPhotoImageView);
-        void loadComments();
+        void onStart();
+        void tryToLoadComments();
         void onInsertCommentClicked();
         void onCancelCommentClicked();
         void onCommentClicked(String comment);
@@ -178,11 +181,6 @@ public interface MainMVP {
 
 
 
-    interface IView {
-        void showMessage(String msg);
-        Context getContext();
-        void finishView();
-    }
 
     /* *
      * [ Main contracts ]
@@ -204,15 +202,6 @@ public interface MainMVP {
         void showLogoffDialog();
         void closeCurrentView();
     }
-
-
-    interface IOnGpsPickupUserLocationAndPossibleAddresses extends Serializable {
-        void onFailedGetUserLocation(Context context);
-        void onSuccessGetUserLocation(LatLng latLng);
-        void onSuccessGetUserAddresses(ArrayList<String> possibleAddressesList);
-        void onFailedGetUserAddresses(Context context);
-    }
-
 
 
 }
