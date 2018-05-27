@@ -160,7 +160,7 @@ public interface MainMVP {
     /*
     * Problem dialog contracts
     * */
-    interface IProblemDialogPresenter {
+    interface IAlertDialogPresenter {
         void onStart();
         void tryToLoadComments();
         void onInsertCommentClicked();
@@ -168,7 +168,7 @@ public interface MainMVP {
         void onCommentClicked(String comment);
     }
 
-    interface IProblemDialogView {
+    interface IAlertDialogView {
         void setAlertInformations(String kindOfProblem, String date, String status, String address,
                                   String description, String urgency);
         void setAlertPhoto(Bitmap bitmap);

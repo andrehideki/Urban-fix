@@ -83,7 +83,7 @@ public class PersonAlertsFragment extends Fragment implements MainMVP.IPersonAle
     @Override
     public void showAlertDialog() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        ProblemDialogFragment dialogFragment = new ProblemDialogFragment();
+        AlertDialogFragment dialogFragment = new AlertDialogFragment();
         dialogFragment.show(fm,null);
     }
 

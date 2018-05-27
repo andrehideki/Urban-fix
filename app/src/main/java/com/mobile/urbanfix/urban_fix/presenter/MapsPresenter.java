@@ -25,7 +25,7 @@ import com.mobile.urbanfix.urban_fix.R;
 import com.mobile.urbanfix.urban_fix.SystemUtils;
 import com.mobile.urbanfix.urban_fix.model.Callback;
 import com.mobile.urbanfix.urban_fix.model.Problem;
-import com.mobile.urbanfix.urban_fix.view.fragments.ProblemDialogFragment;
+import com.mobile.urbanfix.urban_fix.view.fragments.AlertDialogFragment;
 
 import java.util.ArrayList;
 
@@ -143,7 +143,7 @@ public class MapsPresenter implements MainMVP.IMapsPresenter,
 
     private void openProblemDialogFragment(Problem problem) {
         AlertDialogPresenter.setProblem(problem);
-        ProblemDialogFragment dialog = ProblemDialogFragment.newInstance(problem);
+        AlertDialogFragment dialog = AlertDialogFragment.newInstance(problem);
         dialog.show(view.getCurrentFragmentManager().beginTransaction(), "TESTE");
     }
 

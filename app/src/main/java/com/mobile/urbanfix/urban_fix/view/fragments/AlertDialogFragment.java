@@ -29,11 +29,11 @@ import com.mobile.urbanfix.urban_fix.presenter.AlertDialogPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProblemDialogFragment extends DialogFragment implements MainMVP.IProblemDialogView {
+public class AlertDialogFragment extends DialogFragment implements MainMVP.IAlertDialogView {
 
     private static Problem problem;
     private ImageView problemPhotoImageView;
-    private static MainMVP.IProblemDialogPresenter presenter;
+    private static MainMVP.IAlertDialogPresenter presenter;
     private AlertDialog commentDialog;
     private TextView kindOfProblemTextView, dateTextView, descriptionTextView, addressTextView,
             statusTextView, urgencyTextView;
@@ -42,9 +42,9 @@ public class ProblemDialogFragment extends DialogFragment implements MainMVP.IPr
 
 
 
-    public static ProblemDialogFragment newInstance(Problem problem) {
-        ProblemDialogFragment dialogFragment = new ProblemDialogFragment();
-        ProblemDialogFragment.problem = problem;
+    public static AlertDialogFragment newInstance(Problem problem) {
+        AlertDialogFragment dialogFragment = new AlertDialogFragment();
+        AlertDialogFragment.problem = problem;
         return dialogFragment;
     }
 

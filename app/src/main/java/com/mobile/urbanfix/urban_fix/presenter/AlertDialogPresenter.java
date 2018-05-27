@@ -16,13 +16,13 @@ import com.mobile.urbanfix.urban_fix.model.Problem;
 
 import java.util.ArrayList;
 
-public class AlertDialogPresenter implements MainMVP.IProblemDialogPresenter {
+public class AlertDialogPresenter implements MainMVP.IAlertDialogPresenter {
 
-    private MainMVP.IProblemDialogView view;
+    private MainMVP.IAlertDialogView view;
     private static Problem problem;
     private AlertComment alertComment;
 
-    public AlertDialogPresenter(MainMVP.IProblemDialogView view) {
+    public AlertDialogPresenter(MainMVP.IAlertDialogView view) {
         this.view = view;
     }
 
